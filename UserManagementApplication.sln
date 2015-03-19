@@ -1,0 +1,44 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserManagementApplication.Engine", "UserManagementApplication.Engine\UserManagementApplication.Engine.csproj", "{05342CFC-5101-4212-94C5-13CF855FF6EC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserManagementApplication.Engine.Tests", "UserManagementApplication.Engine.Tests\UserManagementApplication.Engine.Tests.csproj", "{2B72A0C2-B24E-4B88-8A5C-73E763389F92}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserManagementApplication.Data.Contracts", "UserManagementApplication.Data.Contracts\UserManagementApplication.Data.Contracts.csproj", "{A378DC66-26E6-459E-B034-4836A1D86B35}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{31C8B838-4696-40E8-A43E-981FC69AF4B9}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\NuGet.Config = .nuget\NuGet.Config
+		.nuget\NuGet.exe = .nuget\NuGet.exe
+		.nuget\NuGet.targets = .nuget\NuGet.targets
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserManagementApplication.Common", "UserManagementApplication.Common\UserManagementApplication.Common.csproj", "{5F779663-53E8-44CB-A7BF-806B8F5C4244}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{05342CFC-5101-4212-94C5-13CF855FF6EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{05342CFC-5101-4212-94C5-13CF855FF6EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{05342CFC-5101-4212-94C5-13CF855FF6EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{05342CFC-5101-4212-94C5-13CF855FF6EC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2B72A0C2-B24E-4B88-8A5C-73E763389F92}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2B72A0C2-B24E-4B88-8A5C-73E763389F92}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2B72A0C2-B24E-4B88-8A5C-73E763389F92}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A378DC66-26E6-459E-B034-4836A1D86B35}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A378DC66-26E6-459E-B034-4836A1D86B35}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A378DC66-26E6-459E-B034-4836A1D86B35}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A378DC66-26E6-459E-B034-4836A1D86B35}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5F779663-53E8-44CB-A7BF-806B8F5C4244}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F779663-53E8-44CB-A7BF-806B8F5C4244}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F779663-53E8-44CB-A7BF-806B8F5C4244}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5F779663-53E8-44CB-A7BF-806B8F5C4244}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
