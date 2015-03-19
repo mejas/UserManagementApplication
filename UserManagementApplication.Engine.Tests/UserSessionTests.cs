@@ -1,16 +1,13 @@
-﻿using System;
+﻿using FluentAssertions;
+using Moq;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Xunit;
-using FluentAssertions;
+using UserManagementApplication.Common.Exceptions;
+using UserManagementApplication.Data.Contracts;
+using UserManagementApplication.Data.Contracts.Interfaces;
 using UserManagementApplication.Engine.BusinessEntities;
 using UserManagementApplication.Engine.Enumerations;
-using UserManagementApplication.Data.Contracts.Interfaces;
-using Moq;
-using UserManagementApplication.Data.Contracts;
-using UserManagementApplication.Common.Exceptions;
+using Xunit;
 
 namespace UserManagementApplication.Engine.Tests
 {
