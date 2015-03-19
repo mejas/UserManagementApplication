@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UserManagementApplication.Data.Enumerations;
 using UserManagementApplication.Data.Providers;
 
@@ -57,6 +54,11 @@ namespace UserManagementApplication.Data.DataEntities
             var result = StorageProvider.UpdateUser(user);
 
             return result;
+        }
+
+        public void Delete(User user)
+        {
+            StorageProvider.DeleteUser(user);
         }
     }
 }

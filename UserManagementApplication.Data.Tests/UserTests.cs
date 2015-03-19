@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using FluentAssertions;
-using Xunit;
-using UserManagementApplication.Data.DataEntities;
-using UserManagementApplication.Data.Providers;
+﻿using FluentAssertions;
 using Moq;
+using System;
+using System.Collections.Generic;
+using UserManagementApplication.Data.DataEntities;
 using UserManagementApplication.Data.Enumerations;
+using UserManagementApplication.Data.Providers;
+using Xunit;
 
 namespace UserManagementApplication.Data.Tests
 {
@@ -34,7 +31,16 @@ namespace UserManagementApplication.Data.Tests
                     .Setup(d => d.UpdateUser(It.IsAny<User>()))
                     .Returns((User user) => mockUpdateLogic(user));
 
+                storageProvider
+                    .Setup(d => d.DeleteUser(It.IsAny<User>()))
+                    .Callback((User user) => mockDeleteLogic(user));
+
                 return storageProvider.Object;
+            }
+
+            private IList<User> mockGetAllLogic()
+            {
+                return _users;
             }
 
             private User mockAddLogic(User user)
@@ -60,9 +66,9 @@ namespace UserManagementApplication.Data.Tests
                 return userToUpdate;
             }
 
-            private IList<User> mockGetAllLogic()
+            private void mockDeleteLogic(User user)
             {
-                return _users;
+                _users.RemoveAt(user.UserId - 1);
             }
         }
 
@@ -369,6 +375,24 @@ namespace UserManagementApplication.Data.Tests
                 subject = user.Update(subject);
 
                 subject.RoleType.Should().Be(RoleType.Admin);
+            }
+        }
+
+        [Trait("Trait", "UserDataTests")]
+        public class DeleteUserTests : UserTestsBase
+        {
+            [Fact]
+            public void UserShouldBeDeleted()
+            {
+                var user = new User(StorageProvider);
+
+                var itemToDelete = user.Create("yuuki", "admin", "yuuna", "yuuki", new DateTime(2001, 3, 4));
+
+                user.Delete(itemToDelete);
+
+                var subject = user.GetAll();
+
+                subject.Count.Should().Be(0);
             }
         }
     }
