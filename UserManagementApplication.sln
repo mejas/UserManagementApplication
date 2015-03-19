@@ -16,6 +16,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{31C8B8
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserManagementApplication.Common", "UserManagementApplication.Common\UserManagementApplication.Common.csproj", "{5F779663-53E8-44CB-A7BF-806B8F5C4244}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserManagementApplication.Data", "UserManagementApplication.Data\UserManagementApplication.Data.csproj", "{48A22F1A-BA11-4325-B5C8-FCD7BFE66F2A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserManagementApplication.Data.Tests", "UserManagementApplication.Data.Tests\UserManagementApplication.Data.Tests.csproj", "{2F88B95D-B9F2-4AC7-B4D3-A7A597782088}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -37,6 +41,14 @@ Global
 		{5F779663-53E8-44CB-A7BF-806B8F5C4244}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5F779663-53E8-44CB-A7BF-806B8F5C4244}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5F779663-53E8-44CB-A7BF-806B8F5C4244}.Release|Any CPU.Build.0 = Release|Any CPU
+		{48A22F1A-BA11-4325-B5C8-FCD7BFE66F2A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{48A22F1A-BA11-4325-B5C8-FCD7BFE66F2A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{48A22F1A-BA11-4325-B5C8-FCD7BFE66F2A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{48A22F1A-BA11-4325-B5C8-FCD7BFE66F2A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2F88B95D-B9F2-4AC7-B4D3-A7A597782088}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2F88B95D-B9F2-4AC7-B4D3-A7A597782088}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2F88B95D-B9F2-4AC7-B4D3-A7A597782088}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2F88B95D-B9F2-4AC7-B4D3-A7A597782088}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

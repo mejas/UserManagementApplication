@@ -11,11 +11,6 @@ namespace UserManagementApplication.Engine.BusinessEntities
 
         ISessionDataService SessionDataService { get; set; }
 
-        public UserSession()
-        {
-
-        }
-
         public UserSession(ISessionDataService sessionDataService)
         {
             SessionDataService = sessionDataService;
@@ -66,7 +61,7 @@ namespace UserManagementApplication.Engine.BusinessEntities
 
             if (session != null)
             {
-                userSession = new UserSession()
+                userSession = new UserSession(SessionDataService)
                 {
                     SessionToken = session.SessionToken
                 };

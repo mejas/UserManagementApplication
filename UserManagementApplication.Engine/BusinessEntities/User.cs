@@ -38,11 +38,6 @@ namespace UserManagementApplication.Engine.BusinessEntities
 
         #region Constructor
 
-        public User()
-        {
-
-        }
-
         public User(IDateProvider dateProvider, IUserDataService userDataService)
         {
             DateProvider = dateProvider;
@@ -120,7 +115,7 @@ namespace UserManagementApplication.Engine.BusinessEntities
 
             if (user != null)
             {
-                userInfo = new User()
+                userInfo = new User(DateProvider, UserDataService)
                 {
                     Username  = user.Username,
                     Password  = user.Password,
