@@ -24,13 +24,20 @@ namespace UserManagementApplication.Data.StorageProviders
 
         public XMLStorageProvider(string fileName)
         {
-            if (!File.Exists(fileName))
-            {
-                File.Create(fileName);
-            }
-
             XmlFile = fileName;
-            reloadCache();
+
+            if (!File.Exists(XmlFile))
+            {
+                using (var file = File.Create(XmlFile))
+                {
+
+                }
+                
+            }
+            else
+            {
+                reloadCache();
+            }
         }
 
         public IList<User> GetUsers()
@@ -46,9 +53,7 @@ namespace UserManagementApplication.Data.StorageProviders
 
             UserCache.Add(user);
 
-            appendSerializedUser(user);
             InvalidateCache();
-
 
             return user;
         }
@@ -85,23 +90,35 @@ namespace UserManagementApplication.Data.StorageProviders
 
         protected void InvalidateCache()
         {
+            flushUserCacheToDisk();
             reloadCache();
         }
 
         private void reloadCache()
         {
-            //throw new NotImplementedException();
+            UserCache.Clear();
+
+            XmlSerializer serializer = new XmlSerializer(typeof(List<User>));
+
+            using (StreamReader streamReader = new StreamReader(XmlFile))
+            {
+                using (XmlReader reader = XmlReader.Create(streamReader))
+                {
+                    UserCache = serializer.Deserialize(reader) as List<User>;
+                }
+            }
         }
 
-        private void appendSerializedUser(User user)
+        //TODO: optimize this so we don't do a big write
+        private void flushUserCacheToDisk()
         {
-            XmlSerializer serializer = new XmlSerializer(typeof(User));
+            XmlSerializer serializer = new XmlSerializer(typeof(List<User>));
             
             using (StreamWriter streamWriter = new StreamWriter(XmlFile, true))
             {
                 using (XmlWriter writer = XmlWriter.Create(streamWriter))
                 {
-                    serializer.Serialize(writer, user);
+                    serializer.Serialize(writer, UserCache);
                 }
             }
         }
