@@ -2,7 +2,7 @@
 using Moq;
 using System;
 using System.Collections.Generic;
-using UserManagementApplication.Data.Contracts;
+using UserManagementApplication.Common.Enumerations;
 using UserManagementApplication.Data.DataEntities;
 using UserManagementApplication.Data.Providers;
 using Xunit;
@@ -168,7 +168,7 @@ namespace UserManagementApplication.Data.Tests
             {
                 var subject = new User(StorageProvider);
 
-                subject.RoleType.Should().Be(DbRoleType.User);
+                subject.RoleType.Should().Be(RoleType.User);
             }
         }
 
@@ -350,7 +350,7 @@ namespace UserManagementApplication.Data.Tests
                 subject.Username  = USERNAME;
                 subject.Password  = PASSWORD;
                 subject.Birthdate = BIRTH_DATE;
-                subject.RoleType  = DbRoleType.Administrator;
+                subject.RoleType  = RoleType.Admin;
 
                 subject = user.Update(subject);
 
@@ -369,7 +369,7 @@ namespace UserManagementApplication.Data.Tests
                 subject.Username  = USERNAME;
                 subject.Password  = PASSWORD;
                 subject.Birthdate = BIRTH_DATE;
-                subject.RoleType  = DbRoleType.Administrator;
+                subject.RoleType  = RoleType.Admin;
 
                 subject = user.Update(subject);
 
@@ -388,7 +388,7 @@ namespace UserManagementApplication.Data.Tests
                 subject.Username  = USERNAME;
                 subject.Password  = PASSWORD;
                 subject.Birthdate = BIRTH_DATE;
-                subject.RoleType  = DbRoleType.Administrator;
+                subject.RoleType = RoleType.Admin;
 
                 subject = user.Update(subject);
 
@@ -407,7 +407,7 @@ namespace UserManagementApplication.Data.Tests
                 subject.Username  = USERNAME;
                 subject.Password  = PASSWORD;
                 subject.Birthdate = BIRTH_DATE;
-                subject.RoleType  = DbRoleType.Administrator;
+                subject.RoleType = RoleType.Admin;
 
                 subject = user.Update(subject);
 
@@ -426,7 +426,7 @@ namespace UserManagementApplication.Data.Tests
                 subject.Username  = USERNAME;
                 subject.Password  = PASSWORD;
                 subject.Birthdate = BIRTH_DATE;
-                subject.RoleType  = DbRoleType.Administrator;
+                subject.RoleType = RoleType.Admin;
 
                 subject = user.Update(subject);
 
@@ -445,7 +445,7 @@ namespace UserManagementApplication.Data.Tests
                 subject.Username  = USERNAME;
                 subject.Password  = PASSWORD;
                 subject.Birthdate = BIRTH_DATE;
-                subject.RoleType  = DbRoleType.Administrator;
+                subject.RoleType = RoleType.Admin;
 
                 subject = user.Update(subject);
 
@@ -464,11 +464,11 @@ namespace UserManagementApplication.Data.Tests
                 subject.Username  = USERNAME;
                 subject.Password  = PASSWORD;
                 subject.Birthdate = BIRTH_DATE;
-                subject.RoleType  = DbRoleType.Administrator;
+                subject.RoleType = RoleType.Admin;
 
                 subject = user.Update(subject);
 
-                subject.RoleType.Should().Be(DbRoleType.Administrator);
+                subject.RoleType.Should().Be(RoleType.Admin);
             }
         }
 

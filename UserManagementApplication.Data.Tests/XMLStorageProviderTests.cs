@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using System;
 using System.IO;
+using UserManagementApplication.Common.Enumerations;
 using UserManagementApplication.Data.DataEntities;
 using UserManagementApplication.Data.StorageProviders;
 using Xunit;
@@ -64,7 +65,7 @@ namespace UserManagementApplication.Data.Tests
 
                 var userService = new User(storageProvider);
 
-                userService.Create("admin", "admin", "Administrator", "Administrator", DateTime.Today, Contracts.DbRoleType.Administrator);
+                userService.Create("admin", "admin", "Administrator", "Administrator", DateTime.Today, RoleType.Admin);
                 userService.Create("yuckyTuna", "123456", "Yucky", "Tuna", DateTime.Today);
 
                 var subject = userService.GetUsers("Administrator", String.Empty);

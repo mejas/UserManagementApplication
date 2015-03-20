@@ -1,11 +1,12 @@
 ﻿
-using UserManagementApplication.Engine.Enumerations;
+using UserManagementApplication.Common.Enumerations;
 using UserManagementApplication.Engine.Providers;
 namespace UserManagementApplication.Engine.BusinessEntities
 {
     public class UserSession
     {
         public string SessionToken { get; set; }
+        public User User { get; set; }
 
         IAuthenticationProvider AuthenticationProvider { get; set; }
 
@@ -23,7 +24,7 @@ namespace UserManagementApplication.Engine.BusinessEntities
 
         public bool IsPermitted(UserSession session, RoleType roleTypeToTest)
         {
-            return AuthenticationProvider.VerifyUserPermission(session, roleTypeToTest);
+            return AuthenticationProvider.HasPermission(session, roleTypeToTest);
         }
 
         public void TerminateSession(UserSession userSession)

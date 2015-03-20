@@ -68,6 +68,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\UserManagementApplication.Common\UserManagementApplication.Common.csproj">
+      <Project>{5f779663-53e8-44cb-a7bf-806b8f5c4244}</Project>
+      <Name>UserManagementApplication.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\UserManagementApplication.Data.Contracts\UserManagementApplication.Data.Contracts.csproj">
       <Project>{a378dc66-26e6-459e-b034-4836a1d86b35}</Project>
       <Name>UserManagementApplication.Data.Contracts</Name>

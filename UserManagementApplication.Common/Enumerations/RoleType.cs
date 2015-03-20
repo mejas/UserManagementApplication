@@ -1,5 +1,5 @@
 ﻿
-namespace UserManagementApplication.Engine.Enumerations
+namespace UserManagementApplication.Common.Enumerations
 {
     public enum RoleType
     {

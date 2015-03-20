@@ -2,9 +2,9 @@
 using Moq;
 using System;
 using System.Collections.Generic;
+using UserManagementApplication.Common.Enumerations;
 using UserManagementApplication.Common.Exceptions;
 using UserManagementApplication.Engine.BusinessEntities;
-using UserManagementApplication.Engine.Enumerations;
 using UserManagementApplication.Engine.Providers;
 using Xunit;
 
@@ -47,7 +47,7 @@ namespace UserManagementApplication.Engine.Tests
                     .Returns((string username, string password) => mockAuthenticationLogic(username, password));
 
                 sessionDataService
-                    .Setup(d => d.VerifyUserPermission(It.IsAny<UserSession>(), It.IsAny<RoleType>()))
+                    .Setup(d => d.HasPermission(It.IsAny<UserSession>(), It.IsAny<RoleType>()))
                     .Returns((UserSession session, RoleType roleType) =>
                     {
                         var currentRole = _userSessions[session.SessionToken].RoleType;

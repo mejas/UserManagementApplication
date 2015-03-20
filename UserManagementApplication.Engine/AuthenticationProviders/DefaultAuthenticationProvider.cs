@@ -1,26 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.IO;
+using UserManagementApplication.Common.Enumerations;
 using UserManagementApplication.Common.Exceptions;
 using UserManagementApplication.Data.Contracts;
 using UserManagementApplication.Data.Contracts.Interfaces;
 using UserManagementApplication.Engine.BusinessEntities;
-using UserManagementApplication.Engine.Enumerations;
 using UserManagementApplication.Engine.Providers;
 
 namespace UserManagementApplication.Engine.AuthenticationProviders
 {
     public class DefaultAuthenticationProvider : IAuthenticationProvider
     {
-        protected Dictionary<string, UserSession> UserSessions = new Dictionary<string, UserSession>();
-        protected User UserEntity { get; set; }
+        protected Dictionary<string, UserInformation> UserSessions = new Dictionary<string, UserInformation>();
+        protected IUserDataService UserDataService { get; set; }
+
+        public DefaultAuthenticationProvider(IUserDataService userDataService)
+        {
+            UserDataService = userDataService;
+        }
 
         public UserSession CreateSession(string username, string password)
         {
-            User userData = UserEntity.GetUser(username);
+            var userData = UserDataService.GetUser(username);
 
             ////TODO: hash passwords here before checking
             if (!(password == userData.Password))
@@ -28,25 +29,48 @@ namespace UserManagementApplication.Engine.AuthenticationProviders
                 throw new ErrorException("Invalid user credentials");
             }
 
+            string sessionToken = generateSessionToken();
+
+            UserSessions[sessionToken] = userData;
+
             return new UserSession(this)
             {
-                SessionToken = generateSessionToken(userData)
+                SessionToken = sessionToken
             };
         }
 
-        public bool VerifyUserPermission(UserSession session, RoleType roleTypeToTest)
+        public bool HasPermission(UserSession session, RoleType roleTypeToTest)
         {
-            throw new NotImplementedException();
+            UserInformation userInfo;
+
+            if (!UserSessions.TryGetValue(session.SessionToken, out userInfo))
+            {
+                throw new ErrorException("Session has expired.");
+            }
+
+            if (userInfo.RoleType == roleTypeToTest)
+            {
+                return true;
+            }
+            else
+            {
+                return roleTypeToTest == (userInfo.RoleType | roleTypeToTest);
+            }
         }
 
         public void TerminateSession(UserSession userSession)
         {
-            throw new NotImplementedException();
+            UserInformation userInfo;
+
+            if (UserSessions.TryGetValue(userSession.SessionToken, out userInfo))
+            {
+                UserSessions.Remove(userSession.SessionToken);
+            }
         }
 
-        private string generateSessionToken(User userData)
+        private string generateSessionToken()
         {
-            throw new NotImplementedException();
+            return Path.GetRandomFileName().Replace(".", "");
         }
     }
 }

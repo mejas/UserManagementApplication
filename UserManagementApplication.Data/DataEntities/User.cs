@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using UserManagementApplication.Common.Enumerations;
 using UserManagementApplication.Common.Exceptions;
-using UserManagementApplication.Data.Contracts;
 using UserManagementApplication.Data.Providers;
 
 namespace UserManagementApplication.Data.DataEntities
@@ -16,7 +16,7 @@ namespace UserManagementApplication.Data.DataEntities
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public DateTime Birthdate { get; set; }
-        public DbRoleType RoleType { get; set; }
+        public RoleType RoleType { get; set; }
         
         protected IStorageProvider StorageProvider { get; set; }
         
@@ -30,6 +30,7 @@ namespace UserManagementApplication.Data.DataEntities
         public User(IStorageProvider storageProvider)
         {
             StorageProvider = storageProvider;
+            RoleType = RoleType.User;
         }
 
         #endregion
@@ -51,7 +52,7 @@ namespace UserManagementApplication.Data.DataEntities
                             string firstName,
                             string lastName,
                             DateTime birthDate,
-                            DbRoleType roleType = DbRoleType.User)
+                            RoleType roleType = RoleType.User)
         {
             User user = new User(StorageProvider)
             {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using UserManagementApplication.Common.Enumerations;
 using UserManagementApplication.Data.Contracts;
 using UserManagementApplication.Data.Contracts.Interfaces;
 using UserManagementApplication.Engine.Providers;
@@ -29,7 +30,7 @@ namespace UserManagementApplication.Engine.BusinessEntities
             }
         }
         public int UserId { get; set; }
-        public Enumerations.RoleType RoleType { get; set; }
+        public RoleType RoleType { get; set; }
 
         protected IDateProvider DateProvider { get; set; }
         protected IUserDataService UserDataService { get; set; }
@@ -43,7 +44,7 @@ namespace UserManagementApplication.Engine.BusinessEntities
             DateProvider = dateProvider;
             UserDataService = userDataService;
 
-            RoleType = Enumerations.RoleType.User;
+            RoleType = RoleType.User;
         }
 
         #endregion
@@ -74,7 +75,7 @@ namespace UserManagementApplication.Engine.BusinessEntities
                             string firstName, 
                             string lastName, 
                             DateTime birthDate,
-                            Enumerations.RoleType roleType = Enumerations.RoleType.User)
+                            RoleType roleType = RoleType.User)
         {
             UserInformation user = new UserInformation()
             {
@@ -84,7 +85,7 @@ namespace UserManagementApplication.Engine.BusinessEntities
                 LastName  = lastName,
                 Birthdate = birthDate,
                 DataState = DataState.New,
-                RoleType  = Translate(roleType)
+                RoleType  = roleType
             };
 
             user = UserDataService.Commit(user);
@@ -155,32 +156,6 @@ namespace UserManagementApplication.Engine.BusinessEntities
             }
 
             return user;
-        }
-
-        protected Enumerations.RoleType Translate(Data.Contracts.DbRoleType roleType)
-        {
-            switch (roleType)
-            {
-                case Data.Contracts.DbRoleType.Administrator:
-                    return Enumerations.RoleType.Admin;
-                case Data.Contracts.DbRoleType.User:
-                    return Enumerations.RoleType.User;
-                default:
-                    throw new ArgumentException("Invalid Data Contract RoleType", "roleType");
-            }
-        }
-
-        protected Data.Contracts.DbRoleType Translate(Enumerations.RoleType roleType)
-        {
-            switch (roleType)
-            {
-                case Enumerations.RoleType.Admin:
-                    return Data.Contracts.DbRoleType.Administrator;
-                case Enumerations.RoleType.User:
-                    return Data.Contracts.DbRoleType.User;
-                default:
-                    throw new ArgumentException("Invalid BusinessEngine RoleType.", "roleType");
-            }
         }
         
         #endregion

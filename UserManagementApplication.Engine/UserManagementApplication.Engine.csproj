@@ -43,7 +43,6 @@
     <Compile Include="BusinessEntities\User.cs" />
     <Compile Include="BusinessEntities\UserSession.cs" />
     <Compile Include="DateProviders\DefaultDateProvider.cs" />
-    <Compile Include="Enumerations\RoleType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\IAuthenticationProvider.cs" />
     <Compile Include="Providers\IDateProvider.cs" />

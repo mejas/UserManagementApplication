@@ -2,6 +2,7 @@
 using Moq;
 using System;
 using System.Collections.Generic;
+using UserManagementApplication.Common.Enumerations;
 using UserManagementApplication.Data.Contracts;
 using UserManagementApplication.Data.Contracts.Interfaces;
 using UserManagementApplication.Engine.BusinessEntities;
@@ -199,7 +200,7 @@ namespace UserManagementApplication.Engine.Tests
             {
                 var subject = new User(DateProvider, UserDataService);
 
-                subject.RoleType.Should().Be(Enumerations.RoleType.User);
+                subject.RoleType.Should().Be(RoleType.User);
             }
         }
 
@@ -369,7 +370,7 @@ namespace UserManagementApplication.Engine.Tests
 
                 var subject = user.Create(USERNAME, PASSWORD, FIRST_NAME, LAST_NAME, BIRTH_DATE);
 
-                subject.RoleType.Should().Be(Enumerations.RoleType.User);
+                subject.RoleType.Should().Be(RoleType.User);
             }
         }
 

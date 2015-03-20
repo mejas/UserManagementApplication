@@ -1,4 +1,5 @@
 ﻿using System;
+using UserManagementApplication.Common.Enumerations;
 
 namespace UserManagementApplication.Data.Contracts
 {
@@ -11,6 +12,6 @@ namespace UserManagementApplication.Data.Contracts
         public DateTime Birthdate { get; set; }
         public int UserId { get; set; }
         public DataState DataState { get; set; }
-        public DbRoleType RoleType { get; set; }
+        public RoleType RoleType { get; set; }
     }
 }
