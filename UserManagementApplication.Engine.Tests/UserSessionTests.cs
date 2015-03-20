@@ -3,8 +3,6 @@ using Moq;
 using System;
 using System.Collections.Generic;
 using UserManagementApplication.Common.Exceptions;
-using UserManagementApplication.Data.Contracts;
-using UserManagementApplication.Data.Contracts.Interfaces;
 using UserManagementApplication.Engine.BusinessEntities;
 using UserManagementApplication.Engine.Enumerations;
 using UserManagementApplication.Engine.Providers;

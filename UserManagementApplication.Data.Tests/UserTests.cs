@@ -39,7 +39,16 @@ namespace UserManagementApplication.Data.Tests
                     .Setup(d => d.GetUsers(It.IsAny<string>(), It.IsAny<string>()))
                     .Returns((string firstName, string lastName) => mockFindUsersLogic(firstName, lastName));
 
+                storageProvider
+                    .Setup(d => d.GetUserByUsername(It.IsAny<string>()))
+                    .Returns((string username) => mockGetUserByUsernameLogic(username));
+
                 return storageProvider.Object;
+            }
+
+            private User mockGetUserByUsernameLogic(string username)
+            {
+                return _users.Find(d => d.Username == username);
             }
 
             private IList<User> mockFindUsersLogic(string firstName, string lastName)
@@ -255,8 +264,8 @@ namespace UserManagementApplication.Data.Tests
             {
                 var user = new User(StorageProvider);
 
-                user.Create("yuuki", "admin", "yuuna", "yuuki", new DateTime(2001, 3, 4));
-                user.Create("yuuki", "admin", "yuuna", "gelato", new DateTime(2001, 3, 4));
+                user.Create("admin", "admin", "yuuna", "yuuki", new DateTime(2001, 3, 4));
+                user.Create("gyuuki", "admin", "yuuna", "gelato", new DateTime(2001, 3, 4));
 
                 var subject = user.GetUsers("yuuna", String.Empty);
 
@@ -268,8 +277,8 @@ namespace UserManagementApplication.Data.Tests
             {
                 var user = new User(StorageProvider);
 
-                user.Create("yuuki", "admin", "yuuna", "yuuki", new DateTime(2001, 3, 4));
-                user.Create("yuuki", "admin", "yuuna", "gelato", new DateTime(2001, 3, 4));
+                user.Create("admin", "admin", "yuuna", "yuuki", new DateTime(2001, 3, 4));
+                user.Create("gyuuki", "admin", "yuuna", "gelato", new DateTime(2001, 3, 4));
 
                 var subject = user.GetUsers("yuuna", String.Empty);
 
@@ -281,12 +290,42 @@ namespace UserManagementApplication.Data.Tests
             {
                 var user = new User(StorageProvider);
 
-                user.Create("yuuki", "admin", "yuuna", "yuuki", new DateTime(2001, 3, 4));
-                user.Create("yuuki", "admin", "yuuna", "gelato", new DateTime(2001, 3, 4));
+                user.Create("admin", "admin", "yuuna", "yuuki", new DateTime(2001, 3, 4));
+                user.Create("gyuuki", "admin", "yuuna", "gelato", new DateTime(2001, 3, 4));
 
                 var subject = user.GetUsers("yuuna", "gelato");
 
                 subject.Count.Should().Be(1);
+            }
+        }
+
+        [Trait("Trait", "UserDataTests")]
+        public class GetByUsernameTests : UserTestsBase
+        {
+            [Fact]
+            public void ResultShouldNotBeNull()
+            {
+                var user = new User(StorageProvider);
+
+                user.Create("admin", "admin", "yuuna", "yuuki", new DateTime(2001, 3, 4));
+                user.Create("gyuuki", "admin", "yuuna", "gelato", new DateTime(2001, 3, 4));
+
+                var subject = user.GetUserByUserName("admin");
+
+                subject.Should().NotBeNull();
+            }
+
+            [Fact]
+            public void ResultShouldBeNull()
+            {
+                var user = new User(StorageProvider);
+
+                user.Create("admin", "admin", "yuuna", "yuuki", new DateTime(2001, 3, 4));
+                user.Create("gyuuki", "admin", "yuuna", "gelato", new DateTime(2001, 3, 4));
+
+                var subject = user.GetUserByUserName("username");
+
+                subject.Should().BeNull();
             }
         }
 

@@ -46,7 +46,16 @@ namespace UserManagementApplication.Engine.Tests
                     .Setup(d => d.Commit(It.IsAny<UserInformation>()))
                     .Returns((UserInformation user)=>commitLogic(user));
 
+                userDataService
+                    .Setup(d => d.GetUser(It.IsAny<string>()))
+                    .Returns((string username) => getLogic(username));
+
                 return userDataService.Object;
+            }
+
+            private UserInformation getLogic(string username)
+            {
+                return _users.Find(d => d.Username == username);
             }
 
             private IList<UserInformation> findLogic(string firstName, string lastName)
@@ -241,6 +250,36 @@ namespace UserManagementApplication.Engine.Tests
                 var subject = userInfo.Find("Sample", String.Empty);
 
                 subject.Should().HaveCount(2);
+            }
+        }
+
+        [Trait("Trait", "UserInfo")]
+        public class UserInfoGetUser : UserInfoTestsBase
+        {
+            [Fact]
+            public void ResultShouldNotBeNull()
+            {
+                var userInfo = new User(DateProvider, UserDataService);
+
+                userInfo.Create("sampleman", "sampleman", "Sample", "Data", new DateTime(1992, 11, 9));
+                userInfo.Create("yuuna", "tougoudidnothingwrong", "Sample", "Information", new DateTime(1994, 8, 1));
+
+                var subject = userInfo.GetUser("yuuna");
+
+                subject.Should().NotBeNull();
+            }
+
+            [Fact]
+            public void ResultShouldBeNull()
+            {
+                var userInfo = new User(DateProvider, UserDataService);
+
+                userInfo.Create("sampleman", "sampleman", "Sample", "Data", new DateTime(1992, 11, 9));
+                userInfo.Create("yuuna", "tougoudidnothingwrong", "Sample", "Information", new DateTime(1994, 8, 1));
+
+                var subject = userInfo.GetUser("fuu");
+
+                subject.Should().BeNull();
             }
         }
 

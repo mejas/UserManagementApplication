@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using UserManagementApplication.Common.Exceptions;
 using UserManagementApplication.Data.Contracts;
 using UserManagementApplication.Data.Providers;
-using UserManagementApplication.Data.StorageProviders;
 
 namespace UserManagementApplication.Data.DataEntities
 {
@@ -63,9 +63,21 @@ namespace UserManagementApplication.Data.DataEntities
                 RoleType = roleType
             };
 
+            var userMatch = StorageProvider.GetUserByUsername(user.Username);
+
+            if (userMatch != null)
+            {
+                throw new ErrorException("Username already exists.");
+            }
+
             var result = StorageProvider.AddUser(user);
 
             return result;
+        }
+
+        public User GetUserByUserName(string username)
+        {
+            return StorageProvider.GetUserByUsername(username);
         }
 
         public User Update(User user)

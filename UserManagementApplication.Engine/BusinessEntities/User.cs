@@ -64,6 +64,11 @@ namespace UserManagementApplication.Engine.BusinessEntities
             return users.ToList().ConvertAll(Translate);
         }
 
+        public User GetUser(string username)
+        {
+            return Translate(UserDataService.GetUser(username));
+        }
+
         public User Create( string username,
                             string password,
                             string firstName, 

@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UserManagementApplication.Common.Exceptions;
 using UserManagementApplication.Data.Contracts;
 using UserManagementApplication.Data.Contracts.Interfaces;
@@ -46,6 +43,11 @@ namespace UserManagementApplication.Data.Services
             }
 
             throw new ErrorException("Invalid operation type.");
+        }
+
+        public UserInformation GetUser(string username)
+        {
+            return Translate(UserEntity.GetUserByUserName(username));
         }
 
         private User Translate(UserInformation user)

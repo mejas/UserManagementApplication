@@ -1,45 +1,66 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Xunit;
-using FluentAssertions;
-using UserManagementApplication.Data.StorageProviders;
+﻿using FluentAssertions;
+using System;
 using System.IO;
 using UserManagementApplication.Data.DataEntities;
+using UserManagementApplication.Data.StorageProviders;
+using Xunit;
 
 namespace UserManagementApplication.Data.Tests
 {
     public class XMLStorageProviderTests
     {
-        [Trait("Trait", "XMLStorageProviderTests")]
-        public class XMLStorageProviderInitTests
+        public class XMLStorageProviderTestsBase : IDisposable
         {
+            protected string FILENAME { get; private set; }
+
+            public XMLStorageProviderTestsBase(string fileName)
+            {
+                FILENAME = fileName;
+            }
+
+            public void Dispose()
+            {
+                FileInfo fileInfo = new FileInfo(FILENAME);
+
+                if (fileInfo.Exists)
+                {
+                    fileInfo.Delete();
+                }
+            }
+        }
+
+        [Trait("Trait", "XMLStorageProviderTests")]
+        public class XMLStorageProviderInitTests : XMLStorageProviderTestsBase
+        {
+            public XMLStorageProviderInitTests() : base("xmlFileTest1.xml") { }
+
             [Fact]
             public void InstanceShouldNotBeNull()
             {
-                var subject = new XMLStorageProvider();
-
+                XMLStorageProvider subject = new XMLStorageProvider(FILENAME);
                 subject.Should().NotBeNull();
             }
 
             [Fact]
             public void XMLFileShouldBeInitialized()
             {
-                var xmlProvider = new XMLStorageProvider();
+                XMLStorageProvider storageProvider = new XMLStorageProvider(FILENAME);
 
-                Assert.True(File.Exists(xmlProvider.XmlFile));
+                bool subject = File.Exists(storageProvider.XmlFile);
+                
+                subject.Should().BeTrue();
             }
         }
 
         [Trait("Trait", "XMLStorageProviderTests")]
-        public class XMLStorageProviderAddUserTests
+        public class XMLStorageProviderAddUserTests : XMLStorageProviderTestsBase
         {
+            public XMLStorageProviderAddUserTests() : base("xmlFileTest2.xml") { }
+
             [Fact]
             public void UserShouldBeAdded()
             {
-                var storageProvider = new XMLStorageProvider();
+                XMLStorageProvider storageProvider = new XMLStorageProvider(FILENAME);
 
                 var userService = new User(storageProvider);
 

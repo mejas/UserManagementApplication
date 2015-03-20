@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
+using System.Xml.Linq;
 using System.Xml.Serialization;
-using UserManagementApplication.Common.Exceptions;
 using UserManagementApplication.Data.DataEntities;
 using UserManagementApplication.Data.Providers;
 
@@ -26,17 +23,20 @@ namespace UserManagementApplication.Data.StorageProviders
         {
             XmlFile = fileName;
 
-            if (!File.Exists(XmlFile))
-            {
-                using (var file = File.Create(XmlFile))
-                {
+            initializeCacheAndDb();
+        }
 
-                }
-                
-            }
-            else
+        private void initializeCacheAndDb()
+        {
+            FileInfo fileInfo = new FileInfo(XmlFile);
+            
+            if (!fileInfo.Exists)
             {
-                reloadCache();
+                flushUserCacheToDisk();
+            }
+            else if(fileInfo.Length > 1)
+            {
+                loadCache();
             }
         }
 
@@ -48,8 +48,6 @@ namespace UserManagementApplication.Data.StorageProviders
         public User AddUser(User user)
         {
             user.UserId = _newUserId++;
-
-            checkUserExistence(user);
 
             UserCache.Add(user);
 
@@ -91,10 +89,10 @@ namespace UserManagementApplication.Data.StorageProviders
         protected void InvalidateCache()
         {
             flushUserCacheToDisk();
-            reloadCache();
+            loadCache();
         }
 
-        private void reloadCache()
+        private void loadCache()
         {
             UserCache.Clear();
 
@@ -114,22 +112,12 @@ namespace UserManagementApplication.Data.StorageProviders
         {
             XmlSerializer serializer = new XmlSerializer(typeof(List<User>));
             
-            using (StreamWriter streamWriter = new StreamWriter(XmlFile, true))
+            using (StreamWriter streamWriter = new StreamWriter(XmlFile))
             {
                 using (XmlWriter writer = XmlWriter.Create(streamWriter))
                 {
                     serializer.Serialize(writer, UserCache);
                 }
-            }
-        }
-
-        private void checkUserExistence(User user)
-        {
-            var userMatch = GetUserByUsername(user.Username);
-
-            if (userMatch != null)
-            {
-                throw new WarningException("Username already exists.");
             }
         }
 

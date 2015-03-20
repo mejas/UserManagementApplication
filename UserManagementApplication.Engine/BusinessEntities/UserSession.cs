@@ -1,7 +1,4 @@
 ﻿
-using System;
-using UserManagementApplication.Data.Contracts;
-using UserManagementApplication.Data.Contracts.Interfaces;
 using UserManagementApplication.Engine.Enumerations;
 using UserManagementApplication.Engine.Providers;
 namespace UserManagementApplication.Engine.BusinessEntities

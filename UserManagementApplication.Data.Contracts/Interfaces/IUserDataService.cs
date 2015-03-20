@@ -6,6 +6,7 @@ namespace UserManagementApplication.Data.Contracts.Interfaces
     {
         IList<UserInformation> GetUsers();
         IList<UserInformation> GetUsers(string firstName, string lastName);
+        UserInformation GetUser(string username);
         UserInformation Commit(UserInformation user);
     }
 }
