@@ -24,6 +24,9 @@ namespace UserManagementApplication.Data.DataEntities
 
         #region Constructors
 
+        public User()
+        { }
+
         public User(IStorageProvider storageProvider)
         {
             StorageProvider = storageProvider;

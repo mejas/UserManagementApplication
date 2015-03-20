@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 using System.Xml.Serialization;
 using UserManagementApplication.Common.Exceptions;
 using UserManagementApplication.Data.DataEntities;
@@ -14,6 +16,22 @@ namespace UserManagementApplication.Data.StorageProviders
     {
         protected List<User> UserCache = new List<User>();
         private int _newUserId = 0;
+
+        public string XmlFile { get; private set; }
+
+        public XMLStorageProvider()
+            : this("userData.xml") { }
+
+        public XMLStorageProvider(string fileName)
+        {
+            if (!File.Exists(fileName))
+            {
+                File.Create(fileName);
+            }
+
+            XmlFile = fileName;
+            reloadCache();
+        }
 
         public IList<User> GetUsers()
         {
@@ -28,7 +46,9 @@ namespace UserManagementApplication.Data.StorageProviders
 
             UserCache.Add(user);
 
+            appendSerializedUser(user);
             InvalidateCache();
+
 
             return user;
         }
@@ -65,12 +85,25 @@ namespace UserManagementApplication.Data.StorageProviders
 
         protected void InvalidateCache()
         {
-            serializeUsers();
+            reloadCache();
         }
 
-        private void serializeUsers()
+        private void reloadCache()
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
+        }
+
+        private void appendSerializedUser(User user)
+        {
+            XmlSerializer serializer = new XmlSerializer(typeof(User));
+            
+            using (StreamWriter streamWriter = new StreamWriter(XmlFile, true))
+            {
+                using (XmlWriter writer = XmlWriter.Create(streamWriter))
+                {
+                    serializer.Serialize(writer, user);
+                }
+            }
         }
 
         private void checkUserExistence(User user)
