@@ -1,30 +1,46 @@
 ﻿using System;
 using System.Collections.Generic;
-using UserManagementApplication.Data.Enumerations;
+using UserManagementApplication.Data.Contracts;
 using UserManagementApplication.Data.Providers;
+using UserManagementApplication.Data.StorageProviders;
 
 namespace UserManagementApplication.Data.DataEntities
 {
     public class User
     {
+        #region Properties
+
         public int UserId { get; set; }
         public string Username { get; set; }
         public string Password { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public DateTime Birthdate { get; set; }
-        public RoleType RoleType { get; set; }
-
+        public DbRoleType RoleType { get; set; }
+        
         protected IStorageProvider StorageProvider { get; set; }
         
+        #endregion
+
+        #region Constructors
+
         public User(IStorageProvider storageProvider)
         {
             StorageProvider = storageProvider;
         }
 
+        #endregion
+
+        #region Methods
+        
         public IList<User> GetAll()
         {
-            return StorageProvider.GetAllUsers();
+            return StorageProvider.GetUsers();
+        }
+
+        public IList<User> GetUsers(string firstName, string lastName)
+        {
+            return StorageProvider.GetUsers(firstName, lastName);
         }
 
         public User Create( string username,
@@ -32,7 +48,7 @@ namespace UserManagementApplication.Data.DataEntities
                             string firstName,
                             string lastName,
                             DateTime birthDate,
-                            RoleType roleType = RoleType.User)
+                            DbRoleType roleType = DbRoleType.User)
         {
             User user = new User(StorageProvider)
             {
@@ -60,5 +76,7 @@ namespace UserManagementApplication.Data.DataEntities
         {
             StorageProvider.DeleteUser(user);
         }
+
+        #endregion
     }
 }

@@ -2,8 +2,8 @@
 using Moq;
 using System;
 using System.Collections.Generic;
+using UserManagementApplication.Data.Contracts;
 using UserManagementApplication.Data.DataEntities;
-using UserManagementApplication.Data.Enumerations;
 using UserManagementApplication.Data.Providers;
 using Xunit;
 
@@ -20,7 +20,7 @@ namespace UserManagementApplication.Data.Tests
                 var storageProvider = new Mock<IStorageProvider>();
 
                 storageProvider
-                    .Setup(d => d.GetAllUsers())
+                    .Setup(d => d.GetUsers())
                     .Returns(() => mockGetAllLogic());
 
                 storageProvider
@@ -35,7 +35,19 @@ namespace UserManagementApplication.Data.Tests
                     .Setup(d => d.DeleteUser(It.IsAny<User>()))
                     .Callback((User user) => mockDeleteLogic(user));
 
+                storageProvider
+                    .Setup(d => d.GetUsers(It.IsAny<string>(), It.IsAny<string>()))
+                    .Returns((string firstName, string lastName) => mockFindUsersLogic(firstName, lastName));
+
                 return storageProvider.Object;
+            }
+
+            private IList<User> mockFindUsersLogic(string firstName, string lastName)
+            {
+                return _users.FindAll(user =>
+                    String.IsNullOrEmpty(firstName) && user.LastName == lastName ||
+                    String.IsNullOrEmpty(lastName) && user.FirstName == firstName ||
+                    user.FirstName == firstName && user.LastName == lastName);
             }
 
             private IList<User> mockGetAllLogic()
@@ -147,7 +159,7 @@ namespace UserManagementApplication.Data.Tests
             {
                 var subject = new User(StorageProvider);
 
-                subject.RoleType.Should().Be(RoleType.User);
+                subject.RoleType.Should().Be(DbRoleType.User);
             }
         }
 
@@ -236,6 +248,49 @@ namespace UserManagementApplication.Data.Tests
         }
 
         [Trait("Trait", "UserDataTests")]
+        public class GetUserTests : UserTestsBase
+        {
+            [Fact]
+            public void InstanceShouldNotBeNull()
+            {
+                var user = new User(StorageProvider);
+
+                user.Create("yuuki", "admin", "yuuna", "yuuki", new DateTime(2001, 3, 4));
+                user.Create("yuuki", "admin", "yuuna", "gelato", new DateTime(2001, 3, 4));
+
+                var subject = user.GetUsers("yuuna", String.Empty);
+
+                subject.Should().NotBeNull();
+            }
+
+            [Fact]
+            public void ResultShouldHaveCount()
+            {
+                var user = new User(StorageProvider);
+
+                user.Create("yuuki", "admin", "yuuna", "yuuki", new DateTime(2001, 3, 4));
+                user.Create("yuuki", "admin", "yuuna", "gelato", new DateTime(2001, 3, 4));
+
+                var subject = user.GetUsers("yuuna", String.Empty);
+
+                subject.Count.Should().Be(2);
+            }
+
+            [Fact]
+            public void ResultShouldBeUnique()
+            {
+                var user = new User(StorageProvider);
+
+                user.Create("yuuki", "admin", "yuuna", "yuuki", new DateTime(2001, 3, 4));
+                user.Create("yuuki", "admin", "yuuna", "gelato", new DateTime(2001, 3, 4));
+
+                var subject = user.GetUsers("yuuna", "gelato");
+
+                subject.Count.Should().Be(1);
+            }
+        }
+
+        [Trait("Trait", "UserDataTests")]
         public class UpdateUserTests : UserTestsBase
         {
             private string USERNAME = "gyuuki";
@@ -256,7 +311,7 @@ namespace UserManagementApplication.Data.Tests
                 subject.Username  = USERNAME;
                 subject.Password  = PASSWORD;
                 subject.Birthdate = BIRTH_DATE;
-                subject.RoleType  = RoleType.Admin;
+                subject.RoleType  = DbRoleType.Administrator;
 
                 subject = user.Update(subject);
 
@@ -275,7 +330,7 @@ namespace UserManagementApplication.Data.Tests
                 subject.Username  = USERNAME;
                 subject.Password  = PASSWORD;
                 subject.Birthdate = BIRTH_DATE;
-                subject.RoleType  = RoleType.Admin;
+                subject.RoleType  = DbRoleType.Administrator;
 
                 subject = user.Update(subject);
 
@@ -294,7 +349,7 @@ namespace UserManagementApplication.Data.Tests
                 subject.Username  = USERNAME;
                 subject.Password  = PASSWORD;
                 subject.Birthdate = BIRTH_DATE;
-                subject.RoleType  = RoleType.Admin;
+                subject.RoleType  = DbRoleType.Administrator;
 
                 subject = user.Update(subject);
 
@@ -313,7 +368,7 @@ namespace UserManagementApplication.Data.Tests
                 subject.Username  = USERNAME;
                 subject.Password  = PASSWORD;
                 subject.Birthdate = BIRTH_DATE;
-                subject.RoleType  = RoleType.Admin;
+                subject.RoleType  = DbRoleType.Administrator;
 
                 subject = user.Update(subject);
 
@@ -332,7 +387,7 @@ namespace UserManagementApplication.Data.Tests
                 subject.Username  = USERNAME;
                 subject.Password  = PASSWORD;
                 subject.Birthdate = BIRTH_DATE;
-                subject.RoleType  = RoleType.Admin;
+                subject.RoleType  = DbRoleType.Administrator;
 
                 subject = user.Update(subject);
 
@@ -351,7 +406,7 @@ namespace UserManagementApplication.Data.Tests
                 subject.Username  = USERNAME;
                 subject.Password  = PASSWORD;
                 subject.Birthdate = BIRTH_DATE;
-                subject.RoleType  = RoleType.Admin;
+                subject.RoleType  = DbRoleType.Administrator;
 
                 subject = user.Update(subject);
 
@@ -370,11 +425,11 @@ namespace UserManagementApplication.Data.Tests
                 subject.Username  = USERNAME;
                 subject.Password  = PASSWORD;
                 subject.Birthdate = BIRTH_DATE;
-                subject.RoleType  = RoleType.Admin;
+                subject.RoleType  = DbRoleType.Administrator;
 
                 subject = user.Update(subject);
 
-                subject.RoleType.Should().Be(RoleType.Admin);
+                subject.RoleType.Should().Be(DbRoleType.Administrator);
             }
         }
 

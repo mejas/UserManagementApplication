@@ -7,6 +7,7 @@ using UserManagementApplication.Data.Contracts;
 using UserManagementApplication.Data.Contracts.Interfaces;
 using UserManagementApplication.Engine.BusinessEntities;
 using UserManagementApplication.Engine.Enumerations;
+using UserManagementApplication.Engine.Providers;
 using Xunit;
 
 namespace UserManagementApplication.Engine.Tests
@@ -15,48 +16,58 @@ namespace UserManagementApplication.Engine.Tests
     {
         public class UserSessionTestsServices
         {
-            private List<UserInformation> _userInfos = new List<UserInformation>()
+            private List<User> _userInfos = new List<User>()
             {
-                new UserInformation()
+                new User(null, null)
                 {
                     Username = "admin",
                     Password = "admin",
                     FirstName = "Yuuki",
                     LastName = "Yuuna",
-                    RoleType = DbRoleType.Administrator,
+                    RoleType = RoleType.Admin,
                     Birthdate = new DateTime(2001, 3, 9) //oh wow. i'm old ;_;
                 },
-                new UserInformation()
+                new User(null, null)
                 {
                     Username = "gyuuki",
                     Password = "user",
                     FirstName = "Gyuuki",
                     LastName = "Gyuuna",
-                    RoleType = DbRoleType.User,
+                    RoleType = RoleType.User,
                     Birthdate = new DateTime(2001, 3, 10)
                 }
             };
 
-            private Dictionary<string, UserInformation> _userSessions = new Dictionary<string, UserInformation>();
+            private Dictionary<string, User> _userSessions = new Dictionary<string, User>();
 
-            public ISessionDataService GetSessionDataService()
+            public IAuthenticationProvider GetAuthenticationProvider()
             {
-                var sessionDataService = new Mock<ISessionDataService>();
+                var sessionDataService = new Mock<IAuthenticationProvider>();
 
                 sessionDataService
-                    .Setup(d => d.AuthenticateUser(It.IsAny<string>(), It.IsAny<string>()))
+                    .Setup(d => d.CreateSession(It.IsAny<string>(), It.IsAny<string>()))
                     .Returns((string username, string password) => mockAuthenticationLogic(username, password));
 
                 sessionDataService
-                    .Setup(d => d.GetSessionRoleType(It.IsAny<Session>()))
-                    .Returns((Session session) =>
+                    .Setup(d => d.VerifyUserPermission(It.IsAny<UserSession>(), It.IsAny<RoleType>()))
+                    .Returns((UserSession session, RoleType roleType) =>
                     {
-                        return _userSessions[session.SessionToken].RoleType;
-                    });
+                        var currentRole = _userSessions[session.SessionToken].RoleType;
+
+                        if (currentRole == roleType)
+                        {
+                            return true;
+                        }
+                        else
+                        {
+                            return roleType == (currentRole | roleType);
+                        }
+                    }
+                    );
 
                 sessionDataService
-                    .Setup(d => d.TerminateSession(It.IsAny<Session>()))
-                    .Callback((Session session) =>
+                    .Setup(d => d.TerminateSession(It.IsAny<UserSession>()))
+                    .Callback((UserSession session) =>
                     {
                         _userSessions.Remove(session.SessionToken);
                     });
@@ -64,11 +75,9 @@ namespace UserManagementApplication.Engine.Tests
                 return sessionDataService.Object;
             }
 
-            private Data.Contracts.Session mockAuthenticationLogic(string username, string password)
+            private UserSession mockAuthenticationLogic(string username, string password)
             {
-                UserInformation userInformation = _userInfos.Find(item => item.Username == username);
-
-                Session session = null;
+                User userInformation = _userInfos.Find(item => item.Username == username);
 
                 if (userInformation == null || 
                     userInformation.Password != password)
@@ -76,24 +85,24 @@ namespace UserManagementApplication.Engine.Tests
                     throw new WarningException("Invalid logon credentials.");
                 }
 
-                session = new Session()
+                UserSession userSession = new UserSession(null)
                 {
                     SessionToken = "token"
                 };
 
-                _userSessions.Add(session.SessionToken, userInformation);
+                _userSessions.Add(userSession.SessionToken, userInformation);
 
-                return session;
+                return userSession;
             }
         }
 
         public class UserSessionTestsBase
         {
-            protected ISessionDataService SessionDataService
+            protected IAuthenticationProvider AuthenticationProvider
             {
                 get
                 {
-                    return new UserSessionTestsServices().GetSessionDataService();
+                    return new UserSessionTestsServices().GetAuthenticationProvider();
                 }
             }
         }
@@ -104,7 +113,7 @@ namespace UserManagementApplication.Engine.Tests
             [Fact]
             public void ShouldHaveInstance()
             {
-                var subject = new UserSession(SessionDataService);
+                var subject = new UserSession(AuthenticationProvider);
 
                 subject.Should().NotBeNull();
             }
@@ -112,7 +121,7 @@ namespace UserManagementApplication.Engine.Tests
             [Fact]
             public void SessionTokenShouldBeEmpty()
             {
-                var subject = new UserSession(SessionDataService);
+                var subject = new UserSession(AuthenticationProvider);
 
                 subject.SessionToken.Should().BeNullOrEmpty();
             }
@@ -124,7 +133,7 @@ namespace UserManagementApplication.Engine.Tests
             [Fact]
             public void UserAuthenticationSuccessful()
             {
-                var userSession = new UserSession(SessionDataService);
+                var userSession = new UserSession(AuthenticationProvider);
 
                 var subject = userSession.AuthenticateUser("admin", "admin");
 
@@ -134,7 +143,7 @@ namespace UserManagementApplication.Engine.Tests
             [Fact]
             public void UserTokenShouldNotBeEmpty()
             {
-                var userSession = new UserSession(SessionDataService);
+                var userSession = new UserSession(AuthenticationProvider);
 
                 var subject = userSession.AuthenticateUser("admin", "admin");
 
@@ -148,7 +157,7 @@ namespace UserManagementApplication.Engine.Tests
             [Fact]
             public void UserAuthenticationUnsuccessful()
             {
-                var userSession = new UserSession(SessionDataService);
+                var userSession = new UserSession(AuthenticationProvider);
 
                 Assert.Throws<WarningException>(() => userSession.AuthenticateUser("admin", "yuunaxtougou"));
             }
@@ -160,7 +169,7 @@ namespace UserManagementApplication.Engine.Tests
             [Fact]
             public void AdminRoleShouldPermitAdmin()
             {
-                var userSession = new UserSession(SessionDataService);
+                var userSession = new UserSession(AuthenticationProvider);
 
                 var subject = userSession.AuthenticateUser("admin", "admin");
 
@@ -170,17 +179,17 @@ namespace UserManagementApplication.Engine.Tests
             [Fact]
             public void AdminRoleShouldPermitUser()
             {
-                var userSession = new UserSession(SessionDataService);
+                var userSession = new UserSession(AuthenticationProvider);
 
                 var subject = userSession.AuthenticateUser("admin", "admin");
 
-                userSession.IsPermitted(subject, RoleType.Admin).Should().BeTrue();
+                userSession.IsPermitted(subject, RoleType.User).Should().BeTrue();
             }
 
             [Fact]
             public void UserRoleShouldDenyAdmin()
             {
-                var userSession = new UserSession(SessionDataService);
+                var userSession = new UserSession(AuthenticationProvider);
 
                 var subject = userSession.AuthenticateUser("gyuuki", "user");
 
@@ -190,7 +199,7 @@ namespace UserManagementApplication.Engine.Tests
             [Fact]
             public void UserRoleShouldPermitUser()
             {
-                var userSession = new UserSession(SessionDataService);
+                var userSession = new UserSession(AuthenticationProvider);
 
                 var subject = userSession.AuthenticateUser("gyuuki", "user");
 
@@ -203,7 +212,7 @@ namespace UserManagementApplication.Engine.Tests
             [Fact]
             public void UserSessionShouldBeDestroyed()
             {
-                var userSession = new UserSession(SessionDataService);
+                var userSession = new UserSession(AuthenticationProvider);
 
                 var subject = userSession.AuthenticateUser("gyuuki", "user");
 

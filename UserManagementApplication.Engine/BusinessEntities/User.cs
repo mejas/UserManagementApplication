@@ -42,6 +42,8 @@ namespace UserManagementApplication.Engine.BusinessEntities
         {
             DateProvider = dateProvider;
             UserDataService = userDataService;
+
+            RoleType = Enumerations.RoleType.User;
         }
 
         #endregion

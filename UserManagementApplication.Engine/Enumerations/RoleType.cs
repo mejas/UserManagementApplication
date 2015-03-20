@@ -3,7 +3,7 @@ namespace UserManagementApplication.Engine.Enumerations
 {
     public enum RoleType
     {
-        User = 0x0,
-        Admin = 0x1
+        Admin = 0x0,
+        User = 0x1
     }
 }
