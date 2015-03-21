@@ -26,7 +26,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserManagementApplication.D
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserManagementApplication.Remoting", "UserManagementApplication.Remoting\UserManagementApplication.Remoting.csproj", "{980EB640-9F76-4737-8BD7-EC9700828137}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserManagementApplication.Remoting.ServiceHost", "UserManagementApplication.Remoting.ServiceHost\UserManagementApplication.Remoting.ServiceHost.csproj", "{0D883714-5EC8-41AA-86FC-3A351A848121}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserManagementApplication.Host", "UserManagementApplication.Host\UserManagementApplication.Host.csproj", "{E4EA72FE-115D-4A8F-ACCA-545C7E9CDDDB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -64,10 +64,10 @@ Global
 		{980EB640-9F76-4737-8BD7-EC9700828137}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{980EB640-9F76-4737-8BD7-EC9700828137}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{980EB640-9F76-4737-8BD7-EC9700828137}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0D883714-5EC8-41AA-86FC-3A351A848121}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0D883714-5EC8-41AA-86FC-3A351A848121}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0D883714-5EC8-41AA-86FC-3A351A848121}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0D883714-5EC8-41AA-86FC-3A351A848121}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E4EA72FE-115D-4A8F-ACCA-545C7E9CDDDB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E4EA72FE-115D-4A8F-ACCA-545C7E9CDDDB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E4EA72FE-115D-4A8F-ACCA-545C7E9CDDDB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E4EA72FE-115D-4A8F-ACCA-545C7E9CDDDB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

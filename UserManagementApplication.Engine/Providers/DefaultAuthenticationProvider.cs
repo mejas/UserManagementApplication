@@ -30,7 +30,8 @@ namespace UserManagementApplication.Engine.Providers
             var userData = UserDataService.GetUser(username);
 
             ////TODO: hash passwords here before checking
-            if (!(password == userData.Password))
+            if (userData == null ||
+                !(password == userData.Password))
             {
                 throw new ErrorException("Invalid user credentials");
             }

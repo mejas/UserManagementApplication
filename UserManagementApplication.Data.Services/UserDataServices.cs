@@ -52,31 +52,41 @@ namespace UserManagementApplication.Data.Services
 
         private User Translate(UserInformation user)
         {
-            return new User(null)
+            if (user != null)
             {
-                UserId    = user.UserId,
-                Username  = user.Username,
-                Password  = user.Password,
-                FirstName = user.FirstName,
-                LastName  = user.LastName,
-                Birthdate = user.Birthdate,
-                RoleType  = user.RoleType
-            };
+                return new User()
+                {
+                    UserId = user.UserId,
+                    Username = user.Username,
+                    Password = user.Password,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Birthdate = user.Birthdate,
+                    RoleType = user.RoleType
+                };
+            }
+
+            return null;
         }
 
         protected UserInformation Translate(User userEntity)
         {
-            return new UserInformation()
+            if (userEntity != null)
             {
-                UserId    = userEntity.UserId,
-                Username  = userEntity.Username,
-                Password  = userEntity.Password,
-                FirstName = userEntity.FirstName,
-                LastName  = userEntity.LastName,
-                Birthdate = userEntity.Birthdate,
-                RoleType  = userEntity.RoleType,
-                DataState = DataState.Clean
-            };
+                return new UserInformation()
+                {
+                    UserId = userEntity.UserId,
+                    Username = userEntity.Username,
+                    Password = userEntity.Password,
+                    FirstName = userEntity.FirstName,
+                    LastName = userEntity.LastName,
+                    Birthdate = userEntity.Birthdate,
+                    RoleType = userEntity.RoleType,
+                    DataState = DataState.Clean
+                };
+            }
+
+            return null;
         }
     }
 }
