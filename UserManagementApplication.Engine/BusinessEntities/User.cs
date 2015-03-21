@@ -32,6 +32,7 @@ namespace UserManagementApplication.Engine.BusinessEntities
         }
         public int UserId { get; set; }
         public RoleType RoleType { get; set; }
+        public int BadLogins { get; set; }
 
         protected IDateProvider DateProvider { get; set; }
         protected IUserDataService UserDataService { get; set; }
@@ -135,7 +136,8 @@ namespace UserManagementApplication.Engine.BusinessEntities
                     FirstName = user.FirstName,
                     LastName  = user.LastName,
                     Birthdate = user.Birthdate,
-                    UserId    = user.UserId
+                    UserId    = user.UserId,
+                    BadLogins = user.BadLogins
                 };
             }
 
@@ -156,7 +158,8 @@ namespace UserManagementApplication.Engine.BusinessEntities
                     LastName  = userInfo.LastName,
                     Birthdate = userInfo.Birthdate,
                     UserId    = userInfo.UserId,
-                    DataState = DataState.Clean
+                    DataState = DataState.Clean,
+                    BadLogins = userInfo.BadLogins
                 };
             }
 

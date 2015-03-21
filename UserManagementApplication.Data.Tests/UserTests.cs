@@ -40,10 +40,19 @@ namespace UserManagementApplication.Data.Tests
                     .Returns((string firstName, string lastName) => mockFindUsersLogic(firstName, lastName));
 
                 storageProvider
-                    .Setup(d => d.GetUserByUsername(It.IsAny<string>()))
+                    .Setup(d => d.GetUser(It.IsAny<string>()))
                     .Returns((string username) => mockGetUserByUsernameLogic(username));
 
+                storageProvider
+                    .Setup(d => d.GetUser(It.IsAny<int>()))
+                    .Returns((int id) => mockGetLogic(id));
+
                 return storageProvider.Object;
+            }
+
+            private User mockGetLogic(int id)
+            {
+                return _users.Find(user => user.UserId == id);
             }
 
             private User mockGetUserByUsernameLogic(string username)
@@ -169,6 +178,14 @@ namespace UserManagementApplication.Data.Tests
                 var subject = new User(StorageProvider);
 
                 subject.RoleType.Should().Be(RoleType.User);
+            }
+
+            [Fact]
+            public void BadLoginsShouldBeZero()
+            {
+                var subject = new User(StorageProvider);
+
+                subject.BadLogins.Should().Be(0);
             }
         }
 

@@ -13,5 +13,6 @@ namespace UserManagementApplication.Data.Contracts
         public int UserId { get; set; }
         public DataState DataState { get; set; }
         public RoleType RoleType { get; set; }
+        public int BadLogins { get; set; }
     }
 }

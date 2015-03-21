@@ -71,7 +71,7 @@ namespace UserManagementApplication.Data.StorageProviders
             return user;
         }
 
-        public User GetUserByUsername(string username)
+        public User GetUser(string username)
         {
             return UserCache.Find(item => item.Username == username);
         }
@@ -126,6 +126,11 @@ namespace UserManagementApplication.Data.StorageProviders
                     String.IsNullOrEmpty(firstName) && user.LastName == lastName ||
                     String.IsNullOrEmpty(lastName) && user.FirstName == firstName ||
                     user.FirstName == firstName && user.LastName == lastName);
+        }
+
+        public User GetUser(int id)
+        {
+            return UserCache.Find(user => user.UserId == id);
         }
     }
 }

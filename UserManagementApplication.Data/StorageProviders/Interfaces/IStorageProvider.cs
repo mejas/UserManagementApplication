@@ -9,7 +9,8 @@ namespace UserManagementApplication.Data.StorageProviders.Interfaces
         IList<User> GetUsers(string firstName, string lastName);
         User AddUser(User user);
         User UpdateUser(User user);
-        User GetUserByUsername(string username);
+        User GetUser(string username);
+        User GetUser(int id);
         void DeleteUser(User user);
     }
 }

@@ -33,7 +33,20 @@ namespace UserManagementApplication.Engine.Providers
             if (userData == null ||
                 !(password == userData.Password))
             {
+                if (userData != null)
+                {
+                    userData.BadLogins = userData.BadLogins + 1;
+                    userData.DataState = DataState.Modified;
+
+                    UserDataService.Commit(userData);
+                }
+
                 throw new ErrorException("Invalid user credentials");
+            }
+
+            if (userData.BadLogins > 3)
+            {
+                throw new ErrorException("User is blocked");
             }
 
             string sessionToken = generateSessionToken();

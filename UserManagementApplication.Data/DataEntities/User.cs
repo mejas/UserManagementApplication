@@ -17,6 +17,7 @@ namespace UserManagementApplication.Data.DataEntities
         public string LastName { get; set; }
         public DateTime Birthdate { get; set; }
         public RoleType RoleType { get; set; }
+        public int BadLogins { get; set; }
         
         protected IUserDataStorageProvider StorageProvider { get; set; }
         
@@ -61,10 +62,11 @@ namespace UserManagementApplication.Data.DataEntities
                 FirstName = firstName,
                 LastName = lastName,
                 Birthdate = birthDate,
-                RoleType = roleType
+                RoleType = roleType,
+                BadLogins = 0
             };
 
-            var userMatch = StorageProvider.GetUserByUsername(user.Username);
+            var userMatch = StorageProvider.GetUser(user.Username);
 
             if (userMatch != null)
             {
@@ -78,11 +80,18 @@ namespace UserManagementApplication.Data.DataEntities
 
         public User GetUserByUserName(string username)
         {
-            return StorageProvider.GetUserByUsername(username);
+            return StorageProvider.GetUser(username);
         }
 
         public User Update(User user)
         {
+            var currentUser = StorageProvider.GetUser(user.UserId);
+
+            if (currentUser == null)
+            {
+                throw new ErrorException("User not found.");
+            }
+
             var result = StorageProvider.UpdateUser(user);
 
             return result;

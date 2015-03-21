@@ -82,17 +82,25 @@ namespace UserManagementApplication.Engine.Tests
 
                     case DataState.Modified:
                         {
-                            var originalUser = _users[user.UserId - 1];
+                            var originalUser = _users.Find(d=>d.UserId == user.UserId);
 
-                            originalUser.Username  = user.Username;
-                            originalUser.Password  = user.Password;
-                            originalUser.FirstName = user.FirstName;
-                            originalUser.LastName  = user.LastName;
-                            originalUser.Birthdate = user.Birthdate;
+                            if (originalUser != null)
+                            {
+                                originalUser.Username = user.Username;
+                                originalUser.Password = user.Password;
+                                originalUser.FirstName = user.FirstName;
+                                originalUser.LastName = user.LastName;
+                                originalUser.Birthdate = user.Birthdate;
+                                originalUser.BadLogins = user.BadLogins;
 
-                            originalUser.DataState = DataState.Clean;
+                                originalUser.DataState = DataState.Clean;
 
-                            user = originalUser;
+                                user = originalUser;
+                            }
+                            else
+                            {
+                                return null;
+                            }
                         }
                         break;
 
@@ -201,6 +209,14 @@ namespace UserManagementApplication.Engine.Tests
                 var subject = new User(DateProvider, UserDataService);
 
                 subject.RoleType.Should().Be(RoleType.User);
+            }
+
+            [Fact]
+            public void BadLoginsShouldBeZero()
+            {
+                var subject = new User(DateProvider, UserDataService);
+
+                subject.BadLogins.Should().Be(0);
             }
         }
 
@@ -372,6 +388,16 @@ namespace UserManagementApplication.Engine.Tests
 
                 subject.RoleType.Should().Be(RoleType.User);
             }
+
+            [Fact]
+            public void BadLoginsShouldBeZero()
+            {
+                var user = new User(DateProvider, UserDataService);
+
+                var subject = user.Create(USERNAME, PASSWORD, FIRST_NAME, LAST_NAME, BIRTH_DATE);
+
+                subject.BadLogins.Should().Be(0);
+            }
         }
 
         [Trait("Trait", "UserInfo")]
@@ -395,6 +421,7 @@ namespace UserManagementApplication.Engine.Tests
                 subject.FirstName = FIRST_NAME;
                 subject.LastName  = LAST_NAME;
                 subject.Birthdate = BIRTH_DATE;
+                subject.BadLogins = 1;
 
                 subject = userInfo.Update(subject);
 
@@ -413,6 +440,7 @@ namespace UserManagementApplication.Engine.Tests
                 subject.FirstName = FIRST_NAME;
                 subject.LastName  = LAST_NAME;
                 subject.Birthdate = BIRTH_DATE;
+                subject.BadLogins = 1;
 
                 subject = userInfo.Update(subject);
 
@@ -431,6 +459,7 @@ namespace UserManagementApplication.Engine.Tests
                 subject.FirstName = FIRST_NAME;
                 subject.LastName  = LAST_NAME;
                 subject.Birthdate = BIRTH_DATE;
+                subject.BadLogins = 1;
 
                 subject = userInfo.Update(subject);
 
@@ -449,6 +478,7 @@ namespace UserManagementApplication.Engine.Tests
                 subject.FirstName = FIRST_NAME;
                 subject.LastName  = LAST_NAME;
                 subject.Birthdate = BIRTH_DATE;
+                subject.BadLogins = 1;
 
                 subject = userInfo.Update(subject);
 
@@ -467,6 +497,7 @@ namespace UserManagementApplication.Engine.Tests
                 subject.FirstName = FIRST_NAME;
                 subject.LastName  = LAST_NAME;
                 subject.Birthdate = BIRTH_DATE;
+                subject.BadLogins = 1;
 
                 subject = userInfo.Update(subject);
 
@@ -485,6 +516,7 @@ namespace UserManagementApplication.Engine.Tests
                 subject.FirstName = FIRST_NAME;
                 subject.LastName  = LAST_NAME;
                 subject.Birthdate = BIRTH_DATE;
+                subject.BadLogins = 1;
 
                 subject = userInfo.Update(subject);
 
@@ -492,7 +524,7 @@ namespace UserManagementApplication.Engine.Tests
             }
 
             [Fact]
-            public void UserIdShouldHaveValue()
+            public void BadLoginsSHouldHaveValue()
             {
                 var userInfo = new User(DateProvider, UserDataService);
 
@@ -503,10 +535,11 @@ namespace UserManagementApplication.Engine.Tests
                 subject.FirstName = FIRST_NAME;
                 subject.LastName  = LAST_NAME;
                 subject.Birthdate = BIRTH_DATE;
+                subject.BadLogins = 1;
 
                 subject = userInfo.Update(subject);
 
-                subject.UserId.Should().Be(1);
+                subject.BadLogins.Should().Be(1);
             }
         }
 
