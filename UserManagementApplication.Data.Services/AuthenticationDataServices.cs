@@ -16,7 +16,7 @@ namespace UserManagementApplication.Data.Services
 
         public AuthenticationDataServices()
         {
-            SessionEntity = new Session(new SessionDataCacheStorageProvider());
+            SessionEntity = new Session(SessionDataCacheStorageProvider.Instance);
         }
 
         public void StoreSession(string sessionToken, UserInformation userData)

@@ -3,14 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UserManagementApplication.Client.ViewData;
 
 namespace UserManagementApplication.Client.ViewDefinitions
 {
-    public interface ILoginView : IView
+    public interface IUserManagementView : IView
     {
-        string Username { get; set; }
-        string Password { get; set; }
-
-        void HandleSuccessfulLogin();
+        void UpdateData(IList<UserData> userData);
     }
 }

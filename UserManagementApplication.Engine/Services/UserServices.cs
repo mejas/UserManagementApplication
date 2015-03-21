@@ -96,15 +96,15 @@ namespace UserManagementApplication.Engine.Services
             {
                 return new User()
                 {
-                    Age = user.Age,
-                    Birthdate = user.Birthdate,
-                    FirstName = user.FirstName,
-                    LastName = user.LastName,
+                    Age          = user.Age,
+                    Birthdate    = user.Birthdate,
+                    FirstName    = user.FirstName,
+                    LastName     = user.LastName,
                     MessageState = Common.Enumerations.MessageState.Clean,
-                    Password = user.Password,
-                    RoleType = user.RoleType,
-                    UserId = user.UserId,
-                    Username = user.Username
+                    Password     = user.Password,
+                    RoleType     = user.RoleType,
+                    UserId       = user.UserId,
+                    Username     = user.Username
                 };
             }
 
@@ -119,11 +119,11 @@ namespace UserManagementApplication.Engine.Services
                 {
                     Birthdate = user.Birthdate,
                     FirstName = user.FirstName,
-                    LastName = user.LastName,
-                    Password = user.Password,
-                    RoleType = user.RoleType,
-                    UserId = user.UserId,
-                    Username = user.Username
+                    LastName  = user.LastName,
+                    Password  = user.Password,
+                    RoleType  = user.RoleType,
+                    UserId    = user.UserId,
+                    Username  = user.Username
                 };
             }
 

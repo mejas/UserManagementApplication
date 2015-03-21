@@ -21,13 +21,5 @@ namespace UserManagementApplication.Client.Models
                 handler(this, e);
             }
         }
-
-        protected void ExecuteMethod(System.Action method)
-        {
-                if (method != null)
-                {
-                    method.Invoke();
-                }
-        }
     }
 }

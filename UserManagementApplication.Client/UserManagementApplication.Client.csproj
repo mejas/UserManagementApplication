@@ -39,9 +39,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data\UserData.cs" />
     <Compile Include="Presenters\LoginPresenter.cs" />
+    <Compile Include="Presenters\UserManagementPresenter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewDefinitions\ILoginView.cs" />
+    <Compile Include="ViewDefinitions\IUserManagementView.cs" />
     <Compile Include="ViewDefinitions\IView.cs" />
   </ItemGroup>
   <ItemGroup />
@@ -53,6 +56,10 @@
     <ProjectReference Include="..\UserManagementApplication.Common\UserManagementApplication.Common.csproj">
       <Project>{5f779663-53e8-44cb-a7bf-806b8f5c4244}</Project>
       <Name>UserManagementApplication.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\UserManagementApplication.Remoting\UserManagementApplication.Remoting.csproj">
+      <Project>{980eb640-9f76-4737-8bd7-ec9700828137}</Project>
+      <Name>UserManagementApplication.Remoting</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

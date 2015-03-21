@@ -3,6 +3,7 @@ using Moq;
 using System;
 using System.Collections.Generic;
 using UserManagementApplication.Common.Enumerations;
+using UserManagementApplication.Common.Exceptions;
 using UserManagementApplication.Data.Contracts;
 using UserManagementApplication.Data.Contracts.Interfaces;
 using UserManagementApplication.Engine.BusinessEntities;
@@ -297,6 +298,26 @@ namespace UserManagementApplication.Engine.Tests
                 var subject = userInfo.GetUser("fuu");
 
                 subject.Should().BeNull();
+            }
+        }
+
+        [Trait("Trait", "UserInfo")]
+        public class UserInfoCreateUserValidation : UserInfoTestsBase
+        {
+            [Fact]
+            public void FirstNameInvalid()
+            {
+                var user = new User(DateProvider, UserDataService);
+
+                Assert.Throws<ValidationException>(()=>user.Create("username", "password", "f1r$tnaMe", "lastname", DateTime.Now));
+            }
+
+            [Fact]
+            public void LastNameIsInvalid()
+            {
+                var user = new User(DateProvider, UserDataService);
+
+                Assert.Throws<ValidationException>(() => user.Create("username", "password", "firstname", "1@$tName", DateTime.Now));
             }
         }
 

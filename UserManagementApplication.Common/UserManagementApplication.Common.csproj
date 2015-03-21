@@ -43,9 +43,12 @@
     <Compile Include="Enumerations\MessageState.cs" />
     <Compile Include="Enumerations\RoleType.cs" />
     <Compile Include="Exceptions\ErrorException.cs" />
+    <Compile Include="Exceptions\InvalidSessionException.cs" />
     <Compile Include="Exceptions\UserManagementApplicationException.cs" />
+    <Compile Include="Exceptions\ValidationException.cs" />
     <Compile Include="Exceptions\WarningException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RegexPatterns.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

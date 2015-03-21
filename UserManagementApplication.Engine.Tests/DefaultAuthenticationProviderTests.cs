@@ -284,7 +284,7 @@ namespace UserManagementApplication.Engine.Tests
 
                 authenticationProvider.TerminateSession(session);
 
-                Assert.Throws<ErrorException>(() => authenticationProvider.HasPermission(session, RoleType.Admin));
+                Assert.Throws<InvalidSessionException>(() => authenticationProvider.HasPermission(session, RoleType.Admin));
             }
         }
     }

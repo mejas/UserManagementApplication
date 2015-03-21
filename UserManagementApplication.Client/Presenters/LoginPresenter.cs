@@ -19,6 +19,13 @@ namespace UserManagementApplication.Client.Presenters
             View = loginView;
             Model = new LoginModel();
             Model.HandleModelException += Model_OnClientModelException;
+            View.OnViewLoaded += View_OnViewLoaded;
+        }
+
+        void View_OnViewLoaded(object sender, IView e)
+        {
+            View.Username = String.Empty;
+            View.Password = String.Empty;
         }
 
         public void Login()
@@ -32,7 +39,7 @@ namespace UserManagementApplication.Client.Presenters
 
         void Model_OnClientModelException(object sender, UserManagementApplicationException e)
         {
-            View.HandleLoginMessage(e.Message);
+            View.HandleException(e.Message);
         }
     }
 }

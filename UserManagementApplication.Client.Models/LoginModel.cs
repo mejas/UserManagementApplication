@@ -13,11 +13,11 @@ namespace UserManagementApplication.Client.Models
     public class LoginModel : ClientModel
     {
         protected string SessionToken { get; set; }
-        protected SessionProxy SessionProxy { get; set; }
+        protected SessionServiceProxy SessionProxy { get; set; }
 
         public LoginModel()
         {
-            SessionProxy = new SessionProxy();
+            SessionProxy = new SessionServiceProxy();
         }
 
         public bool Login(string username, string password)
@@ -30,17 +30,18 @@ namespace UserManagementApplication.Client.Models
 
             try
             {
+
                 var session = SessionProxy.Logon(logonRequest);
 
                 SessionToken = session.SessionToken;
 
                 return true;
             }
-            catch (UserManagementApplicationException e)
+            catch (UserManagementApplicationException ex)
             {
-                OnModelException(e);
+                OnModelException(ex);
             }
-
+           
             return false;
         }
 

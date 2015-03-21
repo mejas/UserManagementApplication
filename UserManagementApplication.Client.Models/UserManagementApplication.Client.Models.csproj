@@ -43,8 +43,10 @@
     <Compile Include="ClientModel.cs" />
     <Compile Include="LoginModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ServiceProxy\SessionProxy.cs" />
-    <Compile Include="ServiceProxy\UserService.cs" />
+    <Compile Include="ServiceProxy\ProxyBase.cs" />
+    <Compile Include="ServiceProxy\SessionServiceProxy.cs" />
+    <Compile Include="ServiceProxy\UserServiceProxy.cs" />
+    <Compile Include="UserManagementModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\UserManagementApplication.Common\UserManagementApplication.Common.csproj">

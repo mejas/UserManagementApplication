@@ -65,7 +65,7 @@ namespace UserManagementApplication.Engine.Providers
 
             if (userInfo == null)
             {
-                throw new ErrorException("Session has expired.");
+                throw new InvalidSessionException("Session has expired.");
             }
 
             if (userInfo.RoleType == roleTypeToTest)

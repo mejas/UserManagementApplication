@@ -25,17 +25,7 @@ namespace UserManagementApplication.Client.Wpf
     {
         protected LoginPresenter Presenter { get; set; }
 
-        public LoginView()
-        {
-            InitializeComponent();
-            Presenter = new LoginPresenter(this);
-            DataContext = this;
-        }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            Presenter.Login();
-        }
+        public event EventHandler<IView> OnViewLoaded;
 
         public string SessionToken { get; set; }
         public string Username { get; set; }
@@ -51,17 +41,39 @@ namespace UserManagementApplication.Client.Wpf
             }
         }
 
-        public void HandleLoginMessage(string message)
+        public LoginView()
         {
-            MessageBox.Show(message, this.Name);
+            InitializeComponent();
+            Presenter = new LoginPresenter(this);
+            DataContext = this;
+        }
+
+        public void HandleException(string message)
+        {
+            MessageBox.Show(message, this.Title);
         }
 
         public void HandleSuccessfulLogin()
         {
-            UserManagementView userManagementView = new UserManagementView();
+            UserManagementView userManagementView = new UserManagementView() { SessionToken = SessionToken };
 
             userManagementView.Show();
             this.Close();
+        }
+        
+        private void OnLoaded(object sender, RoutedEventArgs e)
+        {
+            var eventHandler = OnViewLoaded;
+
+            if (eventHandler != null)
+            {
+                OnViewLoaded(this, this);
+            }
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            Presenter.Login();
         }
     }
 }

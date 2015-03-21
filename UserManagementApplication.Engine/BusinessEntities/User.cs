@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
+using UserManagementApplication.Common;
 using UserManagementApplication.Common.Enumerations;
+using UserManagementApplication.Common.Exceptions;
 using UserManagementApplication.Data.Contracts;
 using UserManagementApplication.Data.Contracts.Interfaces;
 using UserManagementApplication.Data.Services;
@@ -94,6 +97,21 @@ namespace UserManagementApplication.Engine.BusinessEntities
                 RoleType  = roleType
             };
 
+            if (user.Birthdate > DateProvider.NOW())
+            {
+                throw new ValidationException("Invalid birthdate.");
+            }
+
+            if (!Regex.IsMatch(user.Username, RegexPatterns.LETTERS_ONLY))
+            {
+                throw new ValidationException("Invalid first name.");
+            }
+
+            if (!Regex.IsMatch(user.LastName, RegexPatterns.LETTERS_ONLY))
+            {
+                throw new ValidationException("Invalid last name.");
+            }
+
             user = UserDataService.Commit(user);
 
             return Translate(user);
@@ -137,7 +155,8 @@ namespace UserManagementApplication.Engine.BusinessEntities
                     LastName  = user.LastName,
                     Birthdate = user.Birthdate,
                     UserId    = user.UserId,
-                    BadLogins = user.BadLogins
+                    BadLogins = user.BadLogins,
+                    RoleType  = user.RoleType
                 };
             }
 
@@ -159,7 +178,8 @@ namespace UserManagementApplication.Engine.BusinessEntities
                     Birthdate = userInfo.Birthdate,
                     UserId    = userInfo.UserId,
                     DataState = DataState.Clean,
-                    BadLogins = userInfo.BadLogins
+                    BadLogins = userInfo.BadLogins,
+                    RoleType  = userInfo.RoleType
                 };
             }
 

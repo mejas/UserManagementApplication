@@ -10,6 +10,24 @@ namespace UserManagementApplication.Data.StorageProviders
 {
     public class SessionDataCacheStorageProvider : ISessionDataStorageProvider
     {
+        private static SessionDataCacheStorageProvider _instance = null;
+
+        public static SessionDataCacheStorageProvider Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    _instance = new SessionDataCacheStorageProvider();
+                }
+
+                return _instance;
+            }
+        }
+
+        private SessionDataCacheStorageProvider()
+        { }
+
         private Dictionary<string, Session> _sessions = new Dictionary<string, Session>();
 
         public Session GetSession(string sessionToken)
