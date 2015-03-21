@@ -79,40 +79,55 @@ namespace UserManagementApplication.Engine.Services
 
         private EBC.UserSession Translate(UserSession session)
         {
-            return new EBC.UserSession()
+            if (session != null)
             {
-                SessionToken = session.SessionToken
-            };
+                return new EBC.UserSession()
+                {
+                    SessionToken = session.SessionToken
+                };
+            }
+
+            return null;
         }
 
         private User Translate(EBC.User user)
         {
-            return new User()
+            if (user != null)
             {
-                Age          = user.Age,
-                Birthdate    = user.Birthdate,
-                FirstName    = user.FirstName,
-                LastName     = user.LastName,
-                MessageState = Common.Enumerations.MessageState.Clean,
-                Password     = user.Password,
-                RoleType     = user.RoleType,
-                UserId       = user.UserId,
-                Username     = user.Username
-            };
+                return new User()
+                {
+                    Age = user.Age,
+                    Birthdate = user.Birthdate,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    MessageState = Common.Enumerations.MessageState.Clean,
+                    Password = user.Password,
+                    RoleType = user.RoleType,
+                    UserId = user.UserId,
+                    Username = user.Username
+                };
+            }
+
+            return null;
         }
 
         private EBC.User Translate(User user)
         {
-            return new EBC.User()
+            if (user != null)
             {
-                Birthdate    = user.Birthdate,
-                FirstName    = user.FirstName,
-                LastName     = user.LastName,
-                Password     = user.Password,
-                RoleType     = user.RoleType,
-                UserId       = user.UserId,
-                Username     = user.Username
-            };
+                return new EBC.User()
+                {
+                    Birthdate = user.Birthdate,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Password = user.Password,
+                    RoleType = user.RoleType,
+                    UserId = user.UserId,
+                    Username = user.Username
+                };
+            }
+
+            return null;
         }
     }
 }

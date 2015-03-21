@@ -15,6 +15,6 @@ namespace UserManagementApplication.Remoting.Data.Request
         public string Username { get; set; }
 
         [DataMember]
-        public SecureString Password { get; set; }
+        public string Password { get; set; }
     }
 }

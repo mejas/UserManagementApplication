@@ -45,31 +45,41 @@ namespace UserManagementApplication.Data.Services
 
         private UserInformation Translate(User user)
         {
-            return new UserInformation()
+            if (user != null)
             {
-                Birthdate = user.Birthdate,
-                FirstName = user.FirstName,
-                LastName  = user.LastName,
-                Password  = user.Password,
-                RoleType  = user.RoleType,
-                UserId    = user.UserId,
-                Username  = user.Username,
-                DataState = DataState.Clean
-            };
+                return new UserInformation()
+                {
+                    Birthdate = user.Birthdate,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Password = user.Password,
+                    RoleType = user.RoleType,
+                    UserId = user.UserId,
+                    Username = user.Username,
+                    DataState = DataState.Clean
+                };
+            }
+
+            return null;
         }
 
         private User Translate(UserInformation userData)
         {
-            return new User()
+            if (userData != null)
             {
-                Birthdate = userData.Birthdate,
-                FirstName = userData.FirstName,
-                LastName  = userData.LastName,
-                Password  = userData.Password,
-                RoleType  = userData.RoleType,
-                UserId    = userData.UserId,
-                Username  = userData.Username
-            };
+                return new User()
+                {
+                    Birthdate = userData.Birthdate,
+                    FirstName = userData.FirstName,
+                    LastName = userData.LastName,
+                    Password = userData.Password,
+                    RoleType = userData.RoleType,
+                    UserId = userData.UserId,
+                    Username = userData.Username
+                };
+            }
+
+            return null;
         }
     }
 }
