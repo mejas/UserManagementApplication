@@ -1,14 +1,15 @@
 ﻿using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("UserManagementApplication.Engine.Services")]
+[assembly: AssemblyTitle("WcfServiceLibrary1")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("UserManagementApplication.Engine.Services")]
+[assembly: AssemblyProduct("WcfServiceLibrary1")]
 [assembly: AssemblyCopyright("Copyright ©  2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -19,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("1f0b1184-ac18-4459-b0e2-e9292ee20832")]
+[assembly: Guid("c6c0f931-60b9-43b3-8149-a89873d08e63")]
 
 // Version information for an assembly consists of the following four values:
 //
