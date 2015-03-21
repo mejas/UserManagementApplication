@@ -31,6 +31,17 @@ namespace UserManagementApplication.Data.StorageProviders
             
             if (!fileInfo.Exists)
             {
+                User user = new User()
+                {
+                    Username  = "administrator",
+                    Password  = "$ystemM@stER",
+                    RoleType  = Common.Enumerations.RoleType.Admin,
+                    FirstName = "Administrator",
+                    LastName  = "Administrator",
+                    Birthdate = DateTime.Now
+                };
+
+                AddUser(user);
                 flushUserCacheToDisk();
             }
             else if(fileInfo.Length > 1)

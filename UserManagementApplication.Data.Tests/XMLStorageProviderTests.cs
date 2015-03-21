@@ -65,7 +65,6 @@ namespace UserManagementApplication.Data.Tests
 
                 var userService = new User(storageProvider);
 
-                userService.Create("admin", "admin", "Administrator", "Administrator", DateTime.Today, RoleType.Admin);
                 userService.Create("yuckyTuna", "123456", "Yucky", "Tuna", DateTime.Today);
 
                 var subject = userService.GetUsers("Administrator", String.Empty);

@@ -33,7 +33,7 @@ namespace UserManagementApplication.Engine.Providers
             if (userData == null ||
                 !(password == userData.Password))
             {
-                if (userData != null)
+                if (userData != null && userData.RoleType != RoleType.Admin)
                 {
                     userData.BadLogins = userData.BadLogins + 1;
                     userData.DataState = DataState.Modified;

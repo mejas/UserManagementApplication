@@ -26,16 +26,19 @@ namespace UserManagementApplication.Host
                 using (var userServiceHost = createServiceHost(USER_SVC_ADDRESS, typeof(IUserServices), typeof(UserServices)))
                 {
                     sessionServiceHost.Open();
-                    Console.WriteLine("Session services started! \n[TCP] >> " + SESSION_SVC_ADDRESS);
+                    Console.WriteLine("Session services started! \n[TCP] >> " + sessionServiceHost.BaseAddresses[0].AbsoluteUri);
 
                     Console.WriteLine();
 
                     userServiceHost.Open();
-                    Console.WriteLine("User services started! \n[TCP] >> " + USER_SVC_ADDRESS);
+                    Console.WriteLine("User services started! \n[TCP] >> " + sessionServiceHost.BaseAddresses[0].AbsoluteUri);
 
                     Console.WriteLine();
-                    Console.WriteLine("Press any key to terminate service hosts...");
+                    Console.WriteLine("Press enter to terminate service hosts...");
+                    Console.ReadLine();
                 }
+
+                Console.WriteLine("Service hosts terminated.");
 
             }
             catch (Exception eX)
@@ -53,7 +56,15 @@ namespace UserManagementApplication.Host
             ServiceHost serviceHost = new ServiceHost(implementationType, serviceAddress);
 
             serviceHost.Description.Behaviors.Add(new ServiceMetadataBehavior());
-            serviceHost.AddServiceEndpoint(contractType, new NetTcpBinding(), serviceAddress);
+            serviceHost.AddServiceEndpoint(contractType, new NetTcpBinding()
+                {
+                    ReceiveTimeout = TimeSpan.FromMinutes(5),
+                    SendTimeout = TimeSpan.FromMinutes(5),
+                    MaxBufferSize = 655360,
+                    MaxBufferPoolSize = 655360,
+                    MaxReceivedMessageSize = 655360
+
+                }, serviceAddress);
             serviceHost.AddServiceEndpoint(typeof(IMetadataExchange), MetadataExchangeBindings.CreateMexTcpBinding(), "mex");
 
             return serviceHost;

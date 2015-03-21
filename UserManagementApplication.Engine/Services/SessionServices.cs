@@ -1,23 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.ServiceModel;
 using System.Text;
 using System.Threading.Tasks;
+using UserManagementApplication.Common.Exceptions;
 using UserManagementApplication.Engine.BusinessEntities;
 using UserManagementApplication.Remoting.Data.Request;
 using UserManagementApplication.Remoting.Services;
 
 namespace UserManagementApplication.Engine.Services
 {
+    [ServiceBehavior(IncludeExceptionDetailInFaults = false)]
     public class SessionServices : ISessionServices
     {
         public Remoting.Data.UserSession Logon(LogonRequest request)
         {
-            UserSession userSession = new UserSession();
+            try
+            {
+                UserSession userSession = new UserSession();
 
-            var result = userSession.AuthenticateUser(request.Username, request.Password);
+                var result = userSession.AuthenticateUser(request.Username, request.Password);
 
-            return Translate(result);
+                return Translate(result);
+            }
+            catch (ErrorException ex)
+            {
+                //log message
+                throw new FaultException(ex.Message);
+            }
         }
 
         public void Logoff(Remoting.Data.UserSession session)
