@@ -13,12 +13,12 @@ namespace UserManagementApplication.Remoting.Services
     public interface IUserServices
     {
         [OperationContract]
-        public IList<User> GetUsers(UserSession session);
+        IList<User> GetUsers(UserSession session);
 
         [OperationContract]
-        public IList<User> FindUsers(UserSession session, FindUserRequest request);
+        IList<User> FindUsers(UserSession session, FindUserRequest request);
 
         [OperationContract]
-        public User Commit(UserSession session, User user);
+        User Commit(UserSession session, User user);
     }
 }

@@ -40,6 +40,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Enumerations\ErrorSeverity.cs" />
+    <Compile Include="Enumerations\MessageState.cs" />
     <Compile Include="Enumerations\RoleType.cs" />
     <Compile Include="Exceptions\ErrorException.cs" />
     <Compile Include="Exceptions\UserManagementApplicationException.cs" />

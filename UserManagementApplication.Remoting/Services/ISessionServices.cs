@@ -13,9 +13,9 @@ namespace UserManagementApplication.Remoting.Services
     public interface ISessionServices
     {
         [OperationContract]
-        public UserSession Logon(LogonRequest request);
+        UserSession Logon(LogonRequest request);
 
         [OperationContract]
-        public void Logoff(UserSession session);
+        void Logoff(UserSession session);
     }
 }
