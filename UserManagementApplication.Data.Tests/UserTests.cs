@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using UserManagementApplication.Common.Enumerations;
 using UserManagementApplication.Data.DataEntities;
-using UserManagementApplication.Data.Providers;
+using UserManagementApplication.Data.StorageProviders.Interfaces;
 using Xunit;
 
 namespace UserManagementApplication.Data.Tests
@@ -15,9 +15,9 @@ namespace UserManagementApplication.Data.Tests
         {
             private List<User> _users = new List<User>();
 
-            public IStorageProvider GetStorageProvider()
+            public IUserDataStorageProvider GetStorageProvider()
             {
-                var storageProvider = new Mock<IStorageProvider>();
+                var storageProvider = new Mock<IUserDataStorageProvider>();
 
                 storageProvider
                     .Setup(d => d.GetUsers())
@@ -95,7 +95,7 @@ namespace UserManagementApplication.Data.Tests
 
         public class UserTestsBase
         {
-            protected IStorageProvider StorageProvider
+            protected IUserDataStorageProvider StorageProvider
             {
                 get
                 {
@@ -104,7 +104,7 @@ namespace UserManagementApplication.Data.Tests
             }
         }
 
-        [Trait("Trait", "UserDataTests")]
+        [Trait("Trait", "UserData")]
         public class UserConstructorTests : UserTestsBase
         {
             [Fact]
@@ -172,7 +172,7 @@ namespace UserManagementApplication.Data.Tests
             }
         }
 
-        [Trait("Trait", "UserDataTests")]
+        [Trait("Trait", "UserData")]
         public class GetAllUserTests : UserTestsBase
         {
             [Fact]
@@ -186,7 +186,7 @@ namespace UserManagementApplication.Data.Tests
             }
         }
 
-        [Trait("Trait", "UserDataTests")]
+        [Trait("Trait", "UserData")]
         public class CreateUserTests : UserTestsBase
         {
             private string USERNAME = "username";
@@ -256,7 +256,7 @@ namespace UserManagementApplication.Data.Tests
             }
         }
 
-        [Trait("Trait", "UserDataTests")]
+        [Trait("Trait", "UserData")]
         public class GetUserTests : UserTestsBase
         {
             [Fact]
@@ -299,7 +299,7 @@ namespace UserManagementApplication.Data.Tests
             }
         }
 
-        [Trait("Trait", "UserDataTests")]
+        [Trait("Trait", "UserData")]
         public class GetByUsernameTests : UserTestsBase
         {
             [Fact]
@@ -329,7 +329,7 @@ namespace UserManagementApplication.Data.Tests
             }
         }
 
-        [Trait("Trait", "UserDataTests")]
+        [Trait("Trait", "UserData")]
         public class UpdateUserTests : UserTestsBase
         {
             private string USERNAME = "gyuuki";
@@ -472,7 +472,7 @@ namespace UserManagementApplication.Data.Tests
             }
         }
 
-        [Trait("Trait", "UserDataTests")]
+        [Trait("Trait", "UserData")]
         public class DeleteUserTests : UserTestsBase
         {
             [Fact]

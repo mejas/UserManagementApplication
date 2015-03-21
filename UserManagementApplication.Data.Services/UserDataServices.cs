@@ -14,7 +14,7 @@ namespace UserManagementApplication.Data.Services
 
         public UserDataServices()
         {
-            UserEntity = new User(new XMLStorageProvider());
+            UserEntity = new User(new UserDataXmlStorageProvider());
         }
 
         public IList<UserInformation> GetUsers()

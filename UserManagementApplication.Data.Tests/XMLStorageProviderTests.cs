@@ -30,7 +30,7 @@ namespace UserManagementApplication.Data.Tests
             }
         }
 
-        [Trait("Trait", "XMLStorageProviderTests")]
+        [Trait("Trait", "XMLStorageProvider")]
         public class XMLStorageProviderInitTests : XMLStorageProviderTestsBase
         {
             public XMLStorageProviderInitTests() : base("xmlFileTest1.xml") { }
@@ -38,14 +38,14 @@ namespace UserManagementApplication.Data.Tests
             [Fact]
             public void InstanceShouldNotBeNull()
             {
-                XMLStorageProvider subject = new XMLStorageProvider(FILENAME);
+                UserDataXmlStorageProvider subject = new UserDataXmlStorageProvider(FILENAME);
                 subject.Should().NotBeNull();
             }
 
             [Fact]
             public void XMLFileShouldBeInitialized()
             {
-                XMLStorageProvider storageProvider = new XMLStorageProvider(FILENAME);
+                UserDataXmlStorageProvider storageProvider = new UserDataXmlStorageProvider(FILENAME);
 
                 bool subject = File.Exists(storageProvider.XmlFile);
                 
@@ -53,7 +53,7 @@ namespace UserManagementApplication.Data.Tests
             }
         }
 
-        [Trait("Trait", "XMLStorageProviderTests")]
+        [Trait("Trait", "XMLStorageProvider")]
         public class XMLStorageProviderAddUserTests : XMLStorageProviderTestsBase
         {
             public XMLStorageProviderAddUserTests() : base("xmlFileTest2.xml") { }
@@ -61,7 +61,7 @@ namespace UserManagementApplication.Data.Tests
             [Fact]
             public void UserShouldBeAdded()
             {
-                XMLStorageProvider storageProvider = new XMLStorageProvider(FILENAME);
+                UserDataXmlStorageProvider storageProvider = new UserDataXmlStorageProvider(FILENAME);
 
                 var userService = new User(storageProvider);
 

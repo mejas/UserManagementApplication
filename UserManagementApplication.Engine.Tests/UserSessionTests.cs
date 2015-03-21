@@ -6,6 +6,7 @@ using UserManagementApplication.Common.Enumerations;
 using UserManagementApplication.Common.Exceptions;
 using UserManagementApplication.Engine.BusinessEntities;
 using UserManagementApplication.Engine.Providers;
+using UserManagementApplication.Engine.Providers.Interfaces;
 using Xunit;
 
 namespace UserManagementApplication.Engine.Tests
@@ -205,6 +206,7 @@ namespace UserManagementApplication.Engine.Tests
             }
         }
 
+        [Trait("Trait", "UserSession")]
         public class UserSessionDestructionTest : UserSessionTestsBase
         {
             [Fact]

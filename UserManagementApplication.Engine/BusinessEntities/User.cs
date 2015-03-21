@@ -4,6 +4,7 @@ using System.Linq;
 using UserManagementApplication.Common.Enumerations;
 using UserManagementApplication.Data.Contracts;
 using UserManagementApplication.Data.Contracts.Interfaces;
+using UserManagementApplication.Data.Services;
 using UserManagementApplication.Engine.Providers;
 
 namespace UserManagementApplication.Engine.BusinessEntities
@@ -38,6 +39,10 @@ namespace UserManagementApplication.Engine.BusinessEntities
         #endregion
 
         #region Constructor
+
+        public User()
+            : this(new DefaultDateProvider(), new UserDataServices())
+        { }
 
         public User(IDateProvider dateProvider, IUserDataService userDataService)
         {

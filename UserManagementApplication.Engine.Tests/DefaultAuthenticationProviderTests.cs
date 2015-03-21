@@ -6,7 +6,7 @@ using UserManagementApplication.Common.Enumerations;
 using UserManagementApplication.Common.Exceptions;
 using UserManagementApplication.Data.Contracts;
 using UserManagementApplication.Data.Contracts.Interfaces;
-using UserManagementApplication.Engine.AuthenticationProviders;
+using UserManagementApplication.Engine.Providers;
 using Xunit;
 
 namespace UserManagementApplication.Engine.Tests
@@ -39,6 +39,35 @@ namespace UserManagementApplication.Engine.Tests
                     UserId    = 2
                 }
             };
+
+            private Dictionary<string, UserInformation> _sessions = new Dictionary<string, UserInformation>();
+
+            public IAuthenticationDataService GetAuthenticationDataService()
+            {
+                var authenticationDataService = new Mock<IAuthenticationDataService>();
+
+                authenticationDataService
+                    .Setup(d => d.StoreSession(It.IsAny<string>(), It.IsAny<UserInformation>()))
+                    .Callback((string sessionToken, UserInformation userData) => { _sessions[sessionToken] = userData; });
+
+                authenticationDataService
+                    .Setup(d => d.GetUser(It.IsAny<string>()))
+                    .Returns(
+                    (string sessionToken) => 
+                    {
+                        UserInformation userInfo;
+
+                        _sessions.TryGetValue(sessionToken, out userInfo);
+
+                        return userInfo;
+                    });
+
+                authenticationDataService
+                    .Setup(d => d.RemoveSession(It.IsAny<string>()))
+                    .Callback((string sessionToken) => _sessions.Remove(sessionToken));
+
+                return authenticationDataService.Object;
+            }
 
             public IUserDataService GetUserDataService()
             {
@@ -133,6 +162,14 @@ namespace UserManagementApplication.Engine.Tests
                     return _services.GetUserDataService();
                 }
             }
+
+            protected IAuthenticationDataService AuthenticationDataService
+            {
+                get
+                {
+                    return _services.GetAuthenticationDataService();
+                }
+            }
         }
 
         [Trait("Trait","AuthenticationProviderTests")]
@@ -141,7 +178,7 @@ namespace UserManagementApplication.Engine.Tests
             [Fact]
             public void InstanceShouldNotBeNull()
             {
-                var subject = new DefaultAuthenticationProvider(UserDataService);
+                var subject = new DefaultAuthenticationProvider(UserDataService, AuthenticationDataService);
 
                 subject.Should().NotBeNull();
             }
@@ -153,7 +190,7 @@ namespace UserManagementApplication.Engine.Tests
             [Fact]
             public void ResultShouldNotBeNull()
             {
-                var authenticationProvider = new DefaultAuthenticationProvider(UserDataService);
+                var authenticationProvider = new DefaultAuthenticationProvider(UserDataService, AuthenticationDataService);
 
                 var subject = authenticationProvider.CreateSession("admin", "admin");
 
@@ -163,7 +200,7 @@ namespace UserManagementApplication.Engine.Tests
             [Fact]
             public void ResultSessionTokenShouldNotBeEmpty()
             {
-                var authenticationProvider = new DefaultAuthenticationProvider(UserDataService);
+                var authenticationProvider = new DefaultAuthenticationProvider(UserDataService, AuthenticationDataService);
 
                 var subject = authenticationProvider.CreateSession("admin", "admin");
 
@@ -177,7 +214,7 @@ namespace UserManagementApplication.Engine.Tests
             [Fact]
             public void ResultShouldNotBeNull()
             {
-                var subject = new DefaultAuthenticationProvider(UserDataService);
+                var subject = new DefaultAuthenticationProvider(UserDataService, AuthenticationDataService);
 
                 Assert.Throws<ErrorException>(() => subject.CreateSession("admin", "badpass"));
             }
@@ -189,7 +226,7 @@ namespace UserManagementApplication.Engine.Tests
             [Fact]
             public void VerifyAdminPermissionAgainstAdmin()
             {
-                var authenticationProvider = new DefaultAuthenticationProvider(UserDataService);
+                var authenticationProvider = new DefaultAuthenticationProvider(UserDataService, AuthenticationDataService);
 
                 var session = authenticationProvider.CreateSession("admin", "admin");
 
@@ -201,7 +238,7 @@ namespace UserManagementApplication.Engine.Tests
             [Fact]
             public void VerifyAdminPermissionAgainstUser()
             {
-                var authenticationProvider = new DefaultAuthenticationProvider(UserDataService);
+                var authenticationProvider = new DefaultAuthenticationProvider(UserDataService, AuthenticationDataService);
 
                 var session = authenticationProvider.CreateSession("admin", "admin");
 
@@ -213,7 +250,7 @@ namespace UserManagementApplication.Engine.Tests
             [Fact]
             public void VerifyUserPermissionAgainstUser()
             {
-                var authenticationProvider = new DefaultAuthenticationProvider(UserDataService);
+                var authenticationProvider = new DefaultAuthenticationProvider(UserDataService, AuthenticationDataService);
 
                 var session = authenticationProvider.CreateSession("user", "user");
 
@@ -225,7 +262,7 @@ namespace UserManagementApplication.Engine.Tests
             [Fact]
             public void VerifyUserPermissionAgainstAdmin()
             {
-                var authenticationProvider = new DefaultAuthenticationProvider(UserDataService);
+                var authenticationProvider = new DefaultAuthenticationProvider(UserDataService, AuthenticationDataService);
 
                 var session = authenticationProvider.CreateSession("user", "user");
 
@@ -241,7 +278,7 @@ namespace UserManagementApplication.Engine.Tests
             [Fact]
             public void TerminateSessionTest()
             {
-                var authenticationProvider = new DefaultAuthenticationProvider(UserDataService);
+                var authenticationProvider = new DefaultAuthenticationProvider(UserDataService, AuthenticationDataService);
 
                 var session = authenticationProvider.CreateSession("admin", "admin");
 

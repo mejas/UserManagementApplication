@@ -1,6 +1,7 @@
 ﻿
 using UserManagementApplication.Common.Enumerations;
 using UserManagementApplication.Engine.Providers;
+using UserManagementApplication.Engine.Providers.Interfaces;
 namespace UserManagementApplication.Engine.BusinessEntities
 {
     public class UserSession
@@ -9,6 +10,8 @@ namespace UserManagementApplication.Engine.BusinessEntities
         public User User { get; set; }
 
         IAuthenticationProvider AuthenticationProvider { get; set; }
+
+        public UserSession() : this(new DefaultAuthenticationProvider()) { }
 
         public UserSession(IAuthenticationProvider authenticationProvider)
         {
