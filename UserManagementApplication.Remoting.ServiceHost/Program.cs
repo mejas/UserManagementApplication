@@ -10,6 +10,7 @@ namespace UserManagementApplication.Remoting.ServiceHost
     {
         static void Main(string[] args)
         {
+            Console.ReadLine();
         }
     }
 }
