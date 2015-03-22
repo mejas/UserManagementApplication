@@ -28,7 +28,7 @@ namespace UserManagementApplication.Client.Presenters
 
         void View_OnViewLoaded(object sender, IView e)
         {
-            RefreshData();
+            FindAllUsers();
         }
 
         public void Logout()
@@ -37,7 +37,7 @@ namespace UserManagementApplication.Client.Presenters
             View.HandleLogout();
         }
 
-        public void RefreshData()
+        public void FindAllUsers()
         {
             var result = UserManagementModel.GetUsers(View.SessionToken);
 
@@ -62,17 +62,17 @@ namespace UserManagementApplication.Client.Presenters
         {
             if (View.CurrentUserData != null)
             {
-                View.OnEditItem(View.CurrentUserData);
+                View.OnEditUser(View.CurrentUserData);
             }
         }
 
-        public void AddItem()
+        public void AddUser()
         {
-            View.OnAddItem(new UserData());
-            RefreshData();
+            View.OnAddUser(new UserData());
+            FindAllUsers();
         }
 
-        public void DeleteItem()
+        public void DeleteUser()
         {
             if (View.CurrentUserData != null)
             {
@@ -81,7 +81,29 @@ namespace UserManagementApplication.Client.Presenters
                 itemToDelete.MessageState = MessageState.Deleted;
 
                 UserManagementModel.DeleteUser(View.SessionToken, itemToDelete);
+                FindAllUsers();
             }
+        }
+
+        public void UnlockUser()
+        {
+            if (View.CurrentUserData != null)
+            {
+                var user = Translate(View.CurrentUserData);
+
+                user.BadLogins = 0;
+                user.MessageState = MessageState.Modified;
+                
+                UserManagementModel.UnlockUser(View.SessionToken, user);
+                FindAllUsers();
+            }
+        }
+
+        public void FindUsers()
+        {
+            var result = UserManagementModel.FindUsers(View.SessionToken, View.FirstName, View.LastName);
+
+            View.UpdateData(result.ToList().ConvertAll<UserData>(Translate));
         }
 
         private User Translate(UserData userData)

@@ -50,7 +50,7 @@ namespace UserManagementApplication.Client.Wpf
 
         public void HandleException(string message)
         {
-            MessageBox.Show(message, this.Title);
+            MessageBox.Show(this, message, this.Title);
         }
 
         public void HandleSuccessfulLogin()

@@ -93,7 +93,7 @@ namespace UserManagementApplication.Engine.Tests
                         var user = _userSessions[key];
                         if (user != null)
                         {
-                            return new UserSession() { SessionToken = key, User = user };
+                            return new UserSession(AuthenticationProvider) { SessionToken = key, User = user };
                         }
 
                         return null;

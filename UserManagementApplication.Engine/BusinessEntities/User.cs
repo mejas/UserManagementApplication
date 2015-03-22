@@ -56,6 +56,11 @@ namespace UserManagementApplication.Engine.BusinessEntities
             RoleType = RoleType.User;
         }
 
+        public User(IUserDataService userDataService) : this(new DefaultDateProvider(), userDataService)
+        {
+            UserDataService = userDataService;
+        }
+
         #endregion
 
         #region Methods
@@ -106,12 +111,12 @@ namespace UserManagementApplication.Engine.BusinessEntities
                     throw new ValidationException("Username and Password should not be blank.");
                 }
 
-                if (user.Birthdate > DateProvider.NOW())
+                if (user.Birthdate.Date > DateProvider.NOW())
                 {
                     throw new ValidationException("Invalid birthdate.");
                 }
 
-                if (!Regex.IsMatch(user.Username, RegexPatterns.LETTERS_ONLY))
+                if (!Regex.IsMatch(user.FirstName, RegexPatterns.LETTERS_ONLY))
                 {
                     throw new ValidationException("Invalid first name.");
                 }
@@ -129,12 +134,24 @@ namespace UserManagementApplication.Engine.BusinessEntities
             return null;
         }
 
-        public User Update(UserSession session, User user)
+        public User Update(UserSession session, User modifiedData)
         {
-            if (validateUserSession(session, user))
+            if (validateUserSession(session, modifiedData))
             {
-                var userInfo = Translate(user);
 
+                User originalData = Translate(UserDataService.GetUser(modifiedData.UserId));
+
+                if (originalData == null)
+                {
+                    throw new ErrorException("User does not exist.");
+                }
+
+                if (modifiedData.BadLogins != originalData.BadLogins)
+                {
+                    isRoleClearanceValid(session, RoleType.Admin);
+                }
+                
+                var userInfo = Translate(modifiedData);
                 userInfo.DataState = DataState.Modified;
 
                 userInfo = UserDataService.Commit(userInfo);

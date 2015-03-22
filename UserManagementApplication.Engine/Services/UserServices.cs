@@ -9,64 +9,72 @@ using EBC = UserManagementApplication.Engine.BusinessEntities;
 
 namespace UserManagementApplication.Engine.Services
 {
-    public class UserServices : IUserServices
+    public class UserServices : RemotingServiceBase, IUserServices
     {
         public IList<User> GetUsers(UserSession session)
         {
-            EBC.User user = new EBC.User();
+            return InvokeMethod(() =>
+            {
+                EBC.User user = new EBC.User();
 
-            return user.Find().ToList().ConvertAll<User>(Translate);
+                return user.Find().ToList().ConvertAll<User>(Translate);
+            });
         }
 
         public IList<User> FindUsers(UserSession session, FindUserRequest request)
         {
-            EBC.User user = new EBC.User();
+            return InvokeMethod(() =>
+            {
+                EBC.User user = new EBC.User();
 
-            return user.Find().ToList().ConvertAll<User>(Translate);
+                return user.Find(request.FirstName, request.LastName).ToList().ConvertAll<User>(Translate);
+            });
         }
 
         public User Commit(UserSession session, User user)
         {
-            EBC.User ebcUser = new EBC.User();
-
-            switch (user.MessageState)
+            return InvokeMethod(() =>
             {
-                case MessageState.New:
-                    {
-                        var result = ebcUser.Create(Translate(session),
-                                                    user.Username,
-                                                    user.Password,
-                                                    user.FirstName,
-                                                    user.LastName,
-                                                    user.Birthdate,
-                                                    user.RoleType);
-                        return Translate(result);
-                    }
-                case MessageState.Modified:
-                    {
-                        var result = ebcUser.Update(Translate(session), Translate(user));
+                EBC.User ebcUser = new EBC.User();
 
-                        return Translate(result);
-                    }
-                case MessageState.Deleted:
-                    {
-                        ebcUser.Remove(Translate(session), Translate(user));
+                switch (user.MessageState)
+                {
+                    case MessageState.New:
+                        {
+                            var result = ebcUser.Create(Translate(session),
+                                                        user.Username,
+                                                        user.Password,
+                                                        user.FirstName,
+                                                        user.LastName,
+                                                        user.Birthdate,
+                                                        user.RoleType);
+                            return Translate(result);
+                        }
+                    case MessageState.Modified:
+                        {
+                            var result = ebcUser.Update(Translate(session), Translate(user));
 
-                        return null;
-                    }
-                default:
-                    return user;
-            }
+                            return Translate(result);
+                        }
+                    case MessageState.Deleted:
+                        {
+                            ebcUser.Remove(Translate(session), Translate(user));
+
+                            return null;
+                        }
+                    default:
+                        return user;
+                }
+            });
         }
 
         protected EBC.UserSession Translate(UserSession session)
         {
             if (session != null)
             {
-                return new EBC.UserSession()
-                {
-                    SessionToken = session.SessionToken
-                };
+                var userSession = new EBC.UserSession() { SessionToken = session.SessionToken };
+
+                return userSession.GetUserSession(userSession);
             }
 
             return null;

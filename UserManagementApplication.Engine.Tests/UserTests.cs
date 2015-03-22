@@ -58,7 +58,16 @@ namespace UserManagementApplication.Engine.Tests
                     .Setup(d => d.GetUser(It.IsAny<string>()))
                     .Returns((string username) => getLogic(username));
 
+                userDataService
+                    .Setup(d => d.GetUser(It.IsAny<int>()))
+                    .Returns((int id) => getLogic(id));
+
                 return userDataService.Object;
+            }
+
+            private UserInformation getLogic(int id)
+            {
+                return _users.Find(d => d.UserId == id);
             }
 
             private UserInformation getLogic(string username)

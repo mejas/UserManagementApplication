@@ -31,6 +31,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -47,7 +48,9 @@
     <Compile Include="Providers\Interfaces\IStorageProvider.cs" />
     <Compile Include="Providers\Interfaces\IDataSecurityProvider.cs" />
     <Compile Include="Providers\SessionDataCacheStorageProvider.cs" />
-    <Compile Include="Providers\UserDataXmlStorageProvider.cs" />
+    <Compile Include="Providers\UserDataXmlStorageProvider.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\UserManagementApplication.Common\UserManagementApplication.Common.csproj">
@@ -58,6 +61,11 @@
       <Project>{a378dc66-26e6-459e-b034-4836a1d86b35}</Project>
       <Name>UserManagementApplication.Data.Contracts</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="UserManagementApplication.Data.dll.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

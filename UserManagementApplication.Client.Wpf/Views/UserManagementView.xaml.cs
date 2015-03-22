@@ -26,6 +26,30 @@ namespace UserManagementApplication.Client.Wpf.Views
             }
         }
 
+        public string FirstName
+        {
+            get
+            {
+                return this.textBoxFirstName.Text;
+            }
+            set
+            {
+                this.textBoxFirstName.Text = value;
+            }
+        }
+
+        public string LastName
+        {
+            get
+            {
+                return this.textBoxLastName.Text;
+            }
+            set
+            {
+                this.textBoxLastName.Text = value;
+            }
+        }
+
 
         protected UserManagementPresenter Presenter { get; set; }
 
@@ -47,7 +71,7 @@ namespace UserManagementApplication.Client.Wpf.Views
 
         public void HandleException(string message)
         {
-            MessageBox.Show(message, this.Title);
+            MessageBox.Show(this, message, this.Title);
         }
 
         public void HandleLogout()
@@ -79,7 +103,7 @@ namespace UserManagementApplication.Client.Wpf.Views
             buttonUnlock.IsEnabled = value;
         }
 
-        public void OnAddItem(UserData userData)
+        public void OnAddUser(UserData userData)
         {
             UserAddEditView userAddEdit = new UserAddEditView()
             {
@@ -92,7 +116,7 @@ namespace UserManagementApplication.Client.Wpf.Views
             userAddEdit.ShowDialog();
         }
 
-        public void OnEditItem(UserData userData)
+        public void OnEditUser(UserData userData)
         {
             UserAddEditView userAddEdit = new UserAddEditView()
             {
@@ -122,7 +146,7 @@ namespace UserManagementApplication.Client.Wpf.Views
 
         private void buttonRefresh_Click(object sender, RoutedEventArgs e)
         {
-            Presenter.RefreshData();
+            Presenter.FindAllUsers();
         }
 
         private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -132,7 +156,7 @@ namespace UserManagementApplication.Client.Wpf.Views
 
         private void buttonAdd_Click(object sender, RoutedEventArgs e)
         {
-            Presenter.AddItem();
+            Presenter.AddUser();
         }
 
         private void buttonEdit_Click(object sender, RoutedEventArgs e)
@@ -142,9 +166,17 @@ namespace UserManagementApplication.Client.Wpf.Views
 
         private void buttonDelete_Click(object sender, RoutedEventArgs e)
         {
-            Presenter.DeleteItem();
+            Presenter.DeleteUser();
         }
 
-        
+        private void buttonUnlock_Click(object sender, RoutedEventArgs e)
+        {
+            Presenter.UnlockUser();
+        }
+
+        private void buttonSearch_Click(object sender, RoutedEventArgs e)
+        {
+            Presenter.FindUsers();
+        }
     }
 }

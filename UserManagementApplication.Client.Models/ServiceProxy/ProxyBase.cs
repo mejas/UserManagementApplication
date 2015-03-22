@@ -39,9 +39,13 @@ namespace UserManagementApplication.Client.Models.ServiceProxy
                 {
                     return method();
                 }
-                catch (FaultException fe)
+                catch (FaultException ex)
                 {
-                    throw new ErrorException(fe.Message);
+                    throw new ErrorException(ex.Message);
+                }
+                catch (EndpointNotFoundException)
+                {
+                    throw new ErrorException("Connection to host could not be established.");
                 }
             }
             
@@ -56,9 +60,13 @@ namespace UserManagementApplication.Client.Models.ServiceProxy
                 {
                     method();
                 }
-                catch (FaultException fe)
+                catch (FaultException ex)
                 {
-                    throw new ErrorException(fe.Message);
+                    throw new ErrorException(ex.Message);
+                }
+                catch (EndpointNotFoundException)
+                {
+                    throw new ErrorException("Connection to host could not be established.");
                 }
             }
         }

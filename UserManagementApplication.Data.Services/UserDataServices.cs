@@ -46,6 +46,11 @@ namespace UserManagementApplication.Data.Services
             throw new ErrorException("Invalid operation type.");
         }
 
+        public UserInformation GetUser(int userId)
+        {
+            return Translate(UserEntity.GetUserByUserId(userId));
+        }
+
         public UserInformation GetUser(string username)
         {
             return Translate(UserEntity.GetUserByUserName(username));

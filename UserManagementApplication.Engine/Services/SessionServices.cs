@@ -7,30 +7,28 @@ using UserManagementApplication.Remoting.Services;
 namespace UserManagementApplication.Engine.Services
 {
     [ServiceBehavior(IncludeExceptionDetailInFaults = false)]
-    public class SessionServices : ISessionServices
+    public class SessionServices : RemotingServiceBase, ISessionServices
     {
         public Remoting.Data.UserSession Logon(LogonRequest request)
         {
-            try
-            {
-                UserSession userSession = new UserSession();
+            return InvokeMethod(() =>
+                {
+                    UserSession userSession = new UserSession();
 
-                var result = userSession.AuthenticateUser(request.Username, request.Password);
+                    var result = userSession.AuthenticateUser(request.Username, request.Password);
 
-                return Translate(result);
-            }
-            catch (ErrorException ex)
-            {
-                //log message
-                throw new FaultException(ex.Message);
-            }
+                    return Translate(result);
+                });
         }
 
         public void Logoff(Remoting.Data.UserSession session)
         {
-            UserSession userSession = new UserSession();
+            InvokeMethod(() =>
+            {
+                UserSession userSession = new UserSession();
 
-            userSession.TerminateSession(Translate(session));
+                userSession.TerminateSession(Translate(session));
+            });
         }
 
         private UserSession Translate(Remoting.Data.UserSession session)

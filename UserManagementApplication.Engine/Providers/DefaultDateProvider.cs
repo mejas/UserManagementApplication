@@ -6,7 +6,7 @@ namespace UserManagementApplication.Engine.Providers
     {
         public DateTime NOW()
         {
-            return DateTime.Now;
+            return DateTime.Now.Date;
         }
     }
 }

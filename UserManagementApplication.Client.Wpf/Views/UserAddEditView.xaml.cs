@@ -110,13 +110,13 @@ namespace UserManagementApplication.Client.Wpf.Views
         {
             foreach (var result in validationResults.ErrorDictionary)
             {
-                MessageBox.Show(result.Value, this.Title);
+                MessageBox.Show(this, result.Value, this.Title);
             }
         }
 
         public void HandleException(string message)
         {
-            MessageBox.Show(message, this.Title);
+            MessageBox.Show(this, message, this.Title);
         }
 
         public void HandleCommitSuccess()

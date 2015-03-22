@@ -7,6 +7,9 @@ namespace UserManagementApplication.Client.ViewDefinitions
     {
         UserData CurrentUserData { get; }
 
+        string FirstName { get; set; }
+        string LastName { get; set; }
+
         void UpdateData(IList<UserData> userData);
 
         void HandleLogout();
@@ -16,7 +19,7 @@ namespace UserManagementApplication.Client.ViewDefinitions
         void EnableDelete(bool value);
         void EnableUnlock(bool value);
 
-        void OnAddItem(UserData userData);
-        void OnEditItem(UserData userData);
+        void OnAddUser(UserData userData);
+        void OnEditUser(UserData userData);
     }
 }

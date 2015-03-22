@@ -100,10 +100,10 @@ namespace UserManagementApplication.Engine.Providers
         {
             if (userSessionInfo != null)
             {
-                return new UserSession()
+                return new UserSession(this)
                 {
                     SessionToken = userSessionInfo.SessionToken,
-                    User = new User().Translate(userSessionInfo.User)
+                    User = new User(UserDataService).Translate(userSessionInfo.User)
                 };
             }
 

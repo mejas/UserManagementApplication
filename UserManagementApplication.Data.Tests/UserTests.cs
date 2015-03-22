@@ -403,6 +403,36 @@ namespace UserManagementApplication.Data.Tests
         }
 
         [Trait("Trait", "UserData")]
+        public class GetByUserIdTests : UserTestsBase
+        {
+            [Fact]
+            public void ResultShouldNotBeNull()
+            {
+                var user = new User(StorageProvider, DataSecurityProvider);
+
+                user.Create("admin", "admin", "yuuna", "yuuki", new DateTime(2001, 3, 4));
+                user.Create("gyuuki", "admin", "yuuna", "gelato", new DateTime(2001, 3, 4));
+
+                var subject = user.GetUserByUserId(1);
+
+                subject.Should().NotBeNull();
+            }
+
+            [Fact]
+            public void ResultShouldBeNull()
+            {
+                var user = new User(StorageProvider, DataSecurityProvider);
+
+                user.Create("admin", "admin", "yuuna", "yuuki", new DateTime(2001, 3, 4));
+                user.Create("gyuuki", "admin", "yuuna", "gelato", new DateTime(2001, 3, 4));
+
+                var subject = user.GetUserByUserId(3);
+
+                subject.Should().BeNull();
+            }
+        }
+
+        [Trait("Trait", "UserData")]
         public class UpdateUserTests : UserTestsBase
         {
             private string USERNAME = "gyuuki";

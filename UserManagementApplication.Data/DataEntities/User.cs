@@ -90,6 +90,11 @@ namespace UserManagementApplication.Data.DataEntities
             return StorageProvider.GetUser(username);
         }
 
+        public User GetUserByUserId(int userId)
+        {
+            return StorageProvider.GetUser(userId);
+        }
+
         public User Update(User user)
         {
             var currentUser = StorageProvider.GetUser(user.UserId);

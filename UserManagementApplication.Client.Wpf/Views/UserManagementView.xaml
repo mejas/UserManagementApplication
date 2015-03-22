@@ -1,7 +1,7 @@
 ﻿<Window x:Class="UserManagementApplication.Client.Wpf.Views.UserManagementView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="User Management" Height="342" Width="776.274"
+        Title="User Management" Height="380" Width="776.274"
         ResizeMode="NoResize"
         Loaded="OnLoaded">
     <Grid Margin="0,0,2,0">
@@ -23,11 +23,16 @@
                 </GridView>
             </ListView.View>
         </ListView>
-        <Button Name="buttonAdd" Content="Add" HorizontalAlignment="Left" Margin="114,273,0,0" VerticalAlignment="Top" Width="75" Height="22" IsEnabled="True" Click="buttonAdd_Click"/>
-        <Button Name="buttonEdit" Content="Edit" HorizontalAlignment="Left" Margin="194,273,0,0" VerticalAlignment="Top" Width="75" Height="22" IsEnabled="False" Click="buttonEdit_Click"/>
-        <Button Name="buttonDelete" Content="Delete" HorizontalAlignment="Left" Margin="274,273,0,0" VerticalAlignment="Top" Width="75" Height="22" IsEnabled="False" Click="buttonDelete_Click"/>
-        <Button Name="buttonRefresh" Content="Refresh" HorizontalAlignment="Left" Margin="10,273,0,0" VerticalAlignment="Top" Width="94" Height="22" Click="buttonRefresh_Click"/>
-        <Button Name="buttonUnlock" Content="Unlock" HorizontalAlignment="Left" Margin="354,273,0,0" VerticalAlignment="Top" Width="75" Height="22" IsEnabled="False"/>
-        <Button Name="buttonLogout" Content="Logout" HorizontalAlignment="Left" Margin="683,273,0,0" VerticalAlignment="Top" Width="75" Height="22" Click="buttonLogout_Click"/>
+        <Button Name="buttonAdd" Content="Add" HorizontalAlignment="Left" Margin="443,273,0,0" VerticalAlignment="Top" Width="75" Height="22" IsEnabled="True" Click="buttonAdd_Click"/>
+        <Button Name="buttonEdit" Content="Edit" HorizontalAlignment="Left" Margin="523,273,0,0" VerticalAlignment="Top" Width="75" Height="22" IsEnabled="False" Click="buttonEdit_Click"/>
+        <Button Name="buttonDelete" Content="Delete" HorizontalAlignment="Left" Margin="603,273,0,0" VerticalAlignment="Top" Width="75" Height="22" IsEnabled="False" Click="buttonDelete_Click"/>
+        <Button Name="buttonRefresh" Content="Find All Users" HorizontalAlignment="Left" Margin="443,300,0,0" VerticalAlignment="Top" Width="235" Height="22" Click="buttonRefresh_Click"/>
+        <Button Name="buttonUnlock" Content="Unlock" HorizontalAlignment="Left" Margin="683,273,0,0" VerticalAlignment="Top" Width="75" Height="22" IsEnabled="False" Click="buttonUnlock_Click"/>
+        <Button Name="buttonLogout" Content="Logout" HorizontalAlignment="Left" Margin="683,300,0,0" VerticalAlignment="Top" Width="75" Height="22" Click="buttonLogout_Click"/>
+        <TextBox Name="textBoxFirstName" HorizontalAlignment="Left" Height="23" Margin="92,276,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="155"/>
+        <TextBox Name="textBoxLastName" HorizontalAlignment="Left" Height="23" Margin="92,304,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="155"/>
+        <Label Content="First Name" HorizontalAlignment="Left" Margin="10,273,0,0" VerticalAlignment="Top" Width="77"/>
+        <Label Content="Last Name" HorizontalAlignment="Left" Margin="10,302,0,0" VerticalAlignment="Top" Width="77"/>
+        <Button x:Name="buttonSearch" Content="Search" HorizontalAlignment="Left" Margin="261,289,0,0" VerticalAlignment="Top" Width="91" Height="22" Click="buttonSearch_Click"/>
     </Grid>
 </Window>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Xml;
@@ -18,12 +19,20 @@ namespace UserManagementApplication.Data.Providers
         public string XmlFile { get; private set; }
 
         public UserDataXmlStorageProvider()
-            : this("userData.xml") { }
+        {
+            if (String.IsNullOrEmpty(XmlFile))
+            {
+                Configuration assemblyConfig = ConfigurationManager.OpenExeConfiguration(this.GetType().Assembly.Location);
+
+                XmlFile = assemblyConfig.AppSettings.Settings["XmlDbFile"].Value;
+            }
+
+            initializeCacheAndDb();
+        }
 
         public UserDataXmlStorageProvider(string fileName)
         {
             XmlFile = fileName;
-
             initializeCacheAndDb();
         }
 
@@ -109,7 +118,7 @@ namespace UserManagementApplication.Data.Providers
                 }
             }
 
-            var lastAddedUser = UserCache.OrderBy(item => item.UserId).FirstOrDefault();
+            var lastAddedUser = UserCache.OrderByDescending(item => item.UserId).FirstOrDefault();
 
             _newUserId = lastAddedUser != null ? lastAddedUser.UserId + 1 : 0;
         }
