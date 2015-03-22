@@ -48,9 +48,7 @@
     <Compile Include="Providers\Interfaces\IStorageProvider.cs" />
     <Compile Include="Providers\Interfaces\IDataSecurityProvider.cs" />
     <Compile Include="Providers\SessionDataCacheStorageProvider.cs" />
-    <Compile Include="Providers\UserDataXmlStorageProvider.cs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Compile>
+    <Compile Include="Providers\UserDataXmlStorageProvider.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\UserManagementApplication.Common\UserManagementApplication.Common.csproj">
