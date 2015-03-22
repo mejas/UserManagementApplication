@@ -16,5 +16,37 @@ namespace UserManagementApplication.Client.Models
                 handler(this, e);
             }
         }
+
+        protected T InvokeMethod<T>(Func<T> method)
+        {
+            if (method != null)
+            {
+                try
+                {
+                    return method();
+                }
+                catch (UserManagementApplicationException ex)
+                {
+                    OnModelException(ex);
+                }
+            }
+
+            return default(T);
+        }
+
+        protected void InvokeMethod(System.Action method)
+        {
+            if (method != null)
+            {
+                try
+                {
+                    method();
+                }
+                catch (UserManagementApplicationException ex)
+                {
+                    OnModelException(ex);
+                }
+            }
+        }
     }
 }

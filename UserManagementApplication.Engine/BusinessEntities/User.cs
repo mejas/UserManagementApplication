@@ -79,75 +79,110 @@ namespace UserManagementApplication.Engine.BusinessEntities
             return Translate(UserDataService.GetUser(username));
         }
 
-        public User Create( string username,
+        public User Create( UserSession userSession,
+                            string username,
                             string password,
                             string firstName, 
                             string lastName, 
                             DateTime birthDate,
                             RoleType roleType = RoleType.User)
         {
-            UserInformation user = new UserInformation()
+            if (isRoleClearanceValid(userSession, roleType))
             {
-                Username  = username,
-                Password  = password,
-                FirstName = firstName,
-                LastName  = lastName,
-                Birthdate = birthDate,
-                DataState = DataState.New,
-                RoleType  = roleType
-            };
+                UserInformation user = new UserInformation()
+                {
+                    Username = username,
+                    Password = password,
+                    FirstName = firstName,
+                    LastName = lastName,
+                    Birthdate = birthDate,
+                    DataState = DataState.New,
+                    RoleType = roleType
+                };
 
-            if (String.IsNullOrEmpty(user.Username) || 
-                String.IsNullOrEmpty(user.Password))
-            {
-                throw new ValidationException("Username and Password should not be blank.");
+                if (String.IsNullOrEmpty(user.Username) ||
+                    String.IsNullOrEmpty(user.Password))
+                {
+                    throw new ValidationException("Username and Password should not be blank.");
+                }
+
+                if (user.Birthdate > DateProvider.NOW())
+                {
+                    throw new ValidationException("Invalid birthdate.");
+                }
+
+                if (!Regex.IsMatch(user.Username, RegexPatterns.LETTERS_ONLY))
+                {
+                    throw new ValidationException("Invalid first name.");
+                }
+
+                if (!Regex.IsMatch(user.LastName, RegexPatterns.LETTERS_ONLY))
+                {
+                    throw new ValidationException("Invalid last name.");
+                }
+
+                user = UserDataService.Commit(user);
+
+                return Translate(user);
             }
 
-            if (user.Birthdate > DateProvider.NOW())
-            {
-                throw new ValidationException("Invalid birthdate.");
-            }
-
-            if (!Regex.IsMatch(user.Username, RegexPatterns.LETTERS_ONLY))
-            {
-                throw new ValidationException("Invalid first name.");
-            }
-
-            if (!Regex.IsMatch(user.LastName, RegexPatterns.LETTERS_ONLY))
-            {
-                throw new ValidationException("Invalid last name.");
-            }
-
-            user = UserDataService.Commit(user);
-
-            return Translate(user);
+            return null;
         }
 
-        public User Update(User userInfo)
+        public User Update(UserSession session, User user)
         {
-            var user = Translate(userInfo);
+            if (validateUserSession(session, user))
+            {
+                var userInfo = Translate(user);
 
-            user.DataState = DataState.Modified;
+                userInfo.DataState = DataState.Modified;
 
-            user = UserDataService.Commit(user);
+                userInfo = UserDataService.Commit(userInfo);
 
-            return Translate(user);
+                return Translate(userInfo);
+            }
+
+            return null;
         }
 
-        public void Remove(User userInfo)
+        public void Remove(UserSession session, User user)
         {
-            var user = Translate(userInfo);
+            if (validateUserSession(session, user) 
+                && isRoleClearanceValid(session, user.RoleType))
+            {
+                var userInfo = Translate(user);
 
-            user.DataState = DataState.Deleted;
+                userInfo.DataState = DataState.Deleted;
 
-            UserDataService.Commit(user);
+                UserDataService.Commit(userInfo);
+            }
         }
 
         #endregion
 
         #region Functions
 
-        protected User Translate(UserInformation user)
+        private bool isRoleClearanceValid(UserSession userSession, Common.Enumerations.RoleType roleType)
+        {
+            if (!userSession.IsClearedForRole(userSession, roleType))
+            {
+                throw new UnauthorizedOperationException("The user is not allowed to execute this operation.");
+            }
+
+            return true;
+        }
+
+        private bool validateUserSession(UserSession session, User user)
+        {
+            if (session.User.UserId == user.UserId)
+            {
+                throw new UnauthorizedOperationException("The user is not allowed to execute this operation.");
+            }
+
+            return true;
+        }
+
+        public User Translate(UserInformation user)
         {
             User userInfo = null;
 
@@ -169,7 +204,7 @@ namespace UserManagementApplication.Engine.BusinessEntities
             return userInfo;
         }
 
-        protected UserInformation Translate(User userInfo)
+        public UserInformation Translate(User userInfo)
         {
             UserInformation user = null;
 
@@ -184,7 +219,7 @@ namespace UserManagementApplication.Engine.BusinessEntities
                     Birthdate = userInfo.Birthdate,
                     UserId    = userInfo.UserId,
                     DataState = DataState.Clean,
-                    //BadLogins = userInfo.BadLogins,
+                    BadLogins = userInfo.BadLogins,
                     RoleType  = userInfo.RoleType
                 };
             }

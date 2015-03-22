@@ -23,21 +23,14 @@ namespace UserManagementApplication.Client.Models
                 Password = password
             };
 
-            try
+            return InvokeMethod(() =>
             {
-
                 var session = SessionProxy.Logon(logonRequest);
 
                 SessionToken = session.SessionToken;
 
                 return true;
-            }
-            catch (UserManagementApplicationException ex)
-            {
-                OnModelException(ex);
-            }
-           
-            return false;
+            });
         }
 
         public string GetSessionToken()
@@ -47,7 +40,7 @@ namespace UserManagementApplication.Client.Models
 
         public void Logout(string sessionToken)
         {
-            SessionProxy.Logoff(new UserSession() { SessionToken = sessionToken });
+            InvokeMethod(() => SessionProxy.Logoff(new UserSession() { SessionToken = sessionToken }));
         }
     }
 }

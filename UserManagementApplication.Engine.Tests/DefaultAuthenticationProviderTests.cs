@@ -40,22 +40,22 @@ namespace UserManagementApplication.Engine.Tests
                 }
             };
 
-            private Dictionary<string, UserInformation> _sessions = new Dictionary<string, UserInformation>();
+            private Dictionary<string, UserSessionInformation> _sessions = new Dictionary<string, UserSessionInformation>();
 
             public IAuthenticationDataService GetAuthenticationDataService()
             {
                 var authenticationDataService = new Mock<IAuthenticationDataService>();
 
                 authenticationDataService
-                    .Setup(d => d.StoreSession(It.IsAny<string>(), It.IsAny<UserInformation>()))
-                    .Callback((string sessionToken, UserInformation userData) => { _sessions[sessionToken] = userData; });
+                    .Setup(d => d.StoreSession(It.IsAny<UserSessionInformation>()))
+                    .Callback((UserSessionInformation userSessionInfo) => { _sessions[userSessionInfo.SessionToken] = userSessionInfo; });
 
                 authenticationDataService
-                    .Setup(d => d.GetUser(It.IsAny<string>()))
+                    .Setup(d => d.GetUserSession(It.IsAny<string>()))
                     .Returns(
                     (string sessionToken) => 
                     {
-                        UserInformation userInfo;
+                        UserSessionInformation userInfo;
 
                         _sessions.TryGetValue(sessionToken, out userInfo);
 
@@ -66,7 +66,16 @@ namespace UserManagementApplication.Engine.Tests
                     .Setup(d => d.RemoveSession(It.IsAny<string>()))
                     .Callback((string sessionToken) => _sessions.Remove(sessionToken));
 
+                authenticationDataService
+                    .Setup(d => d.Authenticate(It.IsAny<UserInformation>(), It.IsAny<string>()))
+                    .Returns((UserInformation info, string pass) => mockAuthLogic(info, pass));
+                
                 return authenticationDataService.Object;
+            }
+
+            private bool mockAuthLogic(UserInformation info, string pass)
+            {
+                return info.Password == pass;
             }
 
             public IUserDataService GetUserDataService()

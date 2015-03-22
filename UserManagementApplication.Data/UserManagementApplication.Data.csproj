@@ -42,10 +42,12 @@
     <Compile Include="DataEntities\Session.cs" />
     <Compile Include="DataEntities\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="StorageProviders\Interfaces\ISessionDataStorageProvider.cs" />
-    <Compile Include="StorageProviders\Interfaces\IStorageProvider.cs" />
-    <Compile Include="StorageProviders\SessionDataCacheStorageProvider.cs" />
-    <Compile Include="StorageProviders\UserDataXmlStorageProvider.cs" />
+    <Compile Include="Providers\DefaultDataSecurityProvider.cs" />
+    <Compile Include="Providers\Interfaces\ISessionDataStorageProvider.cs" />
+    <Compile Include="Providers\Interfaces\IStorageProvider.cs" />
+    <Compile Include="Providers\Interfaces\IDataSecurityProvider.cs" />
+    <Compile Include="Providers\SessionDataCacheStorageProvider.cs" />
+    <Compile Include="Providers\UserDataXmlStorageProvider.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\UserManagementApplication.Common\UserManagementApplication.Common.csproj">

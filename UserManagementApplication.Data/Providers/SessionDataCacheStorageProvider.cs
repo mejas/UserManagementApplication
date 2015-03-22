@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using UserManagementApplication.Data.DataEntities;
-using UserManagementApplication.Data.StorageProviders.Interfaces;
+using UserManagementApplication.Data.Providers.Interfaces;
 
-namespace UserManagementApplication.Data.StorageProviders
+namespace UserManagementApplication.Data.Providers
 {
     public class SessionDataCacheStorageProvider : ISessionDataStorageProvider
     {

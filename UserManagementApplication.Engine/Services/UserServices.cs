@@ -13,8 +13,6 @@ namespace UserManagementApplication.Engine.Services
     {
         public IList<User> GetUsers(UserSession session)
         {
-            verifyUserPermissions(session, RoleType.User);
-
             EBC.User user = new EBC.User();
 
             return user.Find().ToList().ConvertAll<User>(Translate);
@@ -22,8 +20,6 @@ namespace UserManagementApplication.Engine.Services
 
         public IList<User> FindUsers(UserSession session, FindUserRequest request)
         {
-            verifyUserPermissions(session, RoleType.User);
-
             EBC.User user = new EBC.User();
 
             return user.Find().ToList().ConvertAll<User>(Translate);
@@ -31,15 +27,14 @@ namespace UserManagementApplication.Engine.Services
 
         public User Commit(UserSession session, User user)
         {
-            verifyUserPermissions(session, RoleType.User);
-
             EBC.User ebcUser = new EBC.User();
 
             switch (user.MessageState)
             {
                 case MessageState.New:
                     {
-                        var result = ebcUser.Create(user.Username,
+                        var result = ebcUser.Create(Translate(session),
+                                                    user.Username,
                                                     user.Password,
                                                     user.FirstName,
                                                     user.LastName,
@@ -49,13 +44,13 @@ namespace UserManagementApplication.Engine.Services
                     }
                 case MessageState.Modified:
                     {
-                        var result = ebcUser.Update(Translate(user));
+                        var result = ebcUser.Update(Translate(session), Translate(user));
 
                         return Translate(result);
                     }
                 case MessageState.Deleted:
                     {
-                        ebcUser.Remove(Translate(user));
+                        ebcUser.Remove(Translate(session), Translate(user));
 
                         return null;
                     }
@@ -64,17 +59,7 @@ namespace UserManagementApplication.Engine.Services
             }
         }
 
-        private void verifyUserPermissions(UserSession session, RoleType roleType)
-        {
-            EBC.UserSession userSession = new EBC.UserSession();
-
-            if (!userSession.IsPermitted(Translate(session), roleType))
-            {
-                throw new ErrorException("User is not authorized for this operation!");
-            }
-        }
-
-        private EBC.UserSession Translate(UserSession session)
+        protected EBC.UserSession Translate(UserSession session)
         {
             if (session != null)
             {
@@ -87,7 +72,7 @@ namespace UserManagementApplication.Engine.Services
             return null;
         }
 
-        private User Translate(EBC.User user)
+        protected User Translate(EBC.User user)
         {
             if (user != null)
             {
@@ -109,7 +94,7 @@ namespace UserManagementApplication.Engine.Services
             return null;
         }
 
-        private EBC.User Translate(User user)
+        protected EBC.User Translate(User user)
         {
             if (user != null)
             {

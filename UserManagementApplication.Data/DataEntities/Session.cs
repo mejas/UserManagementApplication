@@ -1,4 +1,4 @@
-﻿using UserManagementApplication.Data.StorageProviders.Interfaces;
+﻿using UserManagementApplication.Data.Providers.Interfaces;
 
 namespace UserManagementApplication.Data.DataEntities
 {

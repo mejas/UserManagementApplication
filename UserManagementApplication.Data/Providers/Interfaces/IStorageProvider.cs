@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UserManagementApplication.Data.DataEntities;
 
-namespace UserManagementApplication.Data.StorageProviders.Interfaces
+namespace UserManagementApplication.Data.Providers.Interfaces
 {
     public interface IUserDataStorageProvider
     {

@@ -1,41 +1,26 @@
 ﻿using UserManagementApplication.Data.Contracts;
 using UserManagementApplication.Data.Contracts.Interfaces;
 using UserManagementApplication.Data.DataEntities;
-using UserManagementApplication.Data.StorageProviders;
-using UserManagementApplication.Data.StorageProviders.Interfaces;
+using UserManagementApplication.Data.Providers;
+using UserManagementApplication.Data.Providers.Interfaces;
 
 namespace UserManagementApplication.Data.Services
 {
     public class AuthenticationDataServices : IAuthenticationDataService
     {
-        private static ISessionDataStorageProvider _sessionDataStorageProvider = null;
-
-        protected static ISessionDataStorageProvider SessionDataStorageProvider
-        {
-            get
-            {
-                if (_sessionDataStorageProvider == null)
-                {
-                    _sessionDataStorageProvider = new SessionDataCacheStorageProvider();
-                }
-
-                return _sessionDataStorageProvider;
-            }
-        }
-
         protected Session SessionEntity = null;
 
         public AuthenticationDataServices()
         {
-            SessionEntity = new Session(SessionDataStorageProvider);
+            SessionEntity = new Session(ProviderSingleton.Instance.SessionDataStorageProvider);
         }
 
-        public void StoreSession(string sessionToken, UserInformation userData)
+        public void StoreSession(UserSessionInformation userSession)
         {
-            SessionEntity.CreateSession(sessionToken, Translate(userData));
+            SessionEntity.CreateSession(userSession.SessionToken, Translate(userSession.User));
         }
 
-        public UserInformation GetUser(string sessionToken)
+        public UserSessionInformation GetUserSession(string sessionToken)
         {
             var result = SessionEntity.GetSession(sessionToken);
 
@@ -44,14 +29,30 @@ namespace UserManagementApplication.Data.Services
             if (result != null)
             {
                 userInfo = Translate(result.UserData);
+                return new UserSessionInformation()
+                {
+                    SessionToken = sessionToken,
+                    User = userInfo
+                };
             }
 
-            return userInfo;
+            return null;
         }
 
         public void RemoveSession(string sessionToken)
         {
             SessionEntity.RemoveSession(sessionToken);
+        }
+
+        public bool Authenticate(UserInformation userInformation, string password)
+        {
+            var dataSecurityProvider = ProviderSingleton.Instance.DataSecurityProvider;
+
+            User user = new User(ProviderSingleton.Instance.UserDataStorageProvider, dataSecurityProvider);
+
+            user = user.GetUserByUserName(userInformation.Username);
+
+            return user.Password == dataSecurityProvider.GenerateHash(password, user.Salt);
         }
 
         private UserInformation Translate(User user)
@@ -82,11 +83,11 @@ namespace UserManagementApplication.Data.Services
                 {
                     Birthdate = userData.Birthdate,
                     FirstName = userData.FirstName,
-                    LastName = userData.LastName,
-                    Password = userData.Password,
-                    RoleType = userData.RoleType,
-                    UserId = userData.UserId,
-                    Username = userData.Username
+                    LastName  = userData.LastName,
+                    Password  = userData.Password,
+                    RoleType  = userData.RoleType,
+                    UserId    = userData.UserId,
+                    Username  = userData.Username
                 };
             }
 

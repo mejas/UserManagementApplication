@@ -5,6 +5,8 @@ namespace UserManagementApplication.Client.ViewDefinitions
 {
     public interface IUserManagementView : IView
     {
+        UserData CurrentUserData { get; }
+
         void UpdateData(IList<UserData> userData);
 
         void HandleLogout();
@@ -13,5 +15,8 @@ namespace UserManagementApplication.Client.ViewDefinitions
         void EnableEdit(bool value);
         void EnableDelete(bool value);
         void EnableUnlock(bool value);
+
+        void OnAddItem(UserData userData);
+        void OnEditItem(UserData userData);
     }
 }

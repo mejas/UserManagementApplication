@@ -25,56 +25,64 @@ namespace UserManagementApplication.Engine.Providers
             AuthenticationDataService = authenticationDataService;
         }
 
+        public UserSession GetSession(string sessionToken)
+        {
+            var result = AuthenticationDataService.GetUserSession(sessionToken);
+
+            return Translate(result);
+        }
+
         public UserSession CreateSession(string username, string password)
         {
-            var userData = UserDataService.GetUser(username);
+            var user = UserDataService.GetUser(username);
 
             ////TODO: hash passwords here before checking
-            if (userData == null ||
-                !(password == userData.Password))
+            if (user == null || 
+                !AuthenticationDataService.Authenticate(user, password))
             {
-                if (userData != null && userData.RoleType != RoleType.Admin)
+                if (user != null && user.RoleType != RoleType.Admin)
                 {
-                    userData.BadLogins = userData.BadLogins + 1;
-                    userData.DataState = DataState.Modified;
+                    user.BadLogins = user.BadLogins + 1;
+                    user.DataState = DataState.Modified;
 
-                    UserDataService.Commit(userData);
+                    UserDataService.Commit(user);
                 }
 
                 throw new ErrorException("Invalid user credentials");
             }
 
-            if (userData.BadLogins >= 3)
+            if (user.BadLogins >= 3)
             {
                 throw new ErrorException("User is blocked");
             }
 
-            string sessionToken = generateSessionToken();
-
-            AuthenticationDataService.StoreSession(sessionToken, userData);
-
-            return new UserSession(this)
+            var userSessionInfo = new UserSessionInformation()
             {
-                SessionToken = sessionToken
+                SessionToken = generateSessionToken(),
+                User = user
             };
+
+            AuthenticationDataService.StoreSession(userSessionInfo);
+
+            return Translate(userSessionInfo);
         }
 
         public bool HasPermission(UserSession session, RoleType roleTypeToTest)
         {
-            UserInformation userInfo = AuthenticationDataService.GetUser(session.SessionToken);
+            UserSessionInformation userSessionInfo = AuthenticationDataService.GetUserSession(session.SessionToken);
 
-            if (userInfo == null)
+            if (userSessionInfo == null)
             {
                 throw new InvalidSessionException("Session has expired.");
             }
 
-            if (userInfo.RoleType == roleTypeToTest)
+            if (userSessionInfo.User.RoleType == roleTypeToTest)
             {
                 return true;
             }
             else
             {
-                return roleTypeToTest == (userInfo.RoleType | roleTypeToTest);
+                return roleTypeToTest == (userSessionInfo.User.RoleType | roleTypeToTest);
             }
         }
 
@@ -86,6 +94,20 @@ namespace UserManagementApplication.Engine.Providers
         private string generateSessionToken()
         {
             return Path.GetRandomFileName().Replace(".", String.Empty);
+        }
+
+        protected UserSession Translate(UserSessionInformation userSessionInfo)
+        {
+            if (userSessionInfo != null)
+            {
+                return new UserSession()
+                {
+                    SessionToken = userSessionInfo.SessionToken,
+                    User = new User().Translate(userSessionInfo.User)
+                };
+            }
+
+            return null;
         }
     }
 }

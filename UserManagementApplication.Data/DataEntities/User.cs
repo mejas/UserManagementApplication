@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UserManagementApplication.Common.Enumerations;
 using UserManagementApplication.Common.Exceptions;
-using UserManagementApplication.Data.StorageProviders.Interfaces;
+using UserManagementApplication.Data.Providers;
+using UserManagementApplication.Data.Providers.Interfaces;
 
 namespace UserManagementApplication.Data.DataEntities
 {
@@ -18,19 +19,22 @@ namespace UserManagementApplication.Data.DataEntities
         public DateTime Birthdate { get; set; }
         public RoleType RoleType { get; set; }
         public int BadLogins { get; set; }
+        public string Salt { get; set; }
         
         protected IUserDataStorageProvider StorageProvider { get; set; }
+        protected IDataSecurityProvider DataSecurityProvider { get; set; }
         
         #endregion
 
         #region Constructors
 
-        public User()
-        { }
+        public User() { }
 
-        public User(IUserDataStorageProvider storageProvider)
+        public User(IUserDataStorageProvider storageProvider, IDataSecurityProvider dataSecurityProvider)
         {
             StorageProvider = storageProvider;
+            DataSecurityProvider = dataSecurityProvider;
+
             RoleType = RoleType.User;
         }
 
@@ -55,15 +59,18 @@ namespace UserManagementApplication.Data.DataEntities
                             DateTime birthDate,
                             RoleType roleType = RoleType.User)
         {
-            User user = new User(StorageProvider)
+            string salt = DataSecurityProvider.GenerateSalt();
+
+            User user = new User(StorageProvider, DataSecurityProvider)
             {
-                Username = username,
-                Password = password,
+                Username  = username,
+                Password  = DataSecurityProvider.GenerateHash(password, salt),
                 FirstName = firstName,
-                LastName = lastName,
+                LastName  = lastName,
                 Birthdate = birthDate,
-                RoleType = roleType,
-                BadLogins = 0
+                RoleType  = roleType,
+                BadLogins = 0,
+                Salt = salt
             };
 
             var userMatch = StorageProvider.GetUser(user.Username);
@@ -92,7 +99,18 @@ namespace UserManagementApplication.Data.DataEntities
                 throw new ErrorException("User not found.");
             }
 
-            var result = StorageProvider.UpdateUser(user);
+            currentUser.Username  = user.Username;
+            if (user.Password != currentUser.Password)
+            {
+                currentUser.Password = DataSecurityProvider.GenerateHash(user.Password, currentUser.Salt);
+            }
+            currentUser.FirstName = user.FirstName;
+            currentUser.LastName  = user.LastName;
+            currentUser.Birthdate = user.Birthdate;
+            currentUser.RoleType  = user.RoleType;
+            currentUser.BadLogins = user.BadLogins;
+
+            var result = StorageProvider.UpdateUser(currentUser);
 
             return result;
         }

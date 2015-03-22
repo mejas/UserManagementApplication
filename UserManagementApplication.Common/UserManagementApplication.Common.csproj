@@ -44,6 +44,7 @@
     <Compile Include="Enumerations\RoleType.cs" />
     <Compile Include="Exceptions\ErrorException.cs" />
     <Compile Include="Exceptions\InvalidSessionException.cs" />
+    <Compile Include="Exceptions\UnauthorizedOperationException.cs" />
     <Compile Include="Exceptions\UserManagementApplicationException.cs" />
     <Compile Include="Exceptions\ValidationException.cs" />
     <Compile Include="Exceptions\WarningException.cs" />

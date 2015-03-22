@@ -2,7 +2,7 @@
 using System;
 using System.IO;
 using UserManagementApplication.Data.DataEntities;
-using UserManagementApplication.Data.StorageProviders;
+using UserManagementApplication.Data.Providers;
 using Xunit;
 
 namespace UserManagementApplication.Data.Tests
@@ -62,7 +62,7 @@ namespace UserManagementApplication.Data.Tests
             {
                 UserDataXmlStorageProvider storageProvider = new UserDataXmlStorageProvider(FILENAME);
 
-                var userService = new User(storageProvider);
+                var userService = new User(storageProvider, new DefaultDataSecurityProvider());
 
                 userService.Create("yuckyTuna", "123456", "Yucky", "Tuna", DateTime.Today);
 

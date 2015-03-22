@@ -3,8 +3,9 @@ namespace UserManagementApplication.Data.Contracts.Interfaces
 {
     public interface IAuthenticationDataService
     {
-        void StoreSession(string sessionToken, UserInformation userData);
-        UserInformation GetUser(string sessionToken);
+        void StoreSession(UserSessionInformation userData);
+        UserSessionInformation GetUserSession(string sessionToken);
         void RemoveSession(string sessionToken);
+        bool Authenticate(UserInformation userInformation, string password);
     }
 }

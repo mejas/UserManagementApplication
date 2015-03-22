@@ -4,10 +4,11 @@ using System.IO;
 using System.Linq;
 using System.Xml;
 using System.Xml.Serialization;
+using UserManagementApplication.Common.Enumerations;
 using UserManagementApplication.Data.DataEntities;
-using UserManagementApplication.Data.StorageProviders.Interfaces;
+using UserManagementApplication.Data.Providers.Interfaces;
 
-namespace UserManagementApplication.Data.StorageProviders
+namespace UserManagementApplication.Data.Providers
 {
     public class UserDataXmlStorageProvider : IUserDataStorageProvider
     {
@@ -32,18 +33,8 @@ namespace UserManagementApplication.Data.StorageProviders
             
             if (!fileInfo.Exists)
             {
-                User user = new User()
-                {
-                    Username  = "administrator",
-                    Password  = "$ystemM@stER",
-                    RoleType  = Common.Enumerations.RoleType.Admin,
-                    FirstName = "Administrator",
-                    LastName  = "Administrator",
-                    Birthdate = DateTime.Now
-                };
-
-                AddUser(user);
-                flushUserCacheToDisk();
+                User user = new User(this, new DefaultDataSecurityProvider());
+                user.Create("administrator", "$ystemM@stER", "Administrator", "Administrator", DateTime.Now, RoleType.Admin);
             }
             else if(fileInfo.Length > 1)
             {

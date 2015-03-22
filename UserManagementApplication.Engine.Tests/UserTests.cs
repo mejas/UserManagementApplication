@@ -8,6 +8,7 @@ using UserManagementApplication.Data.Contracts;
 using UserManagementApplication.Data.Contracts.Interfaces;
 using UserManagementApplication.Engine.BusinessEntities;
 using UserManagementApplication.Engine.Providers;
+using UserManagementApplication.Engine.Providers.Interfaces;
 using Xunit;
 
 namespace UserManagementApplication.Engine.Tests
@@ -25,6 +26,11 @@ namespace UserManagementApplication.Engine.Tests
                     .Returns(DateTime.Now);
 
                 return dateProvider.Object;
+            }
+
+            public IAuthenticationProvider GetAuthenticationProvider()
+            {
+                return new UserManagementApplication.Engine.Tests.UserSessionTests.UserSessionTestsServices().AuthenticationProvider;
             }
         }
 
@@ -127,6 +133,14 @@ namespace UserManagementApplication.Engine.Tests
         {
             private UserInfoTestsProviders _providers = new UserInfoTestsProviders();
             private UserInfoTestsMockServices _mockServices = new UserInfoTestsMockServices();
+
+            protected IAuthenticationProvider AuthenticationProvider
+            {
+                get
+                {
+                    return _providers.GetAuthenticationProvider();
+                }
+            }
 
             protected IDateProvider DateProvider
             {
@@ -247,10 +261,12 @@ namespace UserManagementApplication.Engine.Tests
             [Fact]
             public void ResultShouldNotBeNull()
             {
-                var userInfo = new User(DateProvider, UserDataService);
+                var userSession = new UserSession(AuthenticationProvider);
+                userSession = userSession.AuthenticateUser("admin", "admin");
 
-                userInfo.Create("sampleman", "sampleman", "Sample", "Data", new DateTime(1992, 11, 9));
-                userInfo.Create("yuuna", "tougoudidnothingwrong", "Sample", "Information", new DateTime(1994, 8, 1));
+                var userInfo = new User(DateProvider, UserDataService);
+                userInfo.Create(userSession, "sampleman", "sampleman", "Sample", "Data", new DateTime(1992, 11, 9));
+                userInfo.Create(userSession, "yuuna", "tougoudidnothingwrong", "Sample", "Information", new DateTime(1994, 8, 1));
 
                 var subject = userInfo.Find("Sample", String.Empty);
 
@@ -260,10 +276,12 @@ namespace UserManagementApplication.Engine.Tests
             [Fact]
             public void ResultShouldNotBeEmpty()
             {
-                var userInfo = new User(DateProvider, UserDataService);
+                var userSession = new UserSession(AuthenticationProvider);
+                userSession = userSession.AuthenticateUser("admin", "admin");
 
-                userInfo.Create("sampleman", "sampleman", "Sample", "Data", new DateTime(1992, 11, 9));
-                userInfo.Create("yuuna", "tougoudidnothingwrong", "Sample", "Information", new DateTime(1994, 8, 1));
+                var userInfo = new User(DateProvider, UserDataService);
+                userInfo.Create(userSession, "sampleman", "sampleman", "Sample", "Data", new DateTime(1992, 11, 9));
+                userInfo.Create(userSession, "yuuna", "tougoudidnothingwrong", "Sample", "Information", new DateTime(1994, 8, 1));
 
                 var subject = userInfo.Find("Sample", String.Empty);
 
@@ -277,10 +295,12 @@ namespace UserManagementApplication.Engine.Tests
             [Fact]
             public void ResultShouldNotBeNull()
             {
-                var userInfo = new User(DateProvider, UserDataService);
+                var userSession = new UserSession(AuthenticationProvider);
+                userSession = userSession.AuthenticateUser("admin", "admin");
 
-                userInfo.Create("sampleman", "sampleman", "Sample", "Data", new DateTime(1992, 11, 9));
-                userInfo.Create("yuuna", "tougoudidnothingwrong", "Sample", "Information", new DateTime(1994, 8, 1));
+                var userInfo = new User(DateProvider, UserDataService);
+                userInfo.Create(userSession, "sampleman", "sampleman", "Sample", "Data", new DateTime(1992, 11, 9));
+                userInfo.Create(userSession, "yuuna", "tougoudidnothingwrong", "Sample", "Information", new DateTime(1994, 8, 1));
 
                 var subject = userInfo.GetUser("yuuna");
 
@@ -290,10 +310,12 @@ namespace UserManagementApplication.Engine.Tests
             [Fact]
             public void ResultShouldBeNull()
             {
-                var userInfo = new User(DateProvider, UserDataService);
+                var userSession = new UserSession(AuthenticationProvider);
+                userSession = userSession.AuthenticateUser("admin", "admin");
 
-                userInfo.Create("sampleman", "sampleman", "Sample", "Data", new DateTime(1992, 11, 9));
-                userInfo.Create("yuuna", "tougoudidnothingwrong", "Sample", "Information", new DateTime(1994, 8, 1));
+                var userInfo = new User(DateProvider, UserDataService);
+                userInfo.Create(userSession, "sampleman", "sampleman", "Sample", "Data", new DateTime(1992, 11, 9));
+                userInfo.Create(userSession, "yuuna", "tougoudidnothingwrong", "Sample", "Information", new DateTime(1994, 8, 1));
 
                 var subject = userInfo.GetUser("fuu");
 
@@ -307,17 +329,34 @@ namespace UserManagementApplication.Engine.Tests
             [Fact]
             public void FirstNameInvalid()
             {
+                var userSession = new UserSession(AuthenticationProvider);
+                userSession = userSession.AuthenticateUser("admin", "admin");
+
                 var user = new User(DateProvider, UserDataService);
 
-                Assert.Throws<ValidationException>(()=>user.Create("username", "password", "f1r$tnaMe", "lastname", DateTime.Now));
+                Assert.Throws<ValidationException>(()=>user.Create(userSession, "username", "password", "f1r$tnaMe", "lastname", DateTime.Now));
             }
 
             [Fact]
             public void LastNameIsInvalid()
             {
+                var userSession = new UserSession(AuthenticationProvider);
+                userSession = userSession.AuthenticateUser("admin", "admin");
+
                 var user = new User(DateProvider, UserDataService);
 
-                Assert.Throws<ValidationException>(() => user.Create("username", "password", "firstname", "1@$tName", DateTime.Now));
+                Assert.Throws<ValidationException>(() => user.Create(userSession, "username", "password", "firstname", "1@$tName", DateTime.Now));
+            }
+
+            [Fact]
+            public void AdminCreationShouldBeDenied()
+            {
+                var userSession = new UserSession(AuthenticationProvider); ;
+                userSession = userSession.AuthenticateUser("gyuuki", "user");
+
+                var user = new User(DateProvider, UserDataService);
+
+                Assert.Throws<UnauthorizedOperationException>(() => user.Create(userSession, "username", "password", "firstname", "1@$tName", DateTime.Now, RoleType.Admin));
             }
         }
 
@@ -333,9 +372,12 @@ namespace UserManagementApplication.Engine.Tests
             [Fact]
             public void InstanceShouldNotBeNull()
             {
+                var userSession = new UserSession(AuthenticationProvider);
+                userSession = userSession.AuthenticateUser("admin", "admin");
+
                 var user = new User(DateProvider, UserDataService);
 
-                var subject = user.Create(USERNAME, PASSWORD, FIRST_NAME, LAST_NAME, BIRTH_DATE);
+                var subject = user.Create(userSession, USERNAME, PASSWORD, FIRST_NAME, LAST_NAME, BIRTH_DATE);
 
                 subject.Should().NotBeNull();
             }
@@ -343,9 +385,12 @@ namespace UserManagementApplication.Engine.Tests
             [Fact]
             public void UsernameShouldHaveValue()
             {
+                var userSession = new UserSession(AuthenticationProvider);
+                userSession = userSession.AuthenticateUser("admin", "admin");
+
                 var user = new User(DateProvider, UserDataService);
 
-                var subject = user.Create(USERNAME, PASSWORD, FIRST_NAME, LAST_NAME, BIRTH_DATE);
+                var subject = user.Create(userSession, USERNAME, PASSWORD, FIRST_NAME, LAST_NAME, BIRTH_DATE);
 
                 subject.Username.Should().Be(USERNAME);
             }
@@ -353,9 +398,12 @@ namespace UserManagementApplication.Engine.Tests
             [Fact]
             public void PasswordShouldHaveValue()
             {
+                var userSession = new UserSession(AuthenticationProvider);
+                userSession = userSession.AuthenticateUser("admin", "admin");
+
                 var user = new User(DateProvider, UserDataService);
 
-                var subject = user.Create(USERNAME, PASSWORD, FIRST_NAME, LAST_NAME, BIRTH_DATE);
+                var subject = user.Create(userSession, USERNAME, PASSWORD, FIRST_NAME, LAST_NAME, BIRTH_DATE);
 
                 subject.Password.Should().Be(PASSWORD);
             }
@@ -363,9 +411,12 @@ namespace UserManagementApplication.Engine.Tests
             [Fact]
             public void FirstNameShouldHaveValue()
             {
+                var userSession = new UserSession(AuthenticationProvider);
+                userSession = userSession.AuthenticateUser("admin", "admin");
+
                 var user = new User(DateProvider, UserDataService);
 
-                var subject = user.Create(USERNAME, PASSWORD, FIRST_NAME, LAST_NAME, BIRTH_DATE);
+                var subject = user.Create(userSession, USERNAME, PASSWORD, FIRST_NAME, LAST_NAME, BIRTH_DATE);
 
                 subject.FirstName.Should().Be(FIRST_NAME);
             }
@@ -373,9 +424,12 @@ namespace UserManagementApplication.Engine.Tests
             [Fact]
             public void LastNameShouldHaveValue()
             {
+                var userSession = new UserSession(AuthenticationProvider);
+                userSession = userSession.AuthenticateUser("admin", "admin");
+
                 var user = new User(DateProvider, UserDataService);
 
-                var subject = user.Create(USERNAME, PASSWORD, FIRST_NAME, LAST_NAME, BIRTH_DATE);
+                var subject = user.Create(userSession, USERNAME, PASSWORD, FIRST_NAME, LAST_NAME, BIRTH_DATE);
 
                 subject.LastName.Should().Be(LAST_NAME);
             }
@@ -383,9 +437,12 @@ namespace UserManagementApplication.Engine.Tests
             [Fact]
             public void BirthdateShouldHaveValue()
             {
+                var userSession = new UserSession(AuthenticationProvider);
+                userSession = userSession.AuthenticateUser("admin", "admin");
+
                 var user = new User(DateProvider, UserDataService);
 
-                var subject = user.Create(USERNAME, PASSWORD, FIRST_NAME, LAST_NAME, BIRTH_DATE);
+                var subject = user.Create(userSession, USERNAME, PASSWORD, FIRST_NAME, LAST_NAME, BIRTH_DATE);
 
                 subject.Birthdate.Should().Be(BIRTH_DATE);
             }
@@ -393,9 +450,12 @@ namespace UserManagementApplication.Engine.Tests
             [Fact]
             public void UserIdShouldHaveValue()
             {
+                var userSession = new UserSession(AuthenticationProvider);
+                userSession = userSession.AuthenticateUser("admin", "admin");
+
                 var user = new User(DateProvider, UserDataService);
 
-                var subject = user.Create(USERNAME, PASSWORD, FIRST_NAME, LAST_NAME, BIRTH_DATE);
+                var subject = user.Create(userSession, USERNAME, PASSWORD, FIRST_NAME, LAST_NAME, BIRTH_DATE);
 
                 subject.UserId.Should().Be(1);
             }
@@ -403,9 +463,12 @@ namespace UserManagementApplication.Engine.Tests
             [Fact]
             public void RoleTypeShouldBeUser()
             {
+                var userSession = new UserSession(AuthenticationProvider);
+                userSession = userSession.AuthenticateUser("admin", "admin");
+
                 var user = new User(DateProvider, UserDataService);
 
-                var subject = user.Create(USERNAME, PASSWORD, FIRST_NAME, LAST_NAME, BIRTH_DATE);
+                var subject = user.Create(userSession, USERNAME, PASSWORD, FIRST_NAME, LAST_NAME, BIRTH_DATE);
 
                 subject.RoleType.Should().Be(RoleType.User);
             }
@@ -413,9 +476,12 @@ namespace UserManagementApplication.Engine.Tests
             [Fact]
             public void BadLoginsShouldBeZero()
             {
+                var userSession = new UserSession(AuthenticationProvider);
+                userSession = userSession.AuthenticateUser("admin", "admin");
+
                 var user = new User(DateProvider, UserDataService);
 
-                var subject = user.Create(USERNAME, PASSWORD, FIRST_NAME, LAST_NAME, BIRTH_DATE);
+                var subject = user.Create(userSession, USERNAME, PASSWORD, FIRST_NAME, LAST_NAME, BIRTH_DATE);
 
                 subject.BadLogins.Should().Be(0);
             }
@@ -433,9 +499,12 @@ namespace UserManagementApplication.Engine.Tests
             [Fact]
             public void InstanceShouldNotBeNull()
             {
+                var userSession = new UserSession(AuthenticationProvider);
+                userSession = userSession.AuthenticateUser("admin", "admin");
+
                 var userInfo = new User(DateProvider, UserDataService);
 
-                var subject = userInfo.Create("sampleman", "sampleman", "Sample", "Data", new DateTime(1992, 11, 9));
+                var subject = userInfo.Create(userSession, "sampleman", "sampleman", "Sample", "Data", new DateTime(1992, 11, 9));
 
                 subject.Username  = USERNAME;
                 subject.Password  = PASSWORD;
@@ -444,7 +513,7 @@ namespace UserManagementApplication.Engine.Tests
                 subject.Birthdate = BIRTH_DATE;
                 subject.BadLogins = 1;
 
-                subject = userInfo.Update(subject);
+                subject = userInfo.Update(userSession, subject);
 
                 subject.Should().NotBeNull();
             }
@@ -452,18 +521,21 @@ namespace UserManagementApplication.Engine.Tests
             [Fact]
             public void UsernameShouldBeUpdated()
             {
+                var userSession = new UserSession(AuthenticationProvider);
+                userSession = userSession.AuthenticateUser("admin", "admin");
+
                 var userInfo = new User(DateProvider, UserDataService);
 
-                var subject = userInfo.Create("sampleman", "sampleman", "Sample", "Data", new DateTime(1992, 11, 9));
+                var subject = userInfo.Create(userSession, "sampleman", "sampleman", "Sample", "Data", new DateTime(1992, 11, 9));
 
-                subject.Username  = USERNAME;
-                subject.Password  = PASSWORD;
+                subject.Username = USERNAME;
+                subject.Password = PASSWORD;
                 subject.FirstName = FIRST_NAME;
-                subject.LastName  = LAST_NAME;
+                subject.LastName = LAST_NAME;
                 subject.Birthdate = BIRTH_DATE;
                 subject.BadLogins = 1;
 
-                subject = userInfo.Update(subject);
+                subject = userInfo.Update(userSession, subject);
 
                 subject.Username.Should().Be(USERNAME);
             }
@@ -471,18 +543,21 @@ namespace UserManagementApplication.Engine.Tests
             [Fact]
             public void PasswordShouldBeUpdated()
             {
+                var userSession = new UserSession(AuthenticationProvider);
+                userSession = userSession.AuthenticateUser("admin", "admin");
+
                 var userInfo = new User(DateProvider, UserDataService);
 
-                var subject = userInfo.Create("sampleman", "sampleman", "Sample", "Data", new DateTime(1992, 11, 9));
+                var subject = userInfo.Create(userSession, "sampleman", "sampleman", "Sample", "Data", new DateTime(1992, 11, 9));
 
-                subject.Username  = USERNAME;
-                subject.Password  = PASSWORD;
+                subject.Username = USERNAME;
+                subject.Password = PASSWORD;
                 subject.FirstName = FIRST_NAME;
-                subject.LastName  = LAST_NAME;
+                subject.LastName = LAST_NAME;
                 subject.Birthdate = BIRTH_DATE;
                 subject.BadLogins = 1;
 
-                subject = userInfo.Update(subject);
+                subject = userInfo.Update(userSession, subject);
 
                 subject.Password.Should().Be(PASSWORD);
             }
@@ -490,18 +565,21 @@ namespace UserManagementApplication.Engine.Tests
             [Fact]
             public void FirstNameShouldHaveValue()
             {
+                var userSession = new UserSession(AuthenticationProvider);
+                userSession = userSession.AuthenticateUser("admin", "admin");
+
                 var userInfo = new User(DateProvider, UserDataService);
 
-                var subject = userInfo.Create("sampleman", "sampleman", "Sample", "Data", new DateTime(1992, 11, 9));
+                var subject = userInfo.Create(userSession, "sampleman", "sampleman", "Sample", "Data", new DateTime(1992, 11, 9));
 
-                subject.Username  = USERNAME;
-                subject.Password  = PASSWORD;
+                subject.Username = USERNAME;
+                subject.Password = PASSWORD;
                 subject.FirstName = FIRST_NAME;
-                subject.LastName  = LAST_NAME;
+                subject.LastName = LAST_NAME;
                 subject.Birthdate = BIRTH_DATE;
                 subject.BadLogins = 1;
 
-                subject = userInfo.Update(subject);
+                subject = userInfo.Update(userSession, subject);
 
                 subject.FirstName.Should().Be(FIRST_NAME);
             }
@@ -509,18 +587,21 @@ namespace UserManagementApplication.Engine.Tests
             [Fact]
             public void LastNameShouldHaveValue()
             {
+                var userSession = new UserSession(AuthenticationProvider);
+                userSession = userSession.AuthenticateUser("admin", "admin");
+
                 var userInfo = new User(DateProvider, UserDataService);
 
-                var subject = userInfo.Create("sampleman", "sampleman", "Sample", "Data", new DateTime(1992, 11, 9));
+                var subject = userInfo.Create(userSession, "sampleman", "sampleman", "Sample", "Data", new DateTime(1992, 11, 9));
 
-                subject.Username  = USERNAME;
-                subject.Password  = PASSWORD;
+                subject.Username = USERNAME;
+                subject.Password = PASSWORD;
                 subject.FirstName = FIRST_NAME;
-                subject.LastName  = LAST_NAME;
+                subject.LastName = LAST_NAME;
                 subject.Birthdate = BIRTH_DATE;
                 subject.BadLogins = 1;
 
-                subject = userInfo.Update(subject);
+                subject = userInfo.Update(userSession, subject);
 
                 subject.LastName.Should().Be(LAST_NAME);
             }
@@ -528,18 +609,21 @@ namespace UserManagementApplication.Engine.Tests
             [Fact]
             public void BirthdateShouldHaveValue()
             {
+                var userSession = new UserSession(AuthenticationProvider);
+                userSession = userSession.AuthenticateUser("admin", "admin");
+
                 var userInfo = new User(DateProvider, UserDataService);
 
-                var subject = userInfo.Create("sampleman", "sampleman", "Sample", "Data", new DateTime(1992, 11, 9));
+                var subject = userInfo.Create(userSession, "sampleman", "sampleman", "Sample", "Data", new DateTime(1992, 11, 9));
 
-                subject.Username  = USERNAME;
-                subject.Password  = PASSWORD;
+                subject.Username = USERNAME;
+                subject.Password = PASSWORD;
                 subject.FirstName = FIRST_NAME;
-                subject.LastName  = LAST_NAME;
+                subject.LastName = LAST_NAME;
                 subject.Birthdate = BIRTH_DATE;
                 subject.BadLogins = 1;
 
-                subject = userInfo.Update(subject);
+                subject = userInfo.Update(userSession, subject);
 
                 subject.Birthdate.Should().Be(BIRTH_DATE);
             }
@@ -547,18 +631,21 @@ namespace UserManagementApplication.Engine.Tests
             [Fact]
             public void BadLoginsSHouldHaveValue()
             {
+                var userSession = new UserSession(AuthenticationProvider);
+                userSession = userSession.AuthenticateUser("admin", "admin");
+
                 var userInfo = new User(DateProvider, UserDataService);
 
-                var subject = userInfo.Create("sampleman", "sampleman", "Sample", "Data", new DateTime(1992, 11, 9));
+                var subject = userInfo.Create(userSession, "sampleman", "sampleman", "Sample", "Data", new DateTime(1992, 11, 9));
 
-                subject.Username  = USERNAME;
-                subject.Password  = PASSWORD;
+                subject.Username = USERNAME;
+                subject.Password = PASSWORD;
                 subject.FirstName = FIRST_NAME;
-                subject.LastName  = LAST_NAME;
+                subject.LastName = LAST_NAME;
                 subject.Birthdate = BIRTH_DATE;
                 subject.BadLogins = 1;
 
-                subject = userInfo.Update(subject);
+                subject = userInfo.Update(userSession, subject);
 
                 subject.BadLogins.Should().Be(1);
             }
@@ -570,11 +657,14 @@ namespace UserManagementApplication.Engine.Tests
             [Fact]
             public void UserInfoShouldNotExist()
             {
+                var userSession = new UserSession(AuthenticationProvider);
+                userSession = userSession.AuthenticateUser("admin", "admin");
+
                 var userInfo = new User(DateProvider, UserDataService);
 
-                var itemToRemove = userInfo.Create("sampleman", "sampleman", "Sample", "Data", new DateTime(1992, 11, 9));
+                var itemToRemove = userInfo.Create(userSession, "sampleman", "sampleman", "Sample", "Data", new DateTime(1992, 11, 9));
 
-                userInfo.Remove(itemToRemove);
+                userInfo.Remove(userSession, itemToRemove);
 
                 var subject = userInfo.Find();
 

@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using UserManagementApplication.Common.Enumerations;
 using UserManagementApplication.Data.DataEntities;
-using UserManagementApplication.Data.StorageProviders.Interfaces;
+using UserManagementApplication.Data.Providers.Interfaces;
 using Xunit;
 
 namespace UserManagementApplication.Data.Tests
@@ -76,7 +76,21 @@ namespace UserManagementApplication.Data.Tests
             private User mockAddLogic(User user)
             {
                 user.UserId = _users.Count + 1;
-                _users.Add(user);
+
+                var userToadd = new User()
+                    {
+                        UserId = _users.Count + 1,
+                        BadLogins= user.BadLogins,
+                        Birthdate = user.Birthdate,
+                        FirstName = user.FirstName,
+                        LastName = user.LastName,
+                        Password = user.Password,
+                        RoleType = user.RoleType,
+                        Salt = user.Salt,
+                        Username = user.Username
+                    };
+
+                _users.Add(userToadd);
 
                 return user;
             }
@@ -100,15 +114,39 @@ namespace UserManagementApplication.Data.Tests
             {
                 _users.RemoveAt(user.UserId - 1);
             }
+
+            public IDataSecurityProvider GetSecurityProvider()
+            {
+                var securityService = new Mock<IDataSecurityProvider>();
+
+                securityService
+                    .Setup(d => d.GenerateHash(It.IsAny<string>(), It.IsAny<string>()))
+                    .Returns((string s, string k) => s);
+
+                securityService
+                    .Setup(d => d.GenerateSalt())
+                    .Returns(() => "salt");
+
+                return securityService.Object;
+            }
         }
 
         public class UserTestsBase
         {
+            private UserTestsProviders _serviceInstance = new UserTestsProviders();
             protected IUserDataStorageProvider StorageProvider
             {
                 get
                 {
-                    return new UserTestsProviders().GetStorageProvider();
+                    return _serviceInstance.GetStorageProvider();
+                }
+            }
+
+            protected IDataSecurityProvider DataSecurityProvider
+            {
+                get
+                {
+                    return _serviceInstance.GetSecurityProvider();
                 }
             }
         }
@@ -119,7 +157,7 @@ namespace UserManagementApplication.Data.Tests
             [Fact]
             public void InstanceShouldNotBeNull()
             {
-                var subject = new User(StorageProvider);
+                var subject = new User(StorageProvider, DataSecurityProvider);
 
                 subject.Should().NotBeNull();
             }
@@ -127,7 +165,7 @@ namespace UserManagementApplication.Data.Tests
             [Fact]
             public void UserIdShouldBeZero()
             {
-                var subject = new User(StorageProvider);
+                var subject = new User(StorageProvider, DataSecurityProvider);
 
                 subject.UserId.Should().Be(0);
             }
@@ -135,7 +173,7 @@ namespace UserManagementApplication.Data.Tests
             [Fact]
             public void UsernameShouldBeEmpty()
             {
-                var subject = new User(StorageProvider);
+                var subject = new User(StorageProvider, DataSecurityProvider);
 
                 subject.Username.Should().BeNullOrEmpty();
             }
@@ -143,7 +181,7 @@ namespace UserManagementApplication.Data.Tests
             [Fact]
             public void PasswordShouldBeEmpty()
             {
-                var subject = new User(StorageProvider);
+                var subject = new User(StorageProvider, DataSecurityProvider);
 
                 subject.Password.Should().BeNullOrEmpty();
             }
@@ -151,7 +189,7 @@ namespace UserManagementApplication.Data.Tests
             [Fact]
             public void FirstNameShouldBeEmpty()
             {
-                var subject = new User(StorageProvider);
+                var subject = new User(StorageProvider, DataSecurityProvider);
 
                 subject.FirstName.Should().BeNullOrEmpty();
             }
@@ -159,7 +197,7 @@ namespace UserManagementApplication.Data.Tests
             [Fact]
             public void LastNameShouldBeEmpty()
             {
-                var subject = new User(StorageProvider);
+                var subject = new User(StorageProvider, DataSecurityProvider);
 
                 subject.LastName.Should().BeNullOrEmpty();
             }
@@ -167,7 +205,7 @@ namespace UserManagementApplication.Data.Tests
             [Fact]
             public void BirthdateShouldBeDefault()
             {
-                var subject = new User(StorageProvider);
+                var subject = new User(StorageProvider, DataSecurityProvider);
 
                 subject.Birthdate.Should().Be(DateTime.MinValue);
             }
@@ -175,7 +213,7 @@ namespace UserManagementApplication.Data.Tests
             [Fact]
             public void RoleTypeShouldBeUser()
             {
-                var subject = new User(StorageProvider);
+                var subject = new User(StorageProvider, DataSecurityProvider);
 
                 subject.RoleType.Should().Be(RoleType.User);
             }
@@ -183,9 +221,17 @@ namespace UserManagementApplication.Data.Tests
             [Fact]
             public void BadLoginsShouldBeZero()
             {
-                var subject = new User(StorageProvider);
+                var subject = new User(StorageProvider, DataSecurityProvider);
 
                 subject.BadLogins.Should().Be(0);
+            }
+
+            [Fact]
+            public void SaltShouldBeEmpty()
+            {
+                var subject = new User(StorageProvider, DataSecurityProvider);
+
+                subject.Salt.Should().BeNullOrEmpty();
             }
         }
 
@@ -195,7 +241,7 @@ namespace UserManagementApplication.Data.Tests
             [Fact]
             public void ResultShouldNotBeNull()
             {
-                var user = new User(StorageProvider);
+                var user = new User(StorageProvider, DataSecurityProvider);
 
                 var subject = user.GetAll();
 
@@ -215,7 +261,7 @@ namespace UserManagementApplication.Data.Tests
             [Fact]
             public void InstanceShouldNotBeNull()
             {
-                var user = new User(StorageProvider);
+                var user = new User(StorageProvider, DataSecurityProvider);
 
                 var subject = user.Create(USERNAME, PASSWORD, FIRST_NAME, LAST_NAME, BIRTH_DATE);
 
@@ -225,7 +271,7 @@ namespace UserManagementApplication.Data.Tests
             [Fact]
             public void UsernameShouldHaveValue()
             {
-                var user = new User(StorageProvider);
+                var user = new User(StorageProvider, DataSecurityProvider);
 
                 var subject = user.Create(USERNAME, PASSWORD, FIRST_NAME, LAST_NAME, BIRTH_DATE);
 
@@ -235,7 +281,7 @@ namespace UserManagementApplication.Data.Tests
             [Fact]
             public void PasswordShouldHaveValue()
             {
-                var user = new User(StorageProvider);
+                var user = new User(StorageProvider, DataSecurityProvider);
 
                 var subject = user.Create(USERNAME, PASSWORD, FIRST_NAME, LAST_NAME, BIRTH_DATE);
 
@@ -245,7 +291,7 @@ namespace UserManagementApplication.Data.Tests
             [Fact]
             public void FirstNameShouldHaveValue()
             {
-                var user = new User(StorageProvider);
+                var user = new User(StorageProvider, DataSecurityProvider);
 
                 var subject = user.Create(USERNAME, PASSWORD, FIRST_NAME, LAST_NAME, BIRTH_DATE);
 
@@ -255,7 +301,7 @@ namespace UserManagementApplication.Data.Tests
             [Fact]
             public void LastNameShouldHaveValue()
             {
-                var user = new User(StorageProvider);
+                var user = new User(StorageProvider, DataSecurityProvider);
 
                 var subject = user.Create(USERNAME, PASSWORD, FIRST_NAME, LAST_NAME, BIRTH_DATE);
 
@@ -265,11 +311,21 @@ namespace UserManagementApplication.Data.Tests
             [Fact]
             public void BirthdateShouldHaveValue()
             {
-                var user = new User(StorageProvider);
+                var user = new User(StorageProvider, DataSecurityProvider);
 
                 var subject = user.Create(USERNAME, PASSWORD, FIRST_NAME, LAST_NAME, BIRTH_DATE);
 
                 subject.Birthdate.Should().Be(BIRTH_DATE);
+            }
+
+            [Fact]
+            public void SaltShouldHaveValue()
+            {
+                var user = new User(StorageProvider, DataSecurityProvider);
+
+                var subject = user.Create(USERNAME, PASSWORD, FIRST_NAME, LAST_NAME, BIRTH_DATE);
+
+                subject.Salt.Should().Be("salt");
             }
         }
 
@@ -279,7 +335,7 @@ namespace UserManagementApplication.Data.Tests
             [Fact]
             public void InstanceShouldNotBeNull()
             {
-                var user = new User(StorageProvider);
+                var user = new User(StorageProvider, DataSecurityProvider);
 
                 user.Create("admin", "admin", "yuuna", "yuuki", new DateTime(2001, 3, 4));
                 user.Create("gyuuki", "admin", "yuuna", "gelato", new DateTime(2001, 3, 4));
@@ -292,7 +348,7 @@ namespace UserManagementApplication.Data.Tests
             [Fact]
             public void ResultShouldHaveCount()
             {
-                var user = new User(StorageProvider);
+                var user = new User(StorageProvider, DataSecurityProvider);
 
                 user.Create("admin", "admin", "yuuna", "yuuki", new DateTime(2001, 3, 4));
                 user.Create("gyuuki", "admin", "yuuna", "gelato", new DateTime(2001, 3, 4));
@@ -305,7 +361,7 @@ namespace UserManagementApplication.Data.Tests
             [Fact]
             public void ResultShouldBeUnique()
             {
-                var user = new User(StorageProvider);
+                var user = new User(StorageProvider, DataSecurityProvider);
 
                 user.Create("admin", "admin", "yuuna", "yuuki", new DateTime(2001, 3, 4));
                 user.Create("gyuuki", "admin", "yuuna", "gelato", new DateTime(2001, 3, 4));
@@ -322,7 +378,7 @@ namespace UserManagementApplication.Data.Tests
             [Fact]
             public void ResultShouldNotBeNull()
             {
-                var user = new User(StorageProvider);
+                var user = new User(StorageProvider, DataSecurityProvider);
 
                 user.Create("admin", "admin", "yuuna", "yuuki", new DateTime(2001, 3, 4));
                 user.Create("gyuuki", "admin", "yuuna", "gelato", new DateTime(2001, 3, 4));
@@ -335,7 +391,7 @@ namespace UserManagementApplication.Data.Tests
             [Fact]
             public void ResultShouldBeNull()
             {
-                var user = new User(StorageProvider);
+                var user = new User(StorageProvider, DataSecurityProvider);
 
                 user.Create("admin", "admin", "yuuna", "yuuki", new DateTime(2001, 3, 4));
                 user.Create("gyuuki", "admin", "yuuna", "gelato", new DateTime(2001, 3, 4));
@@ -358,7 +414,7 @@ namespace UserManagementApplication.Data.Tests
             [Fact]
             public void InstanceShouldNotBeNull()
             {
-                var user = new User(StorageProvider);
+                var user = new User(StorageProvider, DataSecurityProvider);
 
                 var subject = user.Create("yuuki", "admin", "yuuna", "yuuki", new DateTime(2001, 3, 4));
                 
@@ -377,7 +433,7 @@ namespace UserManagementApplication.Data.Tests
             [Fact]
             public void UsernameShouldHaveValue()
             {
-                var user = new User(StorageProvider);
+                var user = new User(StorageProvider, DataSecurityProvider);
 
                 var subject = user.Create("yuuki", "admin", "yuuna", "yuuki", new DateTime(2001, 3, 4));
 
@@ -396,7 +452,7 @@ namespace UserManagementApplication.Data.Tests
             [Fact]
             public void PasswordShouldHaveValue()
             {
-                var user = new User(StorageProvider);
+                var user = new User(StorageProvider, DataSecurityProvider);
 
                 var subject = user.Create("yuuki", "admin", "yuuna", "yuuki", new DateTime(2001, 3, 4));
 
@@ -415,7 +471,7 @@ namespace UserManagementApplication.Data.Tests
             [Fact]
             public void FirstNameShouldHaveValue()
             {
-                var user = new User(StorageProvider);
+                var user = new User(StorageProvider, DataSecurityProvider);
 
                 var subject = user.Create("yuuki", "admin", "yuuna", "yuuki", new DateTime(2001, 3, 4));
 
@@ -434,7 +490,7 @@ namespace UserManagementApplication.Data.Tests
             [Fact]
             public void LastNameShouldHaveValue()
             {
-                var user = new User(StorageProvider);
+                var user = new User(StorageProvider, DataSecurityProvider);
 
                 var subject = user.Create("yuuki", "admin", "yuuna", "yuuki", new DateTime(2001, 3, 4));
 
@@ -453,7 +509,7 @@ namespace UserManagementApplication.Data.Tests
             [Fact]
             public void BirthdateShouldHaveValue()
             {
-                var user = new User(StorageProvider);
+                var user = new User(StorageProvider, DataSecurityProvider);
 
                 var subject = user.Create("yuuki", "admin", "yuuna", "yuuki", new DateTime(2001, 3, 4));
 
@@ -472,7 +528,7 @@ namespace UserManagementApplication.Data.Tests
             [Fact]
             public void RoleTypeShouldBeAdmin()
             {
-                var user = new User(StorageProvider);
+                var user = new User(StorageProvider, DataSecurityProvider);
 
                 var subject = user.Create("yuuki", "admin", "yuuna", "yuuki", new DateTime(2001, 3, 4));
 
@@ -487,6 +543,26 @@ namespace UserManagementApplication.Data.Tests
 
                 subject.RoleType.Should().Be(RoleType.Admin);
             }
+
+            [Fact]
+            public void SaltShouldNotChange()
+            {
+                var user = new User(StorageProvider, DataSecurityProvider);
+
+                var subject = user.Create("yuuki", "admin", "yuuna", "yuuki", new DateTime(2001, 3, 4));
+
+                subject.FirstName = FIRST_NAME;
+                subject.LastName  = LAST_NAME;
+                subject.Username  = USERNAME;
+                subject.Password  = PASSWORD;
+                subject.Birthdate = BIRTH_DATE;
+                subject.RoleType  = RoleType.Admin;
+                subject.Salt      = "ASDASD";
+
+                subject = user.Update(subject);
+
+                subject.Salt.Should().Be("salt");
+            }
         }
 
         [Trait("Trait", "UserData")]
@@ -495,7 +571,7 @@ namespace UserManagementApplication.Data.Tests
             [Fact]
             public void UserShouldBeDeleted()
             {
-                var user = new User(StorageProvider);
+                var user = new User(StorageProvider, DataSecurityProvider);
 
                 var itemToDelete = user.Create("yuuki", "admin", "yuuna", "yuuki", new DateTime(2001, 3, 4));
 

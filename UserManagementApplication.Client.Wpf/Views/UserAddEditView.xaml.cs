@@ -38,7 +38,7 @@ namespace UserManagementApplication.Client.Wpf.Views
             }
             set
             {
-                this.FirstNameControl.Text = value;
+                this.UsernameControl.Text = value;
             }
         }
 

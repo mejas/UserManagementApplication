@@ -18,6 +18,15 @@ namespace UserManagementApplication.Client.Wpf.Views
 
         public string SessionToken { get; set; }
 
+        public UserData CurrentUserData
+        {
+            get
+            {
+                return this.ListView.SelectedItem as UserData;
+            }
+        }
+
+
         protected UserManagementPresenter Presenter { get; set; }
 
         public UserManagementView()
@@ -70,6 +79,32 @@ namespace UserManagementApplication.Client.Wpf.Views
             buttonUnlock.IsEnabled = value;
         }
 
+        public void OnAddItem(UserData userData)
+        {
+            UserAddEditView userAddEdit = new UserAddEditView()
+            {
+                ViewOperation = ViewOperation.Add,
+                UserData = userData,
+                SessionToken = this.SessionToken,
+                Owner = this
+            };
+
+            userAddEdit.ShowDialog();
+        }
+
+        public void OnEditItem(UserData userData)
+        {
+            UserAddEditView userAddEdit = new UserAddEditView()
+            {
+                ViewOperation = ViewOperation.Edit,
+                UserData = userData,
+                SessionToken = this.SessionToken,
+                Owner = this
+            };
+
+            userAddEdit.ShowDialog();
+        }
+
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
             var eventHandler = OnViewLoaded;
@@ -97,37 +132,19 @@ namespace UserManagementApplication.Client.Wpf.Views
 
         private void buttonAdd_Click(object sender, RoutedEventArgs e)
         {
-            UserAddEditView userAddEdit = new UserAddEditView()
-            {
-                ViewOperation = ViewOperation.Add,
-                UserData      = new UserData(),
-                SessionToken  = this.SessionToken,
-                Owner = this
-            };
-
-            userAddEdit.ShowDialog();
-
-            Presenter.RefreshData();
+            Presenter.AddItem();
         }
 
         private void buttonEdit_Click(object sender, RoutedEventArgs e)
         {
-            var selectedItem = this.ListView.SelectedItem as UserData;
-
-            if (selectedItem != null)
-            {
-                UserAddEditView userAddEdit = new UserAddEditView()
-                {
-                    ViewOperation = ViewOperation.Edit,
-                    UserData      = selectedItem,
-                    SessionToken  = this.SessionToken,
-                    Owner = this
-                };
-
-                userAddEdit.ShowDialog();
-
-                Presenter.RefreshData();
-            }
+            Presenter.EditItem();
         }
+
+        private void buttonDelete_Click(object sender, RoutedEventArgs e)
+        {
+            Presenter.DeleteItem();
+        }
+
+        
     }
 }

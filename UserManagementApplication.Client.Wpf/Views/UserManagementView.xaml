@@ -25,7 +25,7 @@
         </ListView>
         <Button Name="buttonAdd" Content="Add" HorizontalAlignment="Left" Margin="114,273,0,0" VerticalAlignment="Top" Width="75" Height="22" IsEnabled="True" Click="buttonAdd_Click"/>
         <Button Name="buttonEdit" Content="Edit" HorizontalAlignment="Left" Margin="194,273,0,0" VerticalAlignment="Top" Width="75" Height="22" IsEnabled="False" Click="buttonEdit_Click"/>
-        <Button Name="buttonDelete" Content="Delete" HorizontalAlignment="Left" Margin="274,273,0,0" VerticalAlignment="Top" Width="75" Height="22" IsEnabled="False"/>
+        <Button Name="buttonDelete" Content="Delete" HorizontalAlignment="Left" Margin="274,273,0,0" VerticalAlignment="Top" Width="75" Height="22" IsEnabled="False" Click="buttonDelete_Click"/>
         <Button Name="buttonRefresh" Content="Refresh" HorizontalAlignment="Left" Margin="10,273,0,0" VerticalAlignment="Top" Width="94" Height="22" Click="buttonRefresh_Click"/>
         <Button Name="buttonUnlock" Content="Unlock" HorizontalAlignment="Left" Margin="354,273,0,0" VerticalAlignment="Top" Width="75" Height="22" IsEnabled="False"/>
         <Button Name="buttonLogout" Content="Logout" HorizontalAlignment="Left" Margin="683,273,0,0" VerticalAlignment="Top" Width="75" Height="22" Click="buttonLogout_Click"/>

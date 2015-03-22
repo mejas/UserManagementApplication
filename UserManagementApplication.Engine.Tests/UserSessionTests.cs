@@ -14,6 +14,21 @@ namespace UserManagementApplication.Engine.Tests
     {
         public class UserSessionTestsServices
         {
+            private IAuthenticationProvider _authenticationProvider = null;
+
+            public IAuthenticationProvider AuthenticationProvider
+            {
+                get
+                {
+                    if (_authenticationProvider == null)
+                    {
+                        _authenticationProvider = GetAuthenticationProvider();
+                    }
+
+                    return _authenticationProvider;
+                }
+            }
+
             private List<User> _userInfos = new List<User>()
             {
                 new User(null, null)
@@ -38,15 +53,15 @@ namespace UserManagementApplication.Engine.Tests
 
             private Dictionary<string, User> _userSessions = new Dictionary<string, User>();
 
-            public IAuthenticationProvider GetAuthenticationProvider()
+            private IAuthenticationProvider GetAuthenticationProvider()
             {
-                var sessionDataService = new Mock<IAuthenticationProvider>();
+                var authenticationProvider = new Mock<IAuthenticationProvider>();
 
-                sessionDataService
+                authenticationProvider
                     .Setup(d => d.CreateSession(It.IsAny<string>(), It.IsAny<string>()))
                     .Returns((string username, string password) => mockAuthenticationLogic(username, password));
 
-                sessionDataService
+                authenticationProvider
                     .Setup(d => d.HasPermission(It.IsAny<UserSession>(), It.IsAny<RoleType>()))
                     .Returns((UserSession session, RoleType roleType) =>
                     {
@@ -63,14 +78,28 @@ namespace UserManagementApplication.Engine.Tests
                     }
                     );
 
-                sessionDataService
+                authenticationProvider
                     .Setup(d => d.TerminateSession(It.IsAny<UserSession>()))
                     .Callback((UserSession session) =>
                     {
                         _userSessions.Remove(session.SessionToken);
                     });
 
-                return sessionDataService.Object;
+                authenticationProvider
+                    .Setup(d => d.GetSession(It.IsAny<string>()))
+                    .Returns(
+                    (string key) => 
+                    {
+                        var user = _userSessions[key];
+                        if (user != null)
+                        {
+                            return new UserSession() { SessionToken = key, User = user };
+                        }
+
+                        return null;
+                    });
+
+                return authenticationProvider.Object;
             }
 
             private UserSession mockAuthenticationLogic(string username, string password)
@@ -80,12 +109,13 @@ namespace UserManagementApplication.Engine.Tests
                 if (userInformation == null || 
                     userInformation.Password != password)
                 {
-                    throw new WarningException("Invalid logon credentials.");
+                    throw new ErrorException("Invalid logon credentials.");
                 }
 
-                UserSession userSession = new UserSession(null)
+                UserSession userSession = new UserSession(AuthenticationProvider)
                 {
-                    SessionToken = "token"
+                    SessionToken = "token",
+                    User = userInformation
                 };
 
                 _userSessions.Add(userSession.SessionToken, userInformation);
@@ -100,7 +130,7 @@ namespace UserManagementApplication.Engine.Tests
             {
                 get
                 {
-                    return new UserSessionTestsServices().GetAuthenticationProvider();
+                    return new UserSessionTestsServices().AuthenticationProvider;
                 }
             }
         }
@@ -157,7 +187,7 @@ namespace UserManagementApplication.Engine.Tests
             {
                 var userSession = new UserSession(AuthenticationProvider);
 
-                Assert.Throws<WarningException>(() => userSession.AuthenticateUser("admin", "yuunaxtougou"));
+                Assert.Throws<ErrorException>(() => userSession.AuthenticateUser("admin", "yuunaxtougou"));
             }
         }
 
@@ -218,6 +248,22 @@ namespace UserManagementApplication.Engine.Tests
                 userSession.TerminateSession(subject);
 
                 Assert.Throws<KeyNotFoundException>(() => userSession.IsPermitted(subject, RoleType.User));
+            }
+        }
+
+        [Trait("Trait", "UserSession")]
+        public class GetUserSessionTest : UserSessionTestsBase
+        {
+            [Fact]
+            public void ResultShouldNotBeNull()
+            {
+                var userSession = new UserSession(AuthenticationProvider);
+
+                var session = userSession.AuthenticateUser("gyuuki", "user");
+
+                var subject = userSession.GetUserSession(session);
+
+                subject.Should().NotBeNull();
             }
         }
     }

@@ -19,7 +19,7 @@ namespace UserManagementApplication.Client.Models
 
         public User Commit(UserSession session, User user)
         {
-            return SessionProxy.Commit(session, user);
+            return InvokeMethod(() => SessionProxy.Commit(session, user));
         }
     }
 }

@@ -9,7 +9,7 @@
             <ColumnDefinition Width="25*"/>
         </Grid.ColumnDefinitions>
         <Label Content="Username" HorizontalAlignment="Left" Margin="10,19,0,0" VerticalAlignment="Top" RenderTransformOrigin="1.368,0.577" Width="70"/>
-        <TextBox Name="UsernameControl" HorizontalAlignment="Left" Height="23" Margin="85,19,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="171" Grid.ColumnSpan="2" Text="{Binding Path=Username}"/>
+        <TextBox Name="UsernameControl" HorizontalAlignment="Left" Height="23" Margin="85,19,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="171" Grid.ColumnSpan="2"/>
         <Label Content="Password" HorizontalAlignment="Left" Margin="10,45,0,0" VerticalAlignment="Top" RenderTransformOrigin="1.368,0.577" Width="70"/>
         <PasswordBox Name="PasswordControl" HorizontalAlignment="Left" Height="23" Margin="85,47,0,0" VerticalAlignment="Top" Width="171" Grid.ColumnSpan="2"/>
         <Label Content="First Name" HorizontalAlignment="Left" Margin="10,94,0,0" VerticalAlignment="Top" RenderTransformOrigin="1.368,0.577" Width="70"/>

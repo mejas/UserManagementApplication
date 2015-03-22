@@ -2,7 +2,7 @@
 using Moq;
 using System.Collections.Generic;
 using UserManagementApplication.Data.DataEntities;
-using UserManagementApplication.Data.StorageProviders.Interfaces;
+using UserManagementApplication.Data.Providers.Interfaces;
 using Xunit;
 
 namespace UserManagementApplication.Data.Tests

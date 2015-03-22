@@ -15,7 +15,12 @@ namespace UserManagementApplication.Client.Models
 
         public IList<User> GetUsers(string sessionToken)
         {
-            return SessionProxy.GetUsers(new UserSession() { SessionToken = sessionToken });
+            return InvokeMethod(() => SessionProxy.GetUsers(new UserSession() { SessionToken = sessionToken }));
+        }
+
+        public void DeleteUser(string sessionToken, User user)
+        {
+            InvokeMethod(() => SessionProxy.Commit(new UserSession() { SessionToken = sessionToken }, user));
         }
     }
 }
