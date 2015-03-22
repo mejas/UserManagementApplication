@@ -161,7 +161,7 @@ namespace UserManagementApplication.Client.Wpf.Views
 
         private void buttonEdit_Click(object sender, RoutedEventArgs e)
         {
-            Presenter.EditItem();
+            Presenter.EditUser();
         }
 
         private void buttonDelete_Click(object sender, RoutedEventArgs e)

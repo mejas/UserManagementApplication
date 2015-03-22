@@ -21,7 +21,7 @@ namespace UserManagementApplication.Common.Diagnostics
 
         public void LogMessage(Exception ex)
         {
-            writeToLog(String.Format("{1}\n[StackTrace]: {2}", ex.Message, ex.StackTrace));
+            writeToLog(String.Format("{0}\n[StackTrace]: {1}", ex.Message, ex.StackTrace));
         }
 
         private void writeToLog(string message)

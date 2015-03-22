@@ -58,11 +58,12 @@ namespace UserManagementApplication.Client.Presenters
             View.EnableUnlock(hasItem);
         }
 
-        public void EditItem()
+        public void EditUser()
         {
             if (View.CurrentUserData != null)
             {
                 View.OnEditUser(View.CurrentUserData);
+                FindAllUsers();
             }
         }
 
