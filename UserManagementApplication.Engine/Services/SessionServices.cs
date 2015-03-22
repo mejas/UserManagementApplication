@@ -1,5 +1,4 @@
 ﻿using System.ServiceModel;
-using UserManagementApplication.Common.Exceptions;
 using UserManagementApplication.Engine.BusinessEntities;
 using UserManagementApplication.Remoting.Data.Request;
 using UserManagementApplication.Remoting.Services;

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Xml;
 using System.Xml.Serialization;
 using UserManagementApplication.Common.Enumerations;
+using UserManagementApplication.Common.Exceptions;
 using UserManagementApplication.Data.DataEntities;
 using UserManagementApplication.Data.Providers.Interfaces;
 
@@ -23,6 +24,11 @@ namespace UserManagementApplication.Data.Providers
             if (String.IsNullOrEmpty(XmlFile))
             {
                 Configuration assemblyConfig = ConfigurationManager.OpenExeConfiguration(this.GetType().Assembly.Location);
+
+                if(assemblyConfig.AppSettings.Settings.Count == 0)
+                {
+                    throw new CriticalException("Database configuration not found.");
+                }
 
                 XmlFile = assemblyConfig.AppSettings.Settings["XmlDbFile"].Value;
             }

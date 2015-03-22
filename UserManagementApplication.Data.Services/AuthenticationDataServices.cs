@@ -1,8 +1,6 @@
 ﻿using UserManagementApplication.Data.Contracts;
 using UserManagementApplication.Data.Contracts.Interfaces;
 using UserManagementApplication.Data.DataEntities;
-using UserManagementApplication.Data.Providers;
-using UserManagementApplication.Data.Providers.Interfaces;
 
 namespace UserManagementApplication.Data.Services
 {

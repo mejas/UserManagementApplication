@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Windows;
-using System.Windows.Controls;
 using UserManagementApplication.Client.Presenters;
 using UserManagementApplication.Client.ViewDefinitions;
 using UserManagementApplication.Client.Wpf.Views;

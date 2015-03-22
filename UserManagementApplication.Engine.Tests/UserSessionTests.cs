@@ -2,6 +2,7 @@
 using Moq;
 using System;
 using System.Collections.Generic;
+using UserManagementApplication.Common.Diagnostics.Interfaces;
 using UserManagementApplication.Common.Enumerations;
 using UserManagementApplication.Common.Exceptions;
 using UserManagementApplication.Engine.BusinessEntities;
@@ -15,6 +16,7 @@ namespace UserManagementApplication.Engine.Tests
         public class UserSessionTestsServices
         {
             private IAuthenticationProvider _authenticationProvider = null;
+            private ILogProvider _logProvider = null;
 
             public IAuthenticationProvider AuthenticationProvider
             {
@@ -29,9 +31,22 @@ namespace UserManagementApplication.Engine.Tests
                 }
             }
 
+            public ILogProvider LogProvider
+            {
+                get
+                {
+                    if (_logProvider == null)
+                    {
+                        _logProvider = new Mock<ILogProvider>().Object;
+                    }
+
+                    return _logProvider;
+                }
+            }
+
             private List<User> _userInfos = new List<User>()
             {
-                new User(null, null)
+                new User(null, null, null)
                 {
                     Username = "admin",
                     Password = "admin",
@@ -40,7 +55,7 @@ namespace UserManagementApplication.Engine.Tests
                     RoleType = RoleType.Admin,
                     Birthdate = new DateTime(2001, 3, 9) //oh wow. i'm old ;_;
                 },
-                new User(null, null)
+                new User(null, null, null)
                 {
                     Username = "gyuuki",
                     Password = "user",
@@ -93,7 +108,7 @@ namespace UserManagementApplication.Engine.Tests
                         var user = _userSessions[key];
                         if (user != null)
                         {
-                            return new UserSession(AuthenticationProvider) { SessionToken = key, User = user };
+                            return new UserSession(AuthenticationProvider, LogProvider) { SessionToken = key, User = user };
                         }
 
                         return null;
@@ -112,7 +127,7 @@ namespace UserManagementApplication.Engine.Tests
                     throw new ErrorException("Invalid logon credentials.");
                 }
 
-                UserSession userSession = new UserSession(AuthenticationProvider)
+                UserSession userSession = new UserSession(AuthenticationProvider, LogProvider)
                 {
                     SessionToken = "token",
                     User = userInformation
@@ -133,6 +148,14 @@ namespace UserManagementApplication.Engine.Tests
                     return new UserSessionTestsServices().AuthenticationProvider;
                 }
             }
+
+            protected ILogProvider LogProvider
+            {
+                get
+                {
+                    return new UserSessionTestsServices().LogProvider;
+                }
+            }
         }
 
         [Trait("Trait", "UserSession")]
@@ -141,7 +164,7 @@ namespace UserManagementApplication.Engine.Tests
             [Fact]
             public void ShouldHaveInstance()
             {
-                var subject = new UserSession(AuthenticationProvider);
+                var subject = new UserSession(AuthenticationProvider, LogProvider);
 
                 subject.Should().NotBeNull();
             }
@@ -149,7 +172,7 @@ namespace UserManagementApplication.Engine.Tests
             [Fact]
             public void SessionTokenShouldBeEmpty()
             {
-                var subject = new UserSession(AuthenticationProvider);
+                var subject = new UserSession(AuthenticationProvider, LogProvider);
 
                 subject.SessionToken.Should().BeNullOrEmpty();
             }
@@ -161,7 +184,7 @@ namespace UserManagementApplication.Engine.Tests
             [Fact]
             public void UserAuthenticationSuccessful()
             {
-                var userSession = new UserSession(AuthenticationProvider);
+                var userSession = new UserSession(AuthenticationProvider, LogProvider);
 
                 var subject = userSession.AuthenticateUser("admin", "admin");
 
@@ -171,7 +194,7 @@ namespace UserManagementApplication.Engine.Tests
             [Fact]
             public void UserTokenShouldNotBeEmpty()
             {
-                var userSession = new UserSession(AuthenticationProvider);
+                var userSession = new UserSession(AuthenticationProvider, LogProvider);
 
                 var subject = userSession.AuthenticateUser("admin", "admin");
 
@@ -185,7 +208,7 @@ namespace UserManagementApplication.Engine.Tests
             [Fact]
             public void UserAuthenticationUnsuccessful()
             {
-                var userSession = new UserSession(AuthenticationProvider);
+                var userSession = new UserSession(AuthenticationProvider, LogProvider);
 
                 Assert.Throws<ErrorException>(() => userSession.AuthenticateUser("admin", "yuunaxtougou"));
             }
@@ -197,41 +220,41 @@ namespace UserManagementApplication.Engine.Tests
             [Fact]
             public void AdminRoleShouldPermitAdmin()
             {
-                var userSession = new UserSession(AuthenticationProvider);
+                var userSession = new UserSession(AuthenticationProvider, LogProvider);
 
                 var subject = userSession.AuthenticateUser("admin", "admin");
 
-                userSession.IsPermitted(subject, RoleType.Admin).Should().BeTrue();
+                userSession.IsClearedForRole(subject, RoleType.Admin).Should().BeTrue();
             }
 
             [Fact]
             public void AdminRoleShouldPermitUser()
             {
-                var userSession = new UserSession(AuthenticationProvider);
+                var userSession = new UserSession(AuthenticationProvider, LogProvider);
 
                 var subject = userSession.AuthenticateUser("admin", "admin");
 
-                userSession.IsPermitted(subject, RoleType.User).Should().BeTrue();
+                userSession.IsClearedForRole(subject, RoleType.User).Should().BeTrue();
             }
 
             [Fact]
             public void UserRoleShouldDenyAdmin()
             {
-                var userSession = new UserSession(AuthenticationProvider);
+                var userSession = new UserSession(AuthenticationProvider, LogProvider);
 
                 var subject = userSession.AuthenticateUser("gyuuki", "user");
 
-                userSession.IsPermitted(subject, RoleType.Admin).Should().BeFalse();
+                userSession.IsClearedForRole(subject, RoleType.Admin).Should().BeFalse();
             }
 
             [Fact]
             public void UserRoleShouldPermitUser()
             {
-                var userSession = new UserSession(AuthenticationProvider);
+                var userSession = new UserSession(AuthenticationProvider, LogProvider);
 
                 var subject = userSession.AuthenticateUser("gyuuki", "user");
 
-                userSession.IsPermitted(subject, RoleType.User).Should().BeTrue();
+                userSession.IsClearedForRole(subject, RoleType.User).Should().BeTrue();
             }
         }
 
@@ -241,13 +264,13 @@ namespace UserManagementApplication.Engine.Tests
             [Fact]
             public void UserSessionShouldBeDestroyed()
             {
-                var userSession = new UserSession(AuthenticationProvider);
+                var userSession = new UserSession(AuthenticationProvider, LogProvider);
 
                 var subject = userSession.AuthenticateUser("gyuuki", "user");
 
                 userSession.TerminateSession(subject);
 
-                Assert.Throws<KeyNotFoundException>(() => userSession.IsPermitted(subject, RoleType.User));
+                Assert.Throws<KeyNotFoundException>(() => userSession.IsClearedForRole(subject, RoleType.User));
             }
         }
 
@@ -257,7 +280,7 @@ namespace UserManagementApplication.Engine.Tests
             [Fact]
             public void ResultShouldNotBeNull()
             {
-                var userSession = new UserSession(AuthenticationProvider);
+                var userSession = new UserSession(AuthenticationProvider, LogProvider);
 
                 var session = userSession.AuthenticateUser("gyuuki", "user");
 

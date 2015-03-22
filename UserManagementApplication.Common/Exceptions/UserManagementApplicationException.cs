@@ -9,6 +9,8 @@ namespace UserManagementApplication.Common.Exceptions
 
         public UserManagementApplicationException(string message, ErrorSeverity errorSeverity)
             : base(message)
-        { }
+        {
+            ErrorSeverity = errorSeverity;
+        }
     }
 }

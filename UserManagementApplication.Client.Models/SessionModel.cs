@@ -1,5 +1,4 @@
 ﻿using UserManagementApplication.Client.Models.ServiceProxy;
-using UserManagementApplication.Common.Exceptions;
 using UserManagementApplication.Remoting.Data;
 using UserManagementApplication.Remoting.Data.Request;
 

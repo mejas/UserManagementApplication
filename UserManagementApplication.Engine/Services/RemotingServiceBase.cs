@@ -1,15 +1,24 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.ServiceModel;
-using System.Text;
-using System.Threading.Tasks;
+using UserManagementApplication.Common.Diagnostics;
+using UserManagementApplication.Common.Diagnostics.Interfaces;
 using UserManagementApplication.Common.Exceptions;
 
 namespace UserManagementApplication.Engine.Services
 {
     public class RemotingServiceBase
     {
+        protected ILogProvider LogProvider { get; set; }
+
+        public RemotingServiceBase()
+            : this(new DefaultLogProvider())
+        { }
+
+        public RemotingServiceBase(ILogProvider logProvider)
+        {
+            LogProvider = logProvider;
+        }
+
         protected T InvokeMethod<T>(Func<T> method)
         {
             if (method != null)
@@ -35,16 +44,25 @@ namespace UserManagementApplication.Engine.Services
                 {
                     method();
                 }
-                catch (ErrorException ex)
+                catch (UserManagementApplicationException ex)
+                {
+                    HandleException(ex);
+                }
+                catch (Exception ex)
                 {
                     HandleException(ex);
                 }
             }
         }
 
-        protected virtual void HandleException(ErrorException ex)
+        private void HandleException(Exception ex)
         {
-            //log message
+            LogProvider.LogMessage(ex);
+        }
+
+        protected virtual void HandleException(UserManagementApplicationException ex)
+        {
+            LogProvider.LogMessage(ex);
             throw new FaultException(ex.Message);
         }
     }

@@ -39,9 +39,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Diagnostics\DefaultLogProvider.cs" />
+    <Compile Include="Diagnostics\Interfaces\ILogProvider.cs" />
     <Compile Include="Enumerations\ErrorSeverity.cs" />
     <Compile Include="Enumerations\MessageState.cs" />
     <Compile Include="Enumerations\RoleType.cs" />
+    <Compile Include="Exceptions\CriticalException.cs" />
     <Compile Include="Exceptions\ErrorException.cs" />
     <Compile Include="Exceptions\InvalidSessionException.cs" />
     <Compile Include="Exceptions\UnauthorizedOperationException.cs" />

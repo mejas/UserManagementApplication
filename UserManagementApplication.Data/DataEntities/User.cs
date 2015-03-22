@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UserManagementApplication.Common.Enumerations;
 using UserManagementApplication.Common.Exceptions;
-using UserManagementApplication.Data.Providers;
 using UserManagementApplication.Data.Providers.Interfaces;
 
 namespace UserManagementApplication.Data.DataEntities

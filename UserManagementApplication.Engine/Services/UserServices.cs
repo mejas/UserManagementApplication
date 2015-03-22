@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using UserManagementApplication.Common.Enumerations;
-using UserManagementApplication.Common.Exceptions;
 using UserManagementApplication.Remoting.Data;
 using UserManagementApplication.Remoting.Data.Request;
 using UserManagementApplication.Remoting.Services;
@@ -17,7 +16,7 @@ namespace UserManagementApplication.Engine.Services
             {
                 EBC.User user = new EBC.User();
 
-                return user.Find().ToList().ConvertAll<User>(Translate);
+                return user.Find(Translate(session)).ToList().ConvertAll<User>(Translate);
             });
         }
 
@@ -27,7 +26,7 @@ namespace UserManagementApplication.Engine.Services
             {
                 EBC.User user = new EBC.User();
 
-                return user.Find(request.FirstName, request.LastName).ToList().ConvertAll<User>(Translate);
+                return user.Find(Translate(session), request.FirstName, request.LastName).ToList().ConvertAll<User>(Translate);
             });
         }
 

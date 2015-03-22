@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using UserManagementApplication.Common;
+using UserManagementApplication.Common.Diagnostics;
+using UserManagementApplication.Common.Diagnostics.Interfaces;
 using UserManagementApplication.Common.Enumerations;
 using UserManagementApplication.Common.Exceptions;
 using UserManagementApplication.Data.Contracts;
@@ -39,24 +41,27 @@ namespace UserManagementApplication.Engine.BusinessEntities
 
         protected IDateProvider DateProvider { get; set; }
         protected IUserDataService UserDataService { get; set; }
+        protected ILogProvider LogProvider { get; set; }
 
         #endregion
 
         #region Constructor
 
         public User()
-            : this(new DefaultDateProvider(), new UserDataServices())
+            : this(new DefaultDateProvider(), new UserDataServices(), new DefaultLogProvider())
         { }
 
-        public User(IDateProvider dateProvider, IUserDataService userDataService)
+        public User(IDateProvider dateProvider, IUserDataService userDataService, ILogProvider logProvider)
         {
             DateProvider = dateProvider;
             UserDataService = userDataService;
+            LogProvider = logProvider;
 
             RoleType = RoleType.User;
         }
 
-        public User(IUserDataService userDataService) : this(new DefaultDateProvider(), userDataService)
+        public User(IUserDataService userDataService) 
+            : this(new DefaultDateProvider(), userDataService, new DefaultLogProvider())
         {
             UserDataService = userDataService;
         }
@@ -65,15 +70,23 @@ namespace UserManagementApplication.Engine.BusinessEntities
 
         #region Methods
 
-        public IList<User> Find()
+        public IList<User> Find(UserSession userSession)
         {
+            LogMessage(userSession, "Find");
+
+            isRoleClearanceValid(userSession, RoleType.User);
+
             var users = UserDataService.GetUsers();
 
             return users.ToList().ConvertAll(Translate);
         }
 
-        public IList<User> Find(string firstName, string lastName)
+        public IList<User> Find(UserSession userSession, string firstName, string lastName)
         {
+            LogMessage(userSession, String.Format("Find {0}, {1}", firstName, lastName));
+
+            isRoleClearanceValid(userSession, RoleType.User);
+
             var users = UserDataService.GetUsers(firstName, lastName);
 
             return users.ToList().ConvertAll(Translate);
@@ -92,6 +105,8 @@ namespace UserManagementApplication.Engine.BusinessEntities
                             DateTime birthDate,
                             RoleType roleType = RoleType.User)
         {
+            LogMessage(userSession, String.Format("Create [{0}, {1}, {2}, {3}]", username, firstName, lastName, birthDate));
+
             if (isRoleClearanceValid(userSession, roleType))
             {
                 UserInformation user = new UserInformation()
@@ -111,7 +126,7 @@ namespace UserManagementApplication.Engine.BusinessEntities
                     throw new ValidationException("Username and Password should not be blank.");
                 }
 
-                if (user.Birthdate.Date > DateProvider.NOW())
+                if (user.Birthdate.Date > DateProvider.NOW().Date)
                 {
                     throw new ValidationException("Invalid birthdate.");
                 }
@@ -134,11 +149,12 @@ namespace UserManagementApplication.Engine.BusinessEntities
             return null;
         }
 
-        public User Update(UserSession session, User modifiedData)
+        public User Update(UserSession userSession, User modifiedData)
         {
-            if (validateUserSession(session, modifiedData))
-            {
+            LogMessage(userSession, String.Format("Update against UserId {0}", modifiedData.UserId));
 
+            if (validateUserSession(userSession, modifiedData))
+            {
                 User originalData = Translate(UserDataService.GetUser(modifiedData.UserId));
 
                 if (originalData == null)
@@ -148,7 +164,7 @@ namespace UserManagementApplication.Engine.BusinessEntities
 
                 if (modifiedData.BadLogins != originalData.BadLogins)
                 {
-                    isRoleClearanceValid(session, RoleType.Admin);
+                    isRoleClearanceValid(userSession, RoleType.Admin);
                 }
                 
                 var userInfo = Translate(modifiedData);
@@ -162,10 +178,12 @@ namespace UserManagementApplication.Engine.BusinessEntities
             return null;
         }
 
-        public void Remove(UserSession session, User user)
+        public void Remove(UserSession userSession, User user)
         {
-            if (validateUserSession(session, user) 
-                && isRoleClearanceValid(session, user.RoleType))
+            LogMessage(userSession, String.Format("Remove against UserId {0}", user.UserId));
+
+            if (validateUserSession(userSession, user) 
+                && isRoleClearanceValid(userSession, user.RoleType))
             {
                 var userInfo = Translate(user);
 
@@ -205,7 +223,7 @@ namespace UserManagementApplication.Engine.BusinessEntities
 
             if (user != null)
             {
-                userInfo = new User(DateProvider, UserDataService)
+                userInfo = new User(DateProvider, UserDataService, LogProvider)
                 {
                     Username  = user.Username,
                     Password  = user.Password,
@@ -243,7 +261,12 @@ namespace UserManagementApplication.Engine.BusinessEntities
 
             return user;
         }
-        
+
+        private void LogMessage(UserSession userSession, string operation)
+        {
+            LogProvider.LogMessage(String.Format("[Server][{0}] Executed operation {1}", userSession.User.Username, operation));
+        }
+
         #endregion
     }
 }

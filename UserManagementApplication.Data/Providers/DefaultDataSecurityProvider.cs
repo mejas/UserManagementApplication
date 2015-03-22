@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 using UserManagementApplication.Data.Providers.Interfaces;
 
 namespace UserManagementApplication.Data.Providers

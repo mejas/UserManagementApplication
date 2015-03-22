@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UserManagementApplication.Data.Providers;
+﻿using UserManagementApplication.Data.Providers;
 using UserManagementApplication.Data.Providers.Interfaces;
 
 namespace UserManagementApplication.Data.Services
