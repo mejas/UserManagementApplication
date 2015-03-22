@@ -1,5 +1,4 @@
 ﻿using System;
-using UserManagementApplication.Engine.Providers;
 
 namespace UserManagementApplication.Engine.Providers
 {

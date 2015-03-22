@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using UserManagementApplication.Common.Enumerations;
 using UserManagementApplication.Common.Exceptions;
 using UserManagementApplication.Engine.BusinessEntities;
-using UserManagementApplication.Engine.Providers;
 using UserManagementApplication.Engine.Providers.Interfaces;
 using Xunit;
 

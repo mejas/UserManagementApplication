@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.ServiceModel;
-using System.Text;
-using System.Threading.Tasks;
-using UserManagementApplication.Common.Exceptions;
-using UserManagementApplication.Remoting.Data;
+﻿using UserManagementApplication.Remoting.Data;
 using UserManagementApplication.Remoting.Data.Request;
 using UserManagementApplication.Remoting.Services;
 

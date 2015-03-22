@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UserManagementApplication.Common.Enumerations;
 
 namespace UserManagementApplication.Client.ViewData
@@ -17,5 +13,6 @@ namespace UserManagementApplication.Client.ViewData
         public int Age { get; set; }
         public int UserId { get; set; }
         public RoleType RoleType { get; set; }
+        public int BadLogins { get; set; }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using FluentAssertions;
 using System;
 using System.IO;
-using UserManagementApplication.Common.Enumerations;
 using UserManagementApplication.Data.DataEntities;
 using UserManagementApplication.Data.StorageProviders;
 using Xunit;

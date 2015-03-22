@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
 using UserManagementApplication.Common.Enumerations;
 
 namespace UserManagementApplication.Remoting.Data
@@ -37,5 +33,8 @@ namespace UserManagementApplication.Remoting.Data
 
         [DataMember]
         public MessageState MessageState { get; set; }
+
+        [DataMember]
+        public int BadLogins { get; set; }
     }
 }

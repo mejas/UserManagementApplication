@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Xunit;
-using FluentAssertions;
-using UserManagementApplication.Data.DataEntities;
+﻿using FluentAssertions;
 using Moq;
+using System.Collections.Generic;
+using UserManagementApplication.Data.DataEntities;
 using UserManagementApplication.Data.StorageProviders.Interfaces;
+using Xunit;
 
 namespace UserManagementApplication.Data.Tests
 {

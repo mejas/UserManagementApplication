@@ -1,21 +1,25 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using UserManagementApplication.Client.Models.ServiceProxy;
 using UserManagementApplication.Remoting.Data;
 
 namespace UserManagementApplication.Client.Models
 {
-    public class UserManagementModel : ClientModel
+    public class UserAddEditModel : ClientModel
     {
         protected UserServiceProxy SessionProxy { get; set; }
 
-        public UserManagementModel()
+        public UserAddEditModel()
         {
             SessionProxy = new UserServiceProxy();
         }
 
-        public IList<User> GetUsers(string sessionToken)
+        public User Commit(UserSession session, User user)
         {
-            return SessionProxy.GetUsers(new UserSession() { SessionToken = sessionToken });
+            return SessionProxy.Commit(session, user);
         }
     }
 }

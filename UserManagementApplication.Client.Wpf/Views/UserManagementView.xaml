@@ -1,7 +1,7 @@
 ﻿<Window x:Class="UserManagementApplication.Client.Wpf.Views.UserManagementView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="User Management" Height="363" Width="562.274"
+        Title="User Management" Height="342" Width="776.274"
         ResizeMode="NoResize"
         Loaded="OnLoaded">
     <Grid Margin="0,0,2,0">
@@ -9,24 +9,25 @@
             <ColumnDefinition/>
             <ColumnDefinition Width="0*"/>
         </Grid.ColumnDefinitions>
-        <ListView Name="ListView" Height="258" Margin="10,10,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="524" ItemBindingGroup="{Binding UserData}">
+        <ListView Name="ListView" Height="258" Margin="10,10,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="748" ItemBindingGroup="{Binding UserData}" SelectionChanged="ListView_SelectionChanged">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="User ID" Width="50" DisplayMemberBinding="{Binding UserId}"></GridViewColumn>
-                    <GridViewColumn Header="Username" Width="70" DisplayMemberBinding="{Binding Username}"></GridViewColumn>
-                    <GridViewColumn Header="Role Type" Width="70" DisplayMemberBinding="{Binding RoleType}"></GridViewColumn>
-                    <GridViewColumn Header="First Name" Width="70" DisplayMemberBinding="{Binding FirstName}"></GridViewColumn>
-                    <GridViewColumn Header="Last Name" Width="70" DisplayMemberBinding="{Binding LastName}"></GridViewColumn>
-                    <GridViewColumn Header="Birthdate" Width="70" DisplayMemberBinding="{Binding Birthdate}"></GridViewColumn>
+                    <GridViewColumn Header="User ID" Width="100" DisplayMemberBinding="{Binding UserId}"></GridViewColumn>
+                    <GridViewColumn Header="Username" Width="100" DisplayMemberBinding="{Binding Username}"></GridViewColumn>
+                    <GridViewColumn Header="Role Type" Width="100" DisplayMemberBinding="{Binding RoleType}"></GridViewColumn>
+                    <GridViewColumn Header="First Name" Width="100" DisplayMemberBinding="{Binding FirstName}"></GridViewColumn>
+                    <GridViewColumn Header="Last Name" Width="100" DisplayMemberBinding="{Binding LastName}"></GridViewColumn>
+                    <GridViewColumn Header="Birthdate" Width="100" DisplayMemberBinding="{Binding Birthdate}"></GridViewColumn>
                     <GridViewColumn Header="Age" Width="50" DisplayMemberBinding="{Binding Age}"></GridViewColumn>
+                    <GridViewColumn Header="Bad Logins" Width="80" DisplayMemberBinding="{Binding BadLogins}"></GridViewColumn>
                 </GridView>
             </ListView.View>
         </ListView>
-        <Button Content="Add" HorizontalAlignment="Left" Margin="10,273,0,0" VerticalAlignment="Top" Width="75" Height="22"/>
-        <Button Content="Edit" HorizontalAlignment="Left" Margin="10,300,0,0" VerticalAlignment="Top" Width="75" Height="22"/>
-        <Button Content="Delete" HorizontalAlignment="Left" Margin="90,273,0,0" VerticalAlignment="Top" Width="75" Height="22"/>
-        <Button Content="Refresh" HorizontalAlignment="Left" Margin="241,285,0,0" VerticalAlignment="Top" Width="75" Height="22"/>
-        <Button Content="Unlock" HorizontalAlignment="Left" Margin="90,300,0,0" VerticalAlignment="Top" Width="75" Height="22"/>
-        <Button Content="Logout" HorizontalAlignment="Left" Margin="459,285,0,0" VerticalAlignment="Top" Width="75" Height="22"/>
+        <Button Name="buttonAdd" Content="Add" HorizontalAlignment="Left" Margin="114,273,0,0" VerticalAlignment="Top" Width="75" Height="22" IsEnabled="True" Click="buttonAdd_Click"/>
+        <Button Name="buttonEdit" Content="Edit" HorizontalAlignment="Left" Margin="194,273,0,0" VerticalAlignment="Top" Width="75" Height="22" IsEnabled="False" Click="buttonEdit_Click"/>
+        <Button Name="buttonDelete" Content="Delete" HorizontalAlignment="Left" Margin="274,273,0,0" VerticalAlignment="Top" Width="75" Height="22" IsEnabled="False"/>
+        <Button Name="buttonRefresh" Content="Refresh" HorizontalAlignment="Left" Margin="10,273,0,0" VerticalAlignment="Top" Width="94" Height="22" Click="buttonRefresh_Click"/>
+        <Button Name="buttonUnlock" Content="Unlock" HorizontalAlignment="Left" Margin="354,273,0,0" VerticalAlignment="Top" Width="75" Height="22" IsEnabled="False"/>
+        <Button Name="buttonLogout" Content="Logout" HorizontalAlignment="Left" Margin="683,273,0,0" VerticalAlignment="Top" Width="75" Height="22" Click="buttonLogout_Click"/>
     </Grid>
 </Window>

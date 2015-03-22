@@ -41,11 +41,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ClientModel.cs" />
-    <Compile Include="LoginModel.cs" />
+    <Compile Include="SessionModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServiceProxy\ProxyBase.cs" />
     <Compile Include="ServiceProxy\SessionServiceProxy.cs" />
     <Compile Include="ServiceProxy\UserServiceProxy.cs" />
+    <Compile Include="UserAddEditModel.cs" />
     <Compile Include="UserManagementModel.cs" />
   </ItemGroup>
   <ItemGroup>

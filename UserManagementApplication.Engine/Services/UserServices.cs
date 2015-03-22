@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UserManagementApplication.Common.Enumerations;
 using UserManagementApplication.Common.Exceptions;
 using UserManagementApplication.Remoting.Data;
@@ -16,7 +13,7 @@ namespace UserManagementApplication.Engine.Services
     {
         public IList<User> GetUsers(UserSession session)
         {
-            verifyUserPermissions(session);
+            verifyUserPermissions(session, RoleType.User);
 
             EBC.User user = new EBC.User();
 
@@ -25,7 +22,7 @@ namespace UserManagementApplication.Engine.Services
 
         public IList<User> FindUsers(UserSession session, FindUserRequest request)
         {
-            verifyUserPermissions(session);
+            verifyUserPermissions(session, RoleType.User);
 
             EBC.User user = new EBC.User();
 
@@ -34,7 +31,7 @@ namespace UserManagementApplication.Engine.Services
 
         public User Commit(UserSession session, User user)
         {
-            verifyUserPermissions(session);
+            verifyUserPermissions(session, RoleType.User);
 
             EBC.User ebcUser = new EBC.User();
 
@@ -67,11 +64,11 @@ namespace UserManagementApplication.Engine.Services
             }
         }
 
-        private void verifyUserPermissions(UserSession session)
+        private void verifyUserPermissions(UserSession session, RoleType roleType)
         {
             EBC.UserSession userSession = new EBC.UserSession();
 
-            if (!userSession.IsPermitted(Translate(session), Common.Enumerations.RoleType.User))
+            if (!userSession.IsPermitted(Translate(session), roleType))
             {
                 throw new ErrorException("User is not authorized for this operation!");
             }
@@ -104,7 +101,8 @@ namespace UserManagementApplication.Engine.Services
                     Password     = user.Password,
                     RoleType     = user.RoleType,
                     UserId       = user.UserId,
-                    Username     = user.Username
+                    Username     = user.Username,
+                    BadLogins    = user.BadLogins
                 };
             }
 
@@ -123,7 +121,8 @@ namespace UserManagementApplication.Engine.Services
                     Password  = user.Password,
                     RoleType  = user.RoleType,
                     UserId    = user.UserId,
-                    Username  = user.Username
+                    Username  = user.Username,
+                    BadLogins = user.BadLogins
                 };
             }
 

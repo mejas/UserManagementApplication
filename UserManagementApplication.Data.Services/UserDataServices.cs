@@ -5,16 +5,32 @@ using UserManagementApplication.Data.Contracts;
 using UserManagementApplication.Data.Contracts.Interfaces;
 using UserManagementApplication.Data.DataEntities;
 using UserManagementApplication.Data.StorageProviders;
+using UserManagementApplication.Data.StorageProviders.Interfaces;
 
 namespace UserManagementApplication.Data.Services
 {
     public class UserDataServices : IUserDataService
     {
+        private static IUserDataStorageProvider _storageProvider = null;
+
+        protected static IUserDataStorageProvider StorageProvider
+        {
+            get
+            {
+                if (_storageProvider == null)
+                {
+                    _storageProvider = new UserDataXmlStorageProvider();
+                }
+
+                return _storageProvider;
+            }
+        }
+
         protected User UserEntity = null;
 
         public UserDataServices()
         {
-            UserEntity = new User(new UserDataXmlStorageProvider());
+            UserEntity = new User(StorageProvider);
         }
 
         public IList<UserInformation> GetUsers()
@@ -56,13 +72,14 @@ namespace UserManagementApplication.Data.Services
             {
                 return new User()
                 {
-                    UserId = user.UserId,
-                    Username = user.Username,
-                    Password = user.Password,
+                    UserId    = user.UserId,
+                    Username  = user.Username,
+                    Password  = user.Password,
                     FirstName = user.FirstName,
-                    LastName = user.LastName,
+                    LastName  = user.LastName,
                     Birthdate = user.Birthdate,
-                    RoleType = user.RoleType
+                    RoleType  = user.RoleType,
+                    BadLogins = user.BadLogins
                 };
             }
 
@@ -82,6 +99,7 @@ namespace UserManagementApplication.Data.Services
                     LastName = userEntity.LastName,
                     Birthdate = userEntity.Birthdate,
                     RoleType = userEntity.RoleType,
+                    BadLogins = userEntity.BadLogins,
                     DataState = DataState.Clean
                 };
             }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using UserManagementApplication.Common.Enumerations;
 using UserManagementApplication.Common.Exceptions;
@@ -7,7 +6,6 @@ using UserManagementApplication.Data.Contracts;
 using UserManagementApplication.Data.Contracts.Interfaces;
 using UserManagementApplication.Data.Services;
 using UserManagementApplication.Engine.BusinessEntities;
-using UserManagementApplication.Engine.Providers;
 using UserManagementApplication.Engine.Providers.Interfaces;
 
 namespace UserManagementApplication.Engine.Providers
@@ -17,7 +15,9 @@ namespace UserManagementApplication.Engine.Providers
         protected IUserDataService UserDataService { get; set; }
         protected IAuthenticationDataService AuthenticationDataService { get; set; }
 
-        public DefaultAuthenticationProvider() : this(new UserDataServices(), new AuthenticationDataServices()) { }
+        public DefaultAuthenticationProvider()
+            : this(new UserDataServices(), new AuthenticationDataServices())
+        { }
 
         public DefaultAuthenticationProvider(IUserDataService userDataService, IAuthenticationDataService authenticationDataService)
         {
@@ -44,7 +44,7 @@ namespace UserManagementApplication.Engine.Providers
                 throw new ErrorException("Invalid user credentials");
             }
 
-            if (userData.BadLogins > 3)
+            if (userData.BadLogins >= 3)
             {
                 throw new ErrorException("User is blocked");
             }

@@ -6,7 +6,7 @@
         WindowStartupLocation="CenterScreen" Loaded="OnLoaded">
     <Grid Margin="0,0,2,2">
         <Button Content="Login" HorizontalAlignment="Left" Margin="20,114,0,0" VerticalAlignment="Top" Width="330" Height="41" Click="Button_Click"/>
-        <TextBox HorizontalAlignment="Left" Height="23" Margin="121,32,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="229" Text="{Binding Path=Username}"/>
+        <TextBox Name="UsernameTextBox" HorizontalAlignment="Left" Height="23" Margin="121,32,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="229"/>
         <PasswordBox Name="PasswordBox" HorizontalAlignment="Left" Height="23" Margin="121,63,0,0" VerticalAlignment="Top" Width="229" PasswordChar="●"/>
         <Label Content="Username" Margin="20,29,257,0" VerticalAlignment="Top"/>
         <Label Content="Password" Margin="20,60,257,0" VerticalAlignment="Top"/>

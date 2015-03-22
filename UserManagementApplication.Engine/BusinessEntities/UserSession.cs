@@ -11,7 +11,9 @@ namespace UserManagementApplication.Engine.BusinessEntities
 
         IAuthenticationProvider AuthenticationProvider { get; set; }
 
-        public UserSession() : this(new DefaultAuthenticationProvider()) { }
+        public UserSession()
+            : this(new DefaultAuthenticationProvider())
+        { }
 
         public UserSession(IAuthenticationProvider authenticationProvider)
         {

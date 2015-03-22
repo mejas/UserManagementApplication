@@ -1,21 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UserManagementApplication.Client.Models.ServiceProxy;
+﻿using UserManagementApplication.Client.Models.ServiceProxy;
 using UserManagementApplication.Common.Exceptions;
 using UserManagementApplication.Remoting.Data;
 using UserManagementApplication.Remoting.Data.Request;
 
 namespace UserManagementApplication.Client.Models
 {
-    public class LoginModel : ClientModel
+    public class SessionModel : ClientModel
     {
         protected string SessionToken { get; set; }
         protected SessionServiceProxy SessionProxy { get; set; }
 
-        public LoginModel()
+        public SessionModel()
         {
             SessionProxy = new SessionServiceProxy();
         }
@@ -48,6 +43,11 @@ namespace UserManagementApplication.Client.Models
         public string GetSessionToken()
         {
             return SessionToken;
+        }
+
+        public void Logout(string sessionToken)
+        {
+            SessionProxy.Logoff(new UserSession() { SessionToken = sessionToken });
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Xml;
 using System.Xml.Serialization;
 using UserManagementApplication.Data.DataEntities;
@@ -76,6 +77,7 @@ namespace UserManagementApplication.Data.StorageProviders
             userToUpdate.LastName  = user.LastName;
             userToUpdate.Birthdate = user.Birthdate;
             userToUpdate.RoleType  = user.RoleType;
+            userToUpdate.BadLogins = user.BadLogins;
 
             InvalidateCache();
 
@@ -115,6 +117,10 @@ namespace UserManagementApplication.Data.StorageProviders
                     UserCache = serializer.Deserialize(reader) as List<User>;
                 }
             }
+
+            var lastAddedUser = UserCache.OrderBy(item => item.UserId).FirstOrDefault();
+
+            _newUserId = lastAddedUser != null ? lastAddedUser.UserId + 1 : 0;
         }
 
         //TODO: optimize this so we don't do a big write

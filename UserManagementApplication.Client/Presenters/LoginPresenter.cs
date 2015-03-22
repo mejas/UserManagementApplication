@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UserManagementApplication.Client.Models;
 using UserManagementApplication.Client.ViewDefinitions;
 using UserManagementApplication.Common.Exceptions;
@@ -12,12 +8,12 @@ namespace UserManagementApplication.Client.Presenters
     public class LoginPresenter
     {
         protected ILoginView View { get; set; }
-        protected LoginModel Model { get; set; }
+        protected SessionModel Model { get; set; }
 
         public LoginPresenter(ILoginView loginView)
         {
             View = loginView;
-            Model = new LoginModel();
+            Model = new SessionModel();
             Model.HandleModelException += Model_OnClientModelException;
             View.OnViewLoaded += View_OnViewLoaded;
         }

@@ -97,6 +97,12 @@ namespace UserManagementApplication.Engine.BusinessEntities
                 RoleType  = roleType
             };
 
+            if (String.IsNullOrEmpty(user.Username) || 
+                String.IsNullOrEmpty(user.Password))
+            {
+                throw new ValidationException("Username and Password should not be blank.");
+            }
+
             if (user.Birthdate > DateProvider.NOW())
             {
                 throw new ValidationException("Invalid birthdate.");
@@ -178,7 +184,7 @@ namespace UserManagementApplication.Engine.BusinessEntities
                     Birthdate = userInfo.Birthdate,
                     UserId    = userInfo.UserId,
                     DataState = DataState.Clean,
-                    BadLogins = userInfo.BadLogins,
+                    //BadLogins = userInfo.BadLogins,
                     RoleType  = userInfo.RoleType
                 };
             }

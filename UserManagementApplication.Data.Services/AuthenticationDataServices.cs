@@ -1,22 +1,33 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UserManagementApplication.Data.Contracts;
+﻿using UserManagementApplication.Data.Contracts;
 using UserManagementApplication.Data.Contracts.Interfaces;
 using UserManagementApplication.Data.DataEntities;
 using UserManagementApplication.Data.StorageProviders;
+using UserManagementApplication.Data.StorageProviders.Interfaces;
 
 namespace UserManagementApplication.Data.Services
 {
     public class AuthenticationDataServices : IAuthenticationDataService
     {
-        public Session SessionEntity = null;
+        private static ISessionDataStorageProvider _sessionDataStorageProvider = null;
+
+        protected static ISessionDataStorageProvider SessionDataStorageProvider
+        {
+            get
+            {
+                if (_sessionDataStorageProvider == null)
+                {
+                    _sessionDataStorageProvider = new SessionDataCacheStorageProvider();
+                }
+
+                return _sessionDataStorageProvider;
+            }
+        }
+
+        protected Session SessionEntity = null;
 
         public AuthenticationDataServices()
         {
-            SessionEntity = new Session(SessionDataCacheStorageProvider.Instance);
+            SessionEntity = new Session(SessionDataStorageProvider);
         }
 
         public void StoreSession(string sessionToken, UserInformation userData)

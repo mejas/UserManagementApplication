@@ -1,17 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using UserManagementApplication.Client.Presenters;
 using UserManagementApplication.Client.ViewDefinitions;
 using UserManagementApplication.Client.Wpf.Views;
@@ -28,16 +17,27 @@ namespace UserManagementApplication.Client.Wpf
         public event EventHandler<IView> OnViewLoaded;
 
         public string SessionToken { get; set; }
-        public string Username { get; set; }
+        public string Username
+        {
+            get
+            {
+                return this.UsernameTextBox.Text;
+            }
+            set
+            {
+                this.UsernameTextBox.Text = value;
+            }
+        }
+
         public string Password
         {
             get
             {
-                return PasswordBox.Password;
+                return this.PasswordBox.Password;
             }
             set
             {
-                PasswordBox.Password = value;
+                this.PasswordBox.Password = value;
             }
         }
 
