@@ -36,6 +36,10 @@ namespace UserManagementApplication.Engine.Services
                 {
                     HandleException(ex);
                 }
+                catch (Exception ex)
+                {
+                    HandleException(ex);
+                }
             }
 
             return default(T);
@@ -71,6 +75,7 @@ namespace UserManagementApplication.Engine.Services
         private void HandleException(Exception ex)
         {
             LogProvider.LogMessage(ex);
+            throw new FaultException("A server side error occured.");
         } 
         #endregion
     }
