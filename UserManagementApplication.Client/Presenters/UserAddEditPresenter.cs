@@ -61,12 +61,12 @@ namespace UserManagementApplication.Client.Presenters
         {
             var data = new UserData()
             {
-                Username = View.Username,
+                Username  = View.Username,
                 FirstName = View.FirstName,
-                LastName = View.LastName,
+                LastName  = View.LastName,
                 Birthdate = View.Birthdate,
-                UserId = View.UserData != null ? View.UserData.UserId : 0,
-                RoleType = View.ViewOperation == ViewOperation.Edit ? View.UserData.RoleType : RoleType.User
+                UserId    = View.UserData != null ? View.UserData.UserId : 0,
+                RoleType  = View.ViewOperation == ViewOperation.Edit ? View.UserData.RoleType : RoleType.User
             };
 
             if (View.UserData.Password != View.Password)
@@ -96,10 +96,10 @@ namespace UserManagementApplication.Client.Presenters
             if (View.ViewOperation == ViewOperation.Add)
             {
                 View.ViewTitle = "Add User";
-                View.Username = String.Empty;
-                View.Password = String.Empty;
+                View.Username  = String.Empty;
+                View.Password  = String.Empty;
                 View.FirstName = String.Empty;
-                View.LastName = String.Empty;
+                View.LastName  = String.Empty;
                 View.Birthdate = DateTime.Today;
             }
             else if (View.ViewOperation == ViewOperation.Edit)
@@ -113,10 +113,10 @@ namespace UserManagementApplication.Client.Presenters
         {
             if (View.UserData != null)
             {
-                View.Username = View.UserData.Username;
-                View.Password = View.UserData.Password;
+                View.Username  = View.UserData.Username;
+                View.Password  = View.UserData.Password;
                 View.FirstName = View.UserData.FirstName;
-                View.LastName = View.UserData.LastName;
+                View.LastName  = View.UserData.LastName;
                 View.Birthdate = View.UserData.Birthdate;
             }
         }
