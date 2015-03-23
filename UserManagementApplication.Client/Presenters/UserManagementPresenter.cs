@@ -1,4 +1,5 @@
-﻿using UserManagementApplication.Client.Models;
+﻿using System;
+using UserManagementApplication.Client.Models;
 using UserManagementApplication.Client.Translators;
 using UserManagementApplication.Client.ViewData;
 using UserManagementApplication.Client.ViewDefinitions;
@@ -107,6 +108,7 @@ namespace UserManagementApplication.Client.Presenters
         #region Functions
         private void View_OnViewLoaded(object sender, IView e)
         {
+            View.ViewTitle = String.Format("{0} - [{1}] - {2}", View.ViewTitle, View.SessionToken.UserData.RoleType, View.SessionToken.UserData.Username);
             FindAllUsers();
             SecureControls();
         }

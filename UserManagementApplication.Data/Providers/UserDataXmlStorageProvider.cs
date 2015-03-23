@@ -57,10 +57,18 @@ namespace UserManagementApplication.Data.Providers
 
         public IList<User> GetUsers(string firstName, string lastName)
         {
+            firstName = firstName.ToLower();
+            lastName = lastName.ToLower();
+
             return UserCache.FindAll(user =>
-                    String.IsNullOrEmpty(firstName) && user.LastName == lastName ||
-                    String.IsNullOrEmpty(lastName) && user.FirstName == firstName ||
-                    user.FirstName == firstName && user.LastName == lastName);
+                {
+                    var userFirstName = user.FirstName.ToLower();
+                    var userLastName  = user.LastName.ToLower();
+
+                    return  String.IsNullOrEmpty(firstName) && userLastName == lastName ||
+                            String.IsNullOrEmpty(lastName) && userFirstName == firstName ||
+                            userFirstName == firstName && userLastName == lastName;
+                });
         }
 
         public IList<User> GetUsers()
