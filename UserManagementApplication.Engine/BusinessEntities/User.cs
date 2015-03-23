@@ -104,7 +104,7 @@ namespace UserManagementApplication.Engine.BusinessEntities
                             user.Password, 
                             user.FirstName, 
                             user.LastName, 
-                            user.Birthdate, 
+                            user.Birthdate,
                             user.RoleType
                           );
         }
@@ -117,9 +117,9 @@ namespace UserManagementApplication.Engine.BusinessEntities
                             DateTime birthDate,
                             RoleType roleType = RoleType.User)
         {
-            LogMessage(userSession, String.Format("Create [{0}, {1}, {2}, {3}]", username, firstName, lastName, birthDate));
+            LogMessage(userSession, String.Format("Create [{0}, {1}, {2}, {3}, {4}]", username, firstName, lastName, birthDate, roleType));
 
-            if (isRoleClearanceValid(userSession, RoleType.Admin))
+            if (isRoleClearanceValid(userSession, RoleType.User))
             {
                 UserInformation user = new UserInformation()
                 {
@@ -131,6 +131,11 @@ namespace UserManagementApplication.Engine.BusinessEntities
                     DataState = DataState.New,
                     RoleType = roleType
                 };
+
+                if (userSession.User.RoleType != RoleType.Admin && user.RoleType == RoleType.Admin)
+                {
+                    throw new ValidationException("Only Administrators are allowed to create administrators");
+                }
 
                 if (String.IsNullOrEmpty(user.Username) ||
                     String.IsNullOrEmpty(user.Password))
@@ -165,14 +170,26 @@ namespace UserManagementApplication.Engine.BusinessEntities
         {
             LogMessage(userSession, String.Format("Update against UserId {0}", modifiedData.UserId));
 
-            if (isRoleClearanceValid(userSession, RoleType.Admin) &&
-                validateUserSession(userSession, modifiedData))
+            if (validateUserSession(userSession, modifiedData))
             {
                 User originalData = Translate(UserDataService.GetUser(modifiedData.UserId));
 
                 if (originalData == null)
                 {
                     throw new ErrorException("User does not exist.");
+                }
+
+                if (!isRoleClearanceValid(userSession, RoleType.Admin))
+                {
+                    if (originalData.BadLogins != modifiedData.BadLogins)
+                    {
+                        throw new ValidationException("Cannot update BadLogins for non-Administrators");
+                    }
+
+                    if (modifiedData.RoleType == RoleType.Admin)
+                    {
+                        throw new ValidationException("Cannot promote RoleType for non-Administrators");
+                    }
                 }
                 
                 var userInfo = Translate(modifiedData);
@@ -207,7 +224,9 @@ namespace UserManagementApplication.Engine.BusinessEntities
 
         private bool isRoleClearanceValid(UserSession userSession, Common.Enumerations.RoleType roleType)
         {
-            if (!userSession.IsClearedForRole(userSession, roleType))
+            UserSession session = new UserSession();
+
+            if (!session.IsClearedForRole(userSession, roleType))
             {
                 throw new UnauthorizedOperationException("The user is not allowed to execute this operation.");
             }

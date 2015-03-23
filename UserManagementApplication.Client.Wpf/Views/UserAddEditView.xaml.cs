@@ -13,6 +13,8 @@ namespace UserManagementApplication.Client.Wpf.Views
     /// </summary>
     public partial class UserAddEditView : Window, IUserAddEditView
     {
+        #region Properties
+
         public string ViewTitle { get; set; }
         public UserData UserData { get; set; }
         public SessionData SessionToken { get; set; }
@@ -88,6 +90,10 @@ namespace UserManagementApplication.Client.Wpf.Views
 
         protected UserAddEditPresenter Presenter { get; set; }
 
+        #endregion
+
+        #region Constructors
+        
         public UserAddEditView()
         {
             InitializeComponent();
@@ -95,6 +101,10 @@ namespace UserManagementApplication.Client.Wpf.Views
             Presenter = new UserAddEditPresenter(this);
         }
 
+        #endregion
+
+        #region Methods
+        
         public void HandleValidationResults(ValidationResults validationResults)
         {
             foreach (var result in validationResults.ErrorDictionary)
@@ -113,6 +123,10 @@ namespace UserManagementApplication.Client.Wpf.Views
             this.Close();
         }
 
+        #endregion
+
+        #region Functions
+        
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             var eventHandler = OnViewLoaded;
@@ -131,6 +145,8 @@ namespace UserManagementApplication.Client.Wpf.Views
         private void ButtonCancel_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
-        }
+        } 
+
+        #endregion
     }
 }

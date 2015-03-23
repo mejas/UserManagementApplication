@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace UserManagementApplication.Client.Translators
 {
@@ -52,7 +49,12 @@ namespace UserManagementApplication.Client.Translators
 
         public IList<ViewData.UserData> Translate(IList<Remoting.Data.User> result)
         {
-            return result.ToList().ConvertAll<ViewData.UserData>(Translate);
+            if (result != null)
+            {
+                return result.ToList().ConvertAll<ViewData.UserData>(Translate);
+            }
+
+            return new List<ViewData.UserData>();
         }
     }
 }

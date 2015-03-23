@@ -22,7 +22,7 @@ namespace UserManagementApplication.Data.Services
         {
             var result = SessionEntity.GetSession(sessionToken);
 
-            UserInformation userInfo = null;
+            UserInformation userInfo = new UserInformation();
 
             if (result != null)
             {

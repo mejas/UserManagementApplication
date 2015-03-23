@@ -390,7 +390,7 @@ namespace UserManagementApplication.Engine.Tests
 
                 var user = new User(DateProvider, UserDataService, LogProvider);
 
-                Assert.Throws<UnauthorizedOperationException>(() => user.Create(userSession, "username", "password", "firstname", "1@$tName", DateTime.Now, RoleType.Admin));
+                Assert.Throws<ValidationException>(() => user.Create(userSession, "username", "password", "firstname", "1@$tName", DateTime.Now, RoleType.Admin));
             }
         }
 

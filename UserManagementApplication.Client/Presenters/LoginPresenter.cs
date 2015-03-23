@@ -1,5 +1,4 @@
 ﻿using System;
-using UserManagementApplication.Client.Data;
 using UserManagementApplication.Client.Models;
 using UserManagementApplication.Client.Translators;
 using UserManagementApplication.Client.ViewDefinitions;

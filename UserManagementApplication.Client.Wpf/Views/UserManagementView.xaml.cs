@@ -15,6 +15,8 @@ namespace UserManagementApplication.Client.Wpf.Views
     /// </summary>
     public partial class UserManagementView : Window, IUserManagementView
     {
+        #region Properties
+        
         public event EventHandler<IView> OnViewLoaded;
 
         public SessionData SessionToken { get; set; }
@@ -51,20 +53,27 @@ namespace UserManagementApplication.Client.Wpf.Views
             }
         }
 
+        protected UserManagementPresenter Presenter { get; set; } 
+        
+        #endregion
 
-        protected UserManagementPresenter Presenter { get; set; }
-
+        #region Constructors
+        
         public UserManagementView()
         {
             InitializeComponent();
             Presenter = new UserManagementPresenter(this);
-        }
+        } 
 
+        #endregion
+
+        #region Methods
+        
         public void UpdateData(IList<UserData> userData)
         {
             ListView.Items.Clear();
 
-            foreach(var data in userData)
+            foreach (var data in userData)
             {
                 ListView.Items.Add(data);
             }
@@ -126,8 +135,15 @@ namespace UserManagementApplication.Client.Wpf.Views
             };
 
             userAddEdit.ShowDialog();
+        }
 
-            this.Close();
+        #endregion
+
+        #region MyRegion
+        
+        protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
+        {
+            Presenter.Logout();
         }
 
         private void OnLoaded(object sender, RoutedEventArgs e)
@@ -178,11 +194,8 @@ namespace UserManagementApplication.Client.Wpf.Views
         private void buttonSearch_Click(object sender, RoutedEventArgs e)
         {
             Presenter.FindUsers();
-        }
+        } 
 
-        protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
-        {
-            Presenter.Logout();
-        }
+        #endregion
     }
 }

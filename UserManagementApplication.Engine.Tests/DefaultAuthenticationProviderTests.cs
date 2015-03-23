@@ -2,13 +2,13 @@
 using Moq;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UserManagementApplication.Common.Enumerations;
 using UserManagementApplication.Common.Exceptions;
 using UserManagementApplication.Data.Contracts;
 using UserManagementApplication.Data.Contracts.Interfaces;
 using UserManagementApplication.Engine.Providers;
 using Xunit;
-using System.Linq;
 
 namespace UserManagementApplication.Engine.Tests
 {

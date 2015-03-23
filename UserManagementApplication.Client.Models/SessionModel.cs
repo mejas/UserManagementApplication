@@ -1,4 +1,5 @@
 ﻿using UserManagementApplication.Client.Models.ServiceProxy;
+using UserManagementApplication.Common.Security;
 using UserManagementApplication.Remoting.Data;
 using UserManagementApplication.Remoting.Data.Request;
 
@@ -19,7 +20,7 @@ namespace UserManagementApplication.Client.Models
             LogonRequest logonRequest = new LogonRequest()
             {
                 Username = username,
-                Password = password
+                Password = new HashGenerator().GenerateHash(password)
             };
 
             return InvokeMethod(() => SessionProxy.Logon(logonRequest));

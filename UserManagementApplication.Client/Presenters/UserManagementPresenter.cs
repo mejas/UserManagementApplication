@@ -5,7 +5,6 @@ using UserManagementApplication.Client.ViewData;
 using UserManagementApplication.Client.ViewDefinitions;
 using UserManagementApplication.Common.Enumerations;
 using UserManagementApplication.Common.Exceptions;
-using UserManagementApplication.Remoting.Data;
 
 namespace UserManagementApplication.Client.Presenters
 {
@@ -51,13 +50,10 @@ namespace UserManagementApplication.Client.Presenters
             bool hasItem = View.CurrentUserData != null;
             bool isAdminRole = View.SessionToken.UserData.RoleType == RoleType.Admin;
 
-            View.EnableAdd(isAdminRole);
-
-            bool enableOp = hasItem && isAdminRole;
-
-            View.EnableDelete(enableOp);
-            View.EnableEdit(enableOp);
-            View.EnableUnlock(enableOp);
+            View.EnableAdd(true);
+            View.EnableDelete(hasItem);
+            View.EnableEdit(hasItem);
+            View.EnableUnlock(hasItem && isAdminRole);
         }
 
         public void EditUser()
@@ -106,7 +102,7 @@ namespace UserManagementApplication.Client.Presenters
         {
             var result = UserManagementModel.FindUsers(new SessionDataTranslator().Translate(View.SessionToken), View.FirstName, View.LastName);
 
-            View.UpdateData(result.ToList().ConvertAll<UserData>(new UserDataTranslator().Translate));
+            View.UpdateData(new UserDataTranslator().Translate(result));
         }
 
         private void Model_HandleModelException(object sender, UserManagementApplicationException e)

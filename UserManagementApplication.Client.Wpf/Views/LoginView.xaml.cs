@@ -12,11 +12,12 @@ namespace UserManagementApplication.Client.Wpf
     /// </summary>
     public partial class LoginView : Window, ILoginView
     {
-        protected LoginPresenter Presenter { get; set; }
-
-        public event EventHandler<IView> OnViewLoaded;
+        #region Properties
 
         public SessionData SessionToken { get; set; }
+        public event EventHandler<IView> OnViewLoaded;
+        protected LoginPresenter Presenter { get; set; }
+        
         public string Username
         {
             get
@@ -41,6 +42,10 @@ namespace UserManagementApplication.Client.Wpf
             }
         }
 
+        #endregion
+
+        #region Constructors
+        
         public LoginView()
         {
             InitializeComponent();
@@ -48,6 +53,10 @@ namespace UserManagementApplication.Client.Wpf
             DataContext = this;
         }
 
+        #endregion
+
+        #region Methods
+        
         public void HandleException(string message)
         {
             MessageBox.Show(this, message, this.Title);
@@ -60,6 +69,10 @@ namespace UserManagementApplication.Client.Wpf
             userManagementView.Show();
             this.Close();
         }
+
+        #endregion
+
+        #region Functions
         
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
@@ -75,5 +88,7 @@ namespace UserManagementApplication.Client.Wpf
         {
             Presenter.Login();
         }
+
+        #endregion
     }
 }

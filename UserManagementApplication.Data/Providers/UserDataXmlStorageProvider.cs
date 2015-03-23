@@ -7,6 +7,7 @@ using System.Xml;
 using System.Xml.Serialization;
 using UserManagementApplication.Common.Enumerations;
 using UserManagementApplication.Common.Exceptions;
+using UserManagementApplication.Common.Security;
 using UserManagementApplication.Data.DataEntities;
 using UserManagementApplication.Data.Providers.Interfaces;
 
@@ -49,7 +50,8 @@ namespace UserManagementApplication.Data.Providers
             if (!fileInfo.Exists)
             {
                 User user = new User(this, new DefaultDataSecurityProvider());
-                user.Create("administrator", "$ystemM@stER", "Administrator", "Administrator", DateTime.Now, RoleType.Admin);
+                user.Create("administrator", new HashGenerator().GenerateHash("$ystemM@stER"), 
+                            "Administrator", "Administrator", DateTime.Now, RoleType.Admin);
             }
             else if(fileInfo.Length > 1)
             {

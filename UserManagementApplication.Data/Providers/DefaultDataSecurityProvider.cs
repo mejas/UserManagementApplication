@@ -2,6 +2,7 @@
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
+using UserManagementApplication.Common.Security;
 using UserManagementApplication.Data.Providers.Interfaces;
 
 namespace UserManagementApplication.Data.Providers
@@ -10,15 +11,7 @@ namespace UserManagementApplication.Data.Providers
     {
         public string GenerateHash(string input, string salt)
         {
-            string combined = input + salt;
-
-            var bytes = Encoding.UTF8.GetBytes(combined);
-
-            var hasher = new SHA256Managed();
-
-            var hashedInput = hasher.ComputeHash(bytes);
-
-            return Convert.ToBase64String(hashedInput);
+            return new HashGenerator().GenerateHash(salt + input);
         }
 
         public string GenerateSalt()

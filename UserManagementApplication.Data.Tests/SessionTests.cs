@@ -1,10 +1,10 @@
 ﻿using FluentAssertions;
 using Moq;
 using System.Collections.Generic;
+using System.Linq;
 using UserManagementApplication.Data.DataEntities;
 using UserManagementApplication.Data.Providers.Interfaces;
 using Xunit;
-using System.Linq;
 
 namespace UserManagementApplication.Data.Tests
 {

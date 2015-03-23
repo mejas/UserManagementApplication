@@ -8,7 +8,7 @@ using UserManagementApplication.Client.ViewData;
 using UserManagementApplication.Client.ViewDefinitions;
 using UserManagementApplication.Common;
 using UserManagementApplication.Common.Enumerations;
-using UserManagementApplication.Remoting.Data;
+using UserManagementApplication.Common.Security;
 
 namespace UserManagementApplication.Client.Presenters
 {
@@ -55,7 +55,7 @@ namespace UserManagementApplication.Client.Presenters
             return new UserData()
             {
                 Username  = View.Username,
-                Password  = View.Password,
+                Password  = new HashGenerator().GenerateHash(View.Password),
                 FirstName = View.FirstName,
                 LastName  = View.LastName,
                 Birthdate = View.Birthdate,
