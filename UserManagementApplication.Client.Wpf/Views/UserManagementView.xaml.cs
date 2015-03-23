@@ -29,6 +29,18 @@ namespace UserManagementApplication.Client.Wpf.Views
             }
         }
 
+        public string ViewTitle
+        {
+            get
+            {
+                return this.Title;
+            }
+            set
+            {
+                this.Title = value;
+            }
+        }
+
         public string FirstName
         {
             get

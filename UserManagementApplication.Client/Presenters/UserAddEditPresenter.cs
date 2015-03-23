@@ -59,16 +59,22 @@ namespace UserManagementApplication.Client.Presenters
         #region Functions
         private UserData getUserFromView()
         {
-            return new UserData()
+            var data = new UserData()
             {
                 Username = View.Username,
-                Password = new HashGenerator().GenerateHash(View.Password),
                 FirstName = View.FirstName,
                 LastName = View.LastName,
                 Birthdate = View.Birthdate,
                 UserId = View.UserData != null ? View.UserData.UserId : 0,
                 RoleType = View.ViewOperation == ViewOperation.Edit ? View.UserData.RoleType : RoleType.User
             };
+
+            if (View.UserData.Password != View.Password)
+            {
+                data.Password = new HashGenerator().GenerateHash(View.Password);
+            }
+
+            return data;
         }
 
         private MessageState getMessageState()

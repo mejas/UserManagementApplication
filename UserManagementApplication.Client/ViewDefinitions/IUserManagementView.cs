@@ -7,6 +7,7 @@ namespace UserManagementApplication.Client.ViewDefinitions
     {
         UserData CurrentUserData { get; }
 
+        string ViewTitle { get; set; }
         string FirstName { get; set; }
         string LastName { get; set; }
 
