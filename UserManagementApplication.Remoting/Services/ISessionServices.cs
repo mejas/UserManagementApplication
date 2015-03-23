@@ -12,5 +12,8 @@ namespace UserManagementApplication.Remoting.Services
 
         [OperationContract]
         void Logoff(UserSession session);
+
+        [OperationContract]
+        void TerminateSession(UserSession session, User user);
     }
 }

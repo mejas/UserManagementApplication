@@ -1,5 +1,6 @@
 ﻿using System.ServiceModel;
 using UserManagementApplication.Engine.BusinessEntities;
+using UserManagementApplication.Engine.Translators;
 using UserManagementApplication.Remoting.Data.Request;
 using UserManagementApplication.Remoting.Services;
 
@@ -16,7 +17,7 @@ namespace UserManagementApplication.Engine.Services
 
                     var result = userSession.AuthenticateUser(request.Username, request.Password);
 
-                    return Translate(result);
+                    return new SessionTranslator().Translate(result);
                 });
         }
 
@@ -26,34 +27,19 @@ namespace UserManagementApplication.Engine.Services
             {
                 UserSession userSession = new UserSession();
 
-                userSession.TerminateSession(Translate(session));
+                userSession.TerminateSession(new SessionTranslator().Translate(session));
             });
         }
 
-        private UserSession Translate(Remoting.Data.UserSession session)
+        public void TerminateSession(Remoting.Data.UserSession session, Remoting.Data.User user)
         {
-            if (session != null)
-            {
-                return new UserSession()
+            InvokeMethod(() =>
                 {
-                    SessionToken = session.SessionToken
-                };
-            }
+                    UserSession userSession = new UserSession();
 
-            return null;
-        }
-
-        private Remoting.Data.UserSession Translate(UserSession result)
-        {
-            if (result != null)
-            {
-                return new Remoting.Data.UserSession()
-                {
-                    SessionToken = result.SessionToken
-                };
-            }
-
-            return null;
+                    userSession.TerminateSession(   new SessionTranslator().Translate(session), 
+                                                    new UserTranslator().Translate(user));
+                });
         }
     }
 }

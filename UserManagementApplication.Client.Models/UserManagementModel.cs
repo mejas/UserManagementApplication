@@ -14,26 +14,26 @@ namespace UserManagementApplication.Client.Models
             SessionProxy = new UserServiceProxy();
         }
 
-        public IList<User> GetUsers(string sessionToken)
+        public IList<User> GetUsers(UserSession sessionToken)
         {
-            return InvokeMethod(() => SessionProxy.GetUsers(new UserSession() { SessionToken = sessionToken }));
+            return InvokeMethod(() => SessionProxy.GetUsers(sessionToken));
         }
 
-        public void DeleteUser(string sessionToken, User user)
+        public void DeleteUser(UserSession sessionToken, User user)
         {
-            InvokeMethod(() => SessionProxy.Commit(new UserSession() { SessionToken = sessionToken }, user));
+            InvokeMethod(() => SessionProxy.Commit(sessionToken, user));
         }
 
-        public void UnlockUser(string sessionToken, User user)
+        public void UnlockUser(UserSession sessionToken, User user)
         {
-            InvokeMethod(() => SessionProxy.Commit(new UserSession() { SessionToken = sessionToken }, user));
+            InvokeMethod(() => SessionProxy.Commit(sessionToken, user));
         }
 
-        public IList<User> FindUsers(string sessionToken, string firstName, string lastName)
+        public IList<User> FindUsers(UserSession sessionToken, string firstName, string lastName)
         {
             return InvokeMethod(
-                () => SessionProxy.FindUsers(new UserSession() { SessionToken = sessionToken }, 
-                                            new FindUserRequest() { FirstName = firstName, LastName = lastName }));
+                () => SessionProxy.FindUsers(sessionToken, 
+                                             new FindUserRequest() { FirstName = firstName, LastName = lastName }));
         }
     }
 }

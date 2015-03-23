@@ -97,6 +97,18 @@ namespace UserManagementApplication.Engine.BusinessEntities
             return Translate(UserDataService.GetUser(username));
         }
 
+        public User Create(UserSession userSession, User user)
+        {
+            return Create(  userSession, 
+                            user.Username, 
+                            user.Password, 
+                            user.FirstName, 
+                            user.LastName, 
+                            user.Birthdate, 
+                            user.RoleType
+                          );
+        }
+
         public User Create( UserSession userSession,
                             string username,
                             string password,
@@ -107,7 +119,7 @@ namespace UserManagementApplication.Engine.BusinessEntities
         {
             LogMessage(userSession, String.Format("Create [{0}, {1}, {2}, {3}]", username, firstName, lastName, birthDate));
 
-            if (isRoleClearanceValid(userSession, roleType))
+            if (isRoleClearanceValid(userSession, RoleType.Admin))
             {
                 UserInformation user = new UserInformation()
                 {
@@ -153,18 +165,14 @@ namespace UserManagementApplication.Engine.BusinessEntities
         {
             LogMessage(userSession, String.Format("Update against UserId {0}", modifiedData.UserId));
 
-            if (validateUserSession(userSession, modifiedData))
+            if (isRoleClearanceValid(userSession, RoleType.Admin) &&
+                validateUserSession(userSession, modifiedData))
             {
                 User originalData = Translate(UserDataService.GetUser(modifiedData.UserId));
 
                 if (originalData == null)
                 {
                     throw new ErrorException("User does not exist.");
-                }
-
-                if (modifiedData.BadLogins != originalData.BadLogins)
-                {
-                    isRoleClearanceValid(userSession, RoleType.Admin);
                 }
                 
                 var userInfo = Translate(modifiedData);

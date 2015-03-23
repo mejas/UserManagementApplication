@@ -1,4 +1,5 @@
-﻿using UserManagementApplication.Data.Providers.Interfaces;
+﻿using System;
+using UserManagementApplication.Data.Providers.Interfaces;
 
 namespace UserManagementApplication.Data.DataEntities
 {
@@ -32,9 +33,16 @@ namespace UserManagementApplication.Data.DataEntities
             return StorageProvider.GetSession(sessionToken);
         }
 
-        public void RemoveSession(string sessionToken)
+        public void RemoveSession(Session session)
         {
-            StorageProvider.RemoveSession(sessionToken);
+            if (!String.IsNullOrEmpty(session.SessionToken))
+            {
+                StorageProvider.RemoveSessionByToken(session.SessionToken);
+            }
+            else if(session.UserData != null)
+            {
+                StorageProvider.RemoveSessionByUsername(session.UserData.Username);
+            }
         }
     }
 }

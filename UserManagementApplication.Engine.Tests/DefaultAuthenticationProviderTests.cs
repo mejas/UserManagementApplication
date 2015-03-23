@@ -8,6 +8,7 @@ using UserManagementApplication.Data.Contracts;
 using UserManagementApplication.Data.Contracts.Interfaces;
 using UserManagementApplication.Engine.Providers;
 using Xunit;
+using System.Linq;
 
 namespace UserManagementApplication.Engine.Tests
 {
@@ -63,8 +64,24 @@ namespace UserManagementApplication.Engine.Tests
                     });
 
                 authenticationDataService
-                    .Setup(d => d.RemoveSession(It.IsAny<string>()))
-                    .Callback((string sessionToken) => _sessions.Remove(sessionToken));
+                    .Setup(d => d.RemoveSession(It.IsAny<UserSessionInformation>()))
+                    .Callback(
+                    (UserSessionInformation sessionToken) => 
+                        {
+                            if(!String.IsNullOrEmpty(sessionToken.SessionToken))
+                            {
+                                _sessions.Remove(sessionToken.SessionToken);
+                            }
+                            else if(sessionToken.User != null)
+                            {
+                                var key = _sessions.Where(item => item.Value.User.Username == sessionToken.User.Username).Select(p => p.Key).FirstOrDefault();
+
+                                if (!String.IsNullOrEmpty(key))
+                                {
+                                    _sessions.Remove(key);
+                                }
+                            }
+                        });
 
                 authenticationDataService
                     .Setup(d => d.Authenticate(It.IsAny<UserInformation>(), It.IsAny<string>()))

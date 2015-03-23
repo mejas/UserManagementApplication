@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UserManagementApplication.Data.DataEntities;
 using UserManagementApplication.Data.Providers.Interfaces;
 using Xunit;
+using System.Linq;
 
 namespace UserManagementApplication.Data.Tests
 {
@@ -37,8 +38,17 @@ namespace UserManagementApplication.Data.Tests
                     });
 
                 storageProvider
-                    .Setup(d => d.RemoveSession(It.IsAny<string>()))
+                    .Setup(d => d.RemoveSessionByToken(It.IsAny<string>()))
                     .Callback((string session) => _sessions.Remove(session));
+
+                storageProvider
+                    .Setup(d => d.RemoveSessionByUsername(It.IsAny<string>()))
+                    .Callback((string username) =>
+                    {
+                        string sessionKey = _sessions.Where(item => item.Value.UserData.Username == username).Select(p => p.Key).FirstOrDefault();
+
+                        _sessions.Remove(sessionKey);
+                    });
 
                 return storageProvider.Object;
             }
@@ -173,13 +183,27 @@ namespace UserManagementApplication.Data.Tests
             private string TOKEN = "token";
 
             [Fact]
-            public void ResultShouldBeNull()
+            public void SessionTokenDeletionResultShouldBeNull()
             {
                 var session = new Session(StorageProvider);
 
                 session.CreateSession(TOKEN, USER);
 
-                session.RemoveSession(TOKEN);
+                session.RemoveSession(new Session(StorageProvider) { SessionToken = TOKEN });
+
+                var subject = session.GetSession(TOKEN);
+
+                subject.Should().BeNull();
+            }
+
+            [Fact]
+            public void UsernameDeletionResultShouldBeNull()
+            {
+                var session = new Session(StorageProvider);
+
+                session.CreateSession(TOKEN, USER);
+
+                session.RemoveSession(new Session(StorageProvider) { UserData = USER });
 
                 var subject = session.GetSession(TOKEN);
 

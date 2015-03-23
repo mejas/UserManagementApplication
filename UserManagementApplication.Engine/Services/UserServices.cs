@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using UserManagementApplication.Common.Enumerations;
+using UserManagementApplication.Engine.Translators;
 using UserManagementApplication.Remoting.Data;
 using UserManagementApplication.Remoting.Data.Request;
 using UserManagementApplication.Remoting.Services;
@@ -16,7 +17,9 @@ namespace UserManagementApplication.Engine.Services
             {
                 EBC.User user = new EBC.User();
 
-                return user.Find(Translate(session)).ToList().ConvertAll<User>(Translate);
+                var result = user.Find(new SessionTranslator().Translate(session));
+
+                return new UserTranslator().Translate(result);
             });
         }
 
@@ -26,7 +29,9 @@ namespace UserManagementApplication.Engine.Services
             {
                 EBC.User user = new EBC.User();
 
-                return user.Find(Translate(session), request.FirstName, request.LastName).ToList().ConvertAll<User>(Translate);
+                var result = user.Find(new SessionTranslator().Translate(session), request.FirstName, request.LastName);
+
+                return new UserTranslator().Translate(result);
             });
         }
 
@@ -34,91 +39,38 @@ namespace UserManagementApplication.Engine.Services
         {
             return InvokeMethod(() =>
             {
+                var translatedSession = new SessionTranslator().Translate(session);
+
+                var userTranslator = new UserTranslator();
+                var translatedUser = userTranslator.Translate(user);
+
                 EBC.User ebcUser = new EBC.User();
+                EBC.User result = null;
 
                 switch (user.MessageState)
                 {
                     case MessageState.New:
                         {
-                            var result = ebcUser.Create(Translate(session),
-                                                        user.Username,
-                                                        user.Password,
-                                                        user.FirstName,
-                                                        user.LastName,
-                                                        user.Birthdate,
-                                                        user.RoleType);
-                            return Translate(result);
+                            result = ebcUser.Create(translatedSession, translatedUser);
+                            break;
                         }
                     case MessageState.Modified:
                         {
-                            var result = ebcUser.Update(Translate(session), Translate(user));
-
-                            return Translate(result);
+                            result = ebcUser.Update(translatedSession, translatedUser);
+                            break;
                         }
                     case MessageState.Deleted:
                         {
-                            ebcUser.Remove(Translate(session), Translate(user));
+                            ebcUser.Remove(translatedSession, translatedUser);
 
-                            return null;
+                            result = null;
+                            break;
                         }
-                    default:
-                        return user;
                 }
+
+                return userTranslator.Translate(result);
+
             });
-        }
-
-        protected EBC.UserSession Translate(UserSession session)
-        {
-            if (session != null)
-            {
-                var userSession = new EBC.UserSession() { SessionToken = session.SessionToken };
-
-                return userSession.GetUserSession(userSession);
-            }
-
-            return null;
-        }
-
-        protected User Translate(EBC.User user)
-        {
-            if (user != null)
-            {
-                return new User()
-                {
-                    Age          = user.Age,
-                    Birthdate    = user.Birthdate,
-                    FirstName    = user.FirstName,
-                    LastName     = user.LastName,
-                    MessageState = Common.Enumerations.MessageState.Clean,
-                    Password     = user.Password,
-                    RoleType     = user.RoleType,
-                    UserId       = user.UserId,
-                    Username     = user.Username,
-                    BadLogins    = user.BadLogins
-                };
-            }
-
-            return null;
-        }
-
-        protected EBC.User Translate(User user)
-        {
-            if (user != null)
-            {
-                return new EBC.User()
-                {
-                    Birthdate = user.Birthdate,
-                    FirstName = user.FirstName,
-                    LastName  = user.LastName,
-                    Password  = user.Password,
-                    RoleType  = user.RoleType,
-                    UserId    = user.UserId,
-                    Username  = user.Username,
-                    BadLogins = user.BadLogins
-                };
-            }
-
-            return null;
         }
     }
 }

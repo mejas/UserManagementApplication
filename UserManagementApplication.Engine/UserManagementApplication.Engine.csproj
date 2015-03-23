@@ -50,6 +50,8 @@
     <Compile Include="Services\RemotingServiceBase.cs" />
     <Compile Include="Services\SessionServices.cs" />
     <Compile Include="Services\UserServices.cs" />
+    <Compile Include="Translators\SessionTranslator.cs" />
+    <Compile Include="Translators\UserTranslator.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\UserManagementApplication.Common\UserManagementApplication.Common.csproj">

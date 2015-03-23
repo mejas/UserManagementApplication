@@ -36,7 +36,6 @@ namespace UserManagementApplication.Engine.Providers
         {
             var user = UserDataService.GetUser(username);
 
-            ////TODO: hash passwords here before checking
             if (user == null || 
                 !AuthenticationDataService.Authenticate(user, password))
             {
@@ -88,7 +87,7 @@ namespace UserManagementApplication.Engine.Providers
 
         public void TerminateSession(UserSession userSession)
         {
-            AuthenticationDataService.RemoveSession(userSession.SessionToken);
+            AuthenticationDataService.RemoveSession(Translate(userSession));
         }
 
         private string generateSessionToken()
@@ -104,6 +103,20 @@ namespace UserManagementApplication.Engine.Providers
                 {
                     SessionToken = userSessionInfo.SessionToken,
                     User = new User(UserDataService).Translate(userSessionInfo.User)
+                };
+            }
+
+            return null;
+        }
+
+        private UserSessionInformation Translate(UserSession userSession)
+        {
+            if (userSession != null)
+            {
+                return new UserSessionInformation()
+                {
+                    SessionToken = userSession.SessionToken,
+                    User = new User(UserDataService).Translate(userSession.User)
                 };
             }
 

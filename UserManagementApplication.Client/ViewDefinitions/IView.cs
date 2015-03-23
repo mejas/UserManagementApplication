@@ -1,11 +1,13 @@
 ﻿using System;
+using UserManagementApplication.Client.Data;
 
 namespace UserManagementApplication.Client.ViewDefinitions
 {
     public interface IView
     {
+        SessionData SessionToken { get; set; }
+        
         event EventHandler<IView> OnViewLoaded;
-        string SessionToken { get; set; }
         void HandleException(string message);
     }
 }

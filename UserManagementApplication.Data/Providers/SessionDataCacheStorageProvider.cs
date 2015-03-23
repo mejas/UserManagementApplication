@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using UserManagementApplication.Data.DataEntities;
 using UserManagementApplication.Data.Providers.Interfaces;
+using System.Linq;
+using System;
 
 namespace UserManagementApplication.Data.Providers
 {
@@ -24,7 +26,7 @@ namespace UserManagementApplication.Data.Providers
             return session;
         }
 
-        public void RemoveSession(string sessionToken)
+        public void RemoveSessionByToken(string sessionToken)
         {
             Session session;
 
@@ -32,6 +34,13 @@ namespace UserManagementApplication.Data.Providers
             {
                 _sessions.Remove(sessionToken);
             }
+        }
+
+        public void RemoveSessionByUsername(string username)
+        {
+            string sessionKey = _sessions.Where(item => item.Value.UserData.Username == username).Select(p => p.Key).FirstOrDefault();
+
+            RemoveSessionByToken(sessionKey);
         }
     }
 }

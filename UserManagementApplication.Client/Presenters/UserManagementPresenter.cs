@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using UserManagementApplication.Client.Models;
+using UserManagementApplication.Client.Translators;
 using UserManagementApplication.Client.ViewData;
 using UserManagementApplication.Client.ViewDefinitions;
 using UserManagementApplication.Common.Enumerations;
@@ -12,7 +13,7 @@ namespace UserManagementApplication.Client.Presenters
     {
         protected IUserManagementView View { get; set; }
         protected UserManagementModel UserManagementModel { get; set; }
-        protected SessionModel LoginModel { get; set; }
+        protected SessionModel SessionModel { get; set; }
 
         public UserManagementPresenter(IUserManagementView view)
         {
@@ -22,40 +23,41 @@ namespace UserManagementApplication.Client.Presenters
             UserManagementModel = new UserManagementModel();
             UserManagementModel.HandleModelException += Model_HandleModelException;
             
-            LoginModel = new SessionModel();
-            LoginModel.HandleModelException += Model_HandleModelException;
+            SessionModel = new SessionModel();
+            SessionModel.HandleModelException += Model_HandleModelException;
         }
 
         void View_OnViewLoaded(object sender, IView e)
         {
             FindAllUsers();
+            SecureControls();
         }
 
         public void Logout()
         {
-            LoginModel.Logout(View.SessionToken);
+            SessionModel.Logout(new SessionDataTranslator().Translate(View.SessionToken));
             View.HandleLogout();
         }
 
         public void FindAllUsers()
         {
-            var result = UserManagementModel.GetUsers(View.SessionToken);
+            var result = UserManagementModel.GetUsers(new SessionDataTranslator().Translate(View.SessionToken));
 
-            View.UpdateData(result.ToList().ConvertAll<UserData>(Translate));
+            View.UpdateData(new UserDataTranslator().Translate(result));
         }
 
-        private void Model_HandleModelException(object sender, UserManagementApplicationException e)
+        public void SecureControls()
         {
-            View.HandleException(e.Message);
-        }
+            bool hasItem = View.CurrentUserData != null;
+            bool isAdminRole = View.SessionToken.UserData.RoleType == RoleType.Admin;
 
-        public void SecureControls(int selectedIndex)
-        {
-            bool hasItem = selectedIndex != -1;
+            View.EnableAdd(isAdminRole);
 
-            View.EnableDelete(hasItem);
-            View.EnableEdit(hasItem);
-            View.EnableUnlock(hasItem);
+            bool enableOp = hasItem && isAdminRole;
+
+            View.EnableDelete(enableOp);
+            View.EnableEdit(enableOp);
+            View.EnableUnlock(enableOp);
         }
 
         public void EditUser()
@@ -77,11 +79,11 @@ namespace UserManagementApplication.Client.Presenters
         {
             if (View.CurrentUserData != null)
             {
-                var itemToDelete = Translate(View.CurrentUserData);
+                var itemToDelete = new UserDataTranslator().Translate(View.CurrentUserData);
 
                 itemToDelete.MessageState = MessageState.Deleted;
 
-                UserManagementModel.DeleteUser(View.SessionToken, itemToDelete);
+                UserManagementModel.DeleteUser(new SessionDataTranslator().Translate(View.SessionToken), itemToDelete);
                 FindAllUsers();
             }
         }
@@ -90,63 +92,26 @@ namespace UserManagementApplication.Client.Presenters
         {
             if (View.CurrentUserData != null)
             {
-                var user = Translate(View.CurrentUserData);
+                var user = new UserDataTranslator().Translate(View.CurrentUserData);
 
                 user.BadLogins = 0;
                 user.MessageState = MessageState.Modified;
                 
-                UserManagementModel.UnlockUser(View.SessionToken, user);
+                UserManagementModel.UnlockUser(new SessionDataTranslator().Translate(View.SessionToken), user);
                 FindAllUsers();
             }
         }
 
         public void FindUsers()
         {
-            var result = UserManagementModel.FindUsers(View.SessionToken, View.FirstName, View.LastName);
+            var result = UserManagementModel.FindUsers(new SessionDataTranslator().Translate(View.SessionToken), View.FirstName, View.LastName);
 
-            View.UpdateData(result.ToList().ConvertAll<UserData>(Translate));
+            View.UpdateData(result.ToList().ConvertAll<UserData>(new UserDataTranslator().Translate));
         }
 
-        private User Translate(UserData userData)
+        private void Model_HandleModelException(object sender, UserManagementApplicationException e)
         {
-            if (userData != null)
-            {
-                return new User()
-                {
-                    Age       = userData.Age,
-                    Birthdate = userData.Birthdate,
-                    FirstName = userData.FirstName,
-                    LastName  = userData.LastName,
-                    Password  = userData.Password,
-                    RoleType  = userData.RoleType,
-                    UserId    = userData.UserId,
-                    Username  = userData.Username,
-                    BadLogins = userData.BadLogins
-                };
-            }
-
-            return null;
-        }
-
-        private UserData Translate(User user)
-        {
-            if (user != null)
-            {
-                return new UserData()
-                {
-                    Age       = user.Age,
-                    Birthdate = user.Birthdate,
-                    FirstName = user.FirstName,
-                    LastName  = user.LastName,
-                    Password  = user.Password,
-                    RoleType  = user.RoleType,
-                    UserId    = user.UserId,
-                    Username  = user.Username,
-                    BadLogins = user.BadLogins
-                };
-            }
-
-            return null;
+            View.HandleException(e.Message);
         }
     }
 }

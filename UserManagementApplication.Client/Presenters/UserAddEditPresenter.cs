@@ -3,6 +3,8 @@ using System.Text.RegularExpressions;
 using UserManagementApplication.Client.Data;
 using UserManagementApplication.Client.Enumerations;
 using UserManagementApplication.Client.Models;
+using UserManagementApplication.Client.Translators;
+using UserManagementApplication.Client.ViewData;
 using UserManagementApplication.Client.ViewDefinitions;
 using UserManagementApplication.Common;
 using UserManagementApplication.Common.Enumerations;
@@ -34,7 +36,12 @@ namespace UserManagementApplication.Client.Presenters
             }
             else
             {
-                var result = Model.Commit(new UserSession() { SessionToken = View.SessionToken }, getUserFromView());
+                var itemToCommit = new UserDataTranslator().Translate(getUserFromView());
+
+                itemToCommit.MessageState = getMessageState();
+
+                var result = Model.Commit(  new SessionDataTranslator().Translate(View.SessionToken), 
+                                            itemToCommit);
 
                 if (result != null)
                 {
@@ -43,9 +50,9 @@ namespace UserManagementApplication.Client.Presenters
             }
         }
 
-        private User getUserFromView()
+        private UserData getUserFromView()
         {
-            return new User()
+            return new UserData()
             {
                 Username  = View.Username,
                 Password  = View.Password,
@@ -53,8 +60,7 @@ namespace UserManagementApplication.Client.Presenters
                 LastName  = View.LastName,
                 Birthdate = View.Birthdate,
                 UserId    = View.UserData != null ? View.UserData.UserId : 0,
-                RoleType  = View.ViewOperation == ViewOperation.Edit ? View.UserData.RoleType : RoleType.User,
-                MessageState = getMessageState()
+                RoleType  = View.ViewOperation == ViewOperation.Edit ? View.UserData.RoleType : RoleType.User
             };
         }
 
@@ -76,7 +82,7 @@ namespace UserManagementApplication.Client.Presenters
         {
             if (View.ViewOperation == ViewOperation.Add)
             {
-                View.ViewTitle     = "Add User";
+                View.ViewTitle = "Add User";
                 View.Username  = String.Empty;
                 View.Password  = String.Empty;
                 View.FirstName = String.Empty;

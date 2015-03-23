@@ -6,6 +6,7 @@ namespace UserManagementApplication.Data.Providers.Interfaces
     {
         Session GetSession(string sessionToken);
         Session CreateSession(string sessionToken, Session session);
-        void RemoveSession(string sessionToken);
+        void RemoveSessionByToken(string sessionToken);
+        void RemoveSessionByUsername(string username);
     }
 }

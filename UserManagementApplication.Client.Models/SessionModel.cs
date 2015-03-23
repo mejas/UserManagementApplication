@@ -14,7 +14,7 @@ namespace UserManagementApplication.Client.Models
             SessionProxy = new SessionServiceProxy();
         }
 
-        public bool Login(string username, string password)
+        public UserSession Login(string username, string password)
         {
             LogonRequest logonRequest = new LogonRequest()
             {
@@ -22,24 +22,17 @@ namespace UserManagementApplication.Client.Models
                 Password = password
             };
 
-            return InvokeMethod(() =>
-            {
-                var session = SessionProxy.Logon(logonRequest);
-
-                SessionToken = session.SessionToken;
-
-                return true;
-            });
+            return InvokeMethod(() => SessionProxy.Logon(logonRequest));
         }
 
-        public string GetSessionToken()
+        public void Logout(UserSession sessionToken)
         {
-            return SessionToken;
+            InvokeMethod(() => SessionProxy.Logoff(sessionToken));
         }
 
-        public void Logout(string sessionToken)
+        public void ForceLogout(UserSession userSession, User user)
         {
-            InvokeMethod(() => SessionProxy.Logoff(new UserSession() { SessionToken = sessionToken }));
+            InvokeMethod(() => SessionProxy.TerminateSession(userSession, user));
         }
     }
 }

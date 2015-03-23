@@ -19,5 +19,10 @@ namespace UserManagementApplication.Client.Models.ServiceProxy
         {
             InvokeMethod(() => RemotingService.Logoff(session));
         }
+
+        public void TerminateSession(UserSession session, User user)
+        {
+            InvokeMethod(() => RemotingService.TerminateSession(session, user));
+        }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
+using UserManagementApplication.Client.Data;
 using UserManagementApplication.Client.Enumerations;
 using UserManagementApplication.Client.Presenters;
 using UserManagementApplication.Client.ViewData;
@@ -16,7 +17,7 @@ namespace UserManagementApplication.Client.Wpf.Views
     {
         public event EventHandler<IView> OnViewLoaded;
 
-        public string SessionToken { get; set; }
+        public SessionData SessionToken { get; set; }
 
         public UserData CurrentUserData
         {
@@ -79,8 +80,6 @@ namespace UserManagementApplication.Client.Wpf.Views
             LoginView loginView = new LoginView();
 
             loginView.Show();
-
-            this.Close();
         }
 
         public void EnableAdd(bool value)
@@ -127,6 +126,8 @@ namespace UserManagementApplication.Client.Wpf.Views
             };
 
             userAddEdit.ShowDialog();
+
+            this.Close();
         }
 
         private void OnLoaded(object sender, RoutedEventArgs e)
@@ -141,7 +142,7 @@ namespace UserManagementApplication.Client.Wpf.Views
 
         private void buttonLogout_Click(object sender, RoutedEventArgs e)
         {
-            Presenter.Logout();
+            this.Close();
         }
 
         private void buttonRefresh_Click(object sender, RoutedEventArgs e)
@@ -151,7 +152,7 @@ namespace UserManagementApplication.Client.Wpf.Views
 
         private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            Presenter.SecureControls(ListView.SelectedIndex);
+            Presenter.SecureControls();
         }
 
         private void buttonAdd_Click(object sender, RoutedEventArgs e)
@@ -177,6 +178,11 @@ namespace UserManagementApplication.Client.Wpf.Views
         private void buttonSearch_Click(object sender, RoutedEventArgs e)
         {
             Presenter.FindUsers();
+        }
+
+        protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
+        {
+            Presenter.Logout();
         }
     }
 }

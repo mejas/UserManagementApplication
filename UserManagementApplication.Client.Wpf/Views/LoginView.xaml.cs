@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows;
+using UserManagementApplication.Client.Data;
 using UserManagementApplication.Client.Presenters;
 using UserManagementApplication.Client.ViewDefinitions;
 using UserManagementApplication.Client.Wpf.Views;
@@ -15,7 +16,7 @@ namespace UserManagementApplication.Client.Wpf
 
         public event EventHandler<IView> OnViewLoaded;
 
-        public string SessionToken { get; set; }
+        public SessionData SessionToken { get; set; }
         public string Username
         {
             get

@@ -7,5 +7,8 @@ namespace UserManagementApplication.Remoting.Data
     {
         [DataMember]
         public string SessionToken { get; set; }
+
+        [DataMember]
+        public User UserData { get; set; }
     }
 }

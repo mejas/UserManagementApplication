@@ -15,7 +15,7 @@ namespace UserManagementApplication.Client.Wpf.Views
     {
         public string ViewTitle { get; set; }
         public UserData UserData { get; set; }
-        public string SessionToken { get; set; }
+        public SessionData SessionToken { get; set; }
         public ViewOperation ViewOperation { get; set; }
         public event EventHandler<IView> OnViewLoaded;
 

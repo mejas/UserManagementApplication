@@ -1,5 +1,7 @@
 ﻿using System;
+using UserManagementApplication.Client.Data;
 using UserManagementApplication.Client.Models;
+using UserManagementApplication.Client.Translators;
 using UserManagementApplication.Client.ViewDefinitions;
 using UserManagementApplication.Common.Exceptions;
 
@@ -26,9 +28,11 @@ namespace UserManagementApplication.Client.Presenters
 
         public void Login()
         {
-            if (Model.Login(View.Username, View.Password))
+            var loginResult = Model.Login(View.Username, View.Password);
+
+            if (loginResult != null)
             {
-                View.SessionToken = Model.GetSessionToken();
+                View.SessionToken = new SessionDataTranslator().Translate(loginResult);
                 View.HandleSuccessfulLogin();
             }
         }

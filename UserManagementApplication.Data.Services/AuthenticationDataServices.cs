@@ -37,9 +37,9 @@ namespace UserManagementApplication.Data.Services
             return null;
         }
 
-        public void RemoveSession(string sessionToken)
+        public void RemoveSession(UserSessionInformation userSessionInfo)
         {
-            SessionEntity.RemoveSession(sessionToken);
+            SessionEntity.RemoveSession(Translate(userSessionInfo));
         }
 
         public bool Authenticate(UserInformation userInformation, string password)
@@ -51,6 +51,20 @@ namespace UserManagementApplication.Data.Services
             user = user.GetUserByUserName(userInformation.Username);
 
             return user.Password == dataSecurityProvider.GenerateHash(password, user.Salt);
+        }
+
+        private Session Translate(UserSessionInformation userSessionInfo)
+        {
+            if (userSessionInfo != null)
+            {
+                return new Session(ProviderSingleton.Instance.SessionDataStorageProvider)
+                {
+                    SessionToken = userSessionInfo.SessionToken,
+                    UserData = Translate(userSessionInfo.User)
+                };
+            }
+
+            return null;
         }
 
         private UserInformation Translate(User user)

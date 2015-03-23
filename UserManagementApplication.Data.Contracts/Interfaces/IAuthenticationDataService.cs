@@ -5,7 +5,7 @@ namespace UserManagementApplication.Data.Contracts.Interfaces
     {
         void StoreSession(UserSessionInformation userData);
         UserSessionInformation GetUserSession(string sessionToken);
-        void RemoveSession(string sessionToken);
-        bool Authenticate(UserInformation userInformation, string password);
+        void RemoveSession(UserSessionInformation userSessionInfo);
+        bool Authenticate(UserInformation userSessionInfo, string password);
     }
 }

@@ -39,6 +39,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data\SessionData.cs" />
     <Compile Include="Data\UserData.cs" />
     <Compile Include="Data\ValidationResults.cs" />
     <Compile Include="Enumerations\ViewOperation.cs" />
@@ -46,6 +47,8 @@
     <Compile Include="Presenters\UserAddEditPresenter.cs" />
     <Compile Include="Presenters\UserManagementPresenter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Translators\SessionDataTranslator.cs" />
+    <Compile Include="Translators\UserDataTranslator.cs" />
     <Compile Include="ViewDefinitions\ILoginView.cs" />
     <Compile Include="ViewDefinitions\IUserAddEditView.cs" />
     <Compile Include="ViewDefinitions\IUserManagementView.cs" />
