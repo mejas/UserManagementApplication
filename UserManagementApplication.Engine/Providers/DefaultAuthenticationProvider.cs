@@ -12,19 +12,24 @@ namespace UserManagementApplication.Engine.Providers
 {
     public class DefaultAuthenticationProvider : IAuthenticationProvider
     {
+        #region Properties
         protected IUserDataService UserDataService { get; set; }
         protected IAuthenticationDataService AuthenticationDataService { get; set; }
+        #endregion
 
+        #region Constructors
         public DefaultAuthenticationProvider()
             : this(new UserDataServices(), new AuthenticationDataServices())
         { }
-
+        
         public DefaultAuthenticationProvider(IUserDataService userDataService, IAuthenticationDataService authenticationDataService)
         {
             UserDataService = userDataService;
             AuthenticationDataService = authenticationDataService;
         }
+        #endregion
 
+        #region Methods
         public UserSession GetSession(string sessionToken)
         {
             var result = AuthenticationDataService.GetUserSession(sessionToken);
@@ -36,7 +41,7 @@ namespace UserManagementApplication.Engine.Providers
         {
             var user = UserDataService.GetUser(username);
 
-            if (user == null || 
+            if (user == null ||
                 !AuthenticationDataService.Authenticate(user, password))
             {
                 if (user != null && user.RoleType != RoleType.Admin)
@@ -88,13 +93,10 @@ namespace UserManagementApplication.Engine.Providers
         public void TerminateSession(UserSession userSession)
         {
             AuthenticationDataService.RemoveSession(Translate(userSession));
-        }
+        } 
+        #endregion
 
-        private string generateSessionToken()
-        {
-            return Path.GetRandomFileName().Replace(".", String.Empty);
-        }
-
+        #region Functions
         protected UserSession Translate(UserSessionInformation userSessionInfo)
         {
             if (userSessionInfo != null)
@@ -109,6 +111,11 @@ namespace UserManagementApplication.Engine.Providers
             return null;
         }
 
+        private string generateSessionToken()
+        {
+            return Path.GetRandomFileName().Replace(".", String.Empty);
+        }
+
         private UserSessionInformation Translate(UserSession userSession)
         {
             if (userSession != null)
@@ -121,6 +128,7 @@ namespace UserManagementApplication.Engine.Providers
             }
 
             return null;
-        }
+        } 
+        #endregion
     }
 }

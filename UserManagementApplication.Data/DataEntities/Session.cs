@@ -5,16 +5,21 @@ namespace UserManagementApplication.Data.DataEntities
 {
     public class Session
     {
+        #region Properties
         public string SessionToken { get; set; }
-        public User UserData { get; set; }
-
+        public User UserData { get; set; } 
+        
         protected ISessionDataStorageProvider StorageProvider { get; set; }
+        #endregion
 
+        #region Constructors
         public Session(ISessionDataStorageProvider storageProvider)
         {
             StorageProvider = storageProvider;
-        }
+        } 
+        #endregion
 
+        #region Methods
         public Session CreateSession(string sessionToken, User user)
         {
             Session session = new Session(StorageProvider)
@@ -39,10 +44,11 @@ namespace UserManagementApplication.Data.DataEntities
             {
                 StorageProvider.RemoveSessionByToken(session.SessionToken);
             }
-            else if(session.UserData != null)
+            else if (session.UserData != null)
             {
                 StorageProvider.RemoveSessionByUsername(session.UserData.Username);
             }
-        }
+        } 
+        #endregion
     }
 }

@@ -7,8 +7,11 @@ namespace UserManagementApplication.Data.Providers
 {
     public class SessionDataCacheStorageProvider : ISessionDataStorageProvider
     {
+        #region Declarations
         private Dictionary<string, Session> _sessions = new Dictionary<string, Session>();
+        #endregion
 
+        #region Methods
         public Session GetSession(string sessionToken)
         {
             Session session = null;
@@ -40,6 +43,7 @@ namespace UserManagementApplication.Data.Providers
             string sessionKey = _sessions.Where(item => item.Value.UserData.Username == username).Select(p => p.Key).FirstOrDefault();
 
             RemoveSessionByToken(sessionKey);
-        }
+        } 
+        #endregion
     }
 }

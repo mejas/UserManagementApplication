@@ -15,18 +15,23 @@ namespace UserManagementApplication.Data.Providers
 {
     public class UserDataXmlStorageProvider : IUserDataStorageProvider
     {
+        #region Declarations
         protected List<User> UserCache = new List<User>();
-        private int _newUserId = 0;
+        private int _newUserId = 0; 
+        #endregion
 
-        public string XmlFile { get; private set; }
+        #region Properties
+        public string XmlFile { get; private set; } 
+        #endregion
 
+        #region Constructors
         public UserDataXmlStorageProvider()
         {
             if (String.IsNullOrEmpty(XmlFile))
             {
                 Configuration assemblyConfig = ConfigurationManager.OpenExeConfiguration(this.GetType().Assembly.Location);
 
-                if(assemblyConfig.AppSettings.Settings.Count == 0)
+                if (assemblyConfig.AppSettings.Settings.Count == 0)
                 {
                     throw new CriticalException("Database configuration not found.");
                 }
@@ -41,22 +46,21 @@ namespace UserManagementApplication.Data.Providers
         {
             XmlFile = fileName;
             initializeCacheAndDb();
+        } 
+        #endregion
+
+        #region Methods
+        public User GetUser(int id)
+        {
+            return UserCache.Find(user => user.UserId == id);
         }
 
-        private void initializeCacheAndDb()
+        public IList<User> GetUsers(string firstName, string lastName)
         {
-            FileInfo fileInfo = new FileInfo(XmlFile);
-            
-            if (!fileInfo.Exists)
-            {
-                User user = new User(this, new DefaultDataSecurityProvider());
-                user.Create("administrator", new HashGenerator().GenerateHash("$ystemM@stER"), 
-                            "Administrator", "Administrator", DateTime.Now, RoleType.Admin);
-            }
-            else if(fileInfo.Length > 1)
-            {
-                loadCache();
-            }
+            return UserCache.FindAll(user =>
+                    String.IsNullOrEmpty(firstName) && user.LastName == lastName ||
+                    String.IsNullOrEmpty(lastName) && user.FirstName == firstName ||
+                    user.FirstName == firstName && user.LastName == lastName);
         }
 
         public IList<User> GetUsers()
@@ -79,12 +83,12 @@ namespace UserManagementApplication.Data.Providers
         {
             var userToUpdate = UserCache.Find(item => item.UserId == user.UserId);
 
-            userToUpdate.Username  = user.Username;
-            userToUpdate.Password  = user.Password;
+            userToUpdate.Username = user.Username;
+            userToUpdate.Password = user.Password;
             userToUpdate.FirstName = user.FirstName;
-            userToUpdate.LastName  = user.LastName;
+            userToUpdate.LastName = user.LastName;
             userToUpdate.Birthdate = user.Birthdate;
-            userToUpdate.RoleType  = user.RoleType;
+            userToUpdate.RoleType = user.RoleType;
             userToUpdate.BadLogins = user.BadLogins;
 
             InvalidateCache();
@@ -111,7 +115,9 @@ namespace UserManagementApplication.Data.Providers
             flushUserCacheToDisk();
             loadCache();
         }
+        #endregion
 
+        #region Functions
         private void loadCache()
         {
             UserCache.Clear();
@@ -131,11 +137,27 @@ namespace UserManagementApplication.Data.Providers
             _newUserId = lastAddedUser != null ? lastAddedUser.UserId + 1 : 0;
         }
 
+        private void initializeCacheAndDb()
+        {
+            FileInfo fileInfo = new FileInfo(XmlFile);
+
+            if (!fileInfo.Exists)
+            {
+                User user = new User(this, new DefaultDataSecurityProvider());
+                user.Create("administrator", new HashGenerator().GenerateHash("$ystemM@stER"),
+                            "Administrator", "Administrator", DateTime.Now, RoleType.Admin);
+            }
+            else if (fileInfo.Length > 1)
+            {
+                loadCache();
+            }
+        }
+
         //TODO: optimize this so we don't do a big write
         private void flushUserCacheToDisk()
         {
             XmlSerializer serializer = new XmlSerializer(typeof(List<User>));
-            
+
             using (StreamWriter streamWriter = new StreamWriter(XmlFile))
             {
                 using (XmlWriter writer = XmlWriter.Create(streamWriter))
@@ -144,18 +166,7 @@ namespace UserManagementApplication.Data.Providers
                 }
             }
         }
-
-        public IList<User> GetUsers(string firstName, string lastName)
-        {
-            return  UserCache.FindAll(user =>
-                    String.IsNullOrEmpty(firstName) && user.LastName == lastName ||
-                    String.IsNullOrEmpty(lastName) && user.FirstName == firstName ||
-                    user.FirstName == firstName && user.LastName == lastName);
-        }
-
-        public User GetUser(int id)
-        {
-            return UserCache.Find(user => user.UserId == id);
-        }
+        
+        #endregion
     }
 }

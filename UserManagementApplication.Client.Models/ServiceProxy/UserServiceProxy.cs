@@ -7,11 +7,13 @@ namespace UserManagementApplication.Client.Models.ServiceProxy
 {
     public class UserServiceProxy : ProxyBase<IUserServices>, IUserServices
     {
-
+        #region Constructors
         public UserServiceProxy()
             : base("net.tcp://localhost:8080/UserManagementApplication/User")
-        { }
+        { } 
+        #endregion
 
+        #region Methods
         public IList<User> GetUsers(UserSession session)
         {
             return InvokeMethod(() => RemotingService.GetUsers(session));
@@ -25,6 +27,7 @@ namespace UserManagementApplication.Client.Models.ServiceProxy
         public User Commit(UserSession session, User user)
         {
             return InvokeMethod(() => RemotingService.Commit(session, user));
-        }
+        } 
+        #endregion
     }
 }

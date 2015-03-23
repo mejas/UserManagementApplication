@@ -5,8 +5,11 @@ namespace UserManagementApplication.Client.Models
 {
     public class UserAddEditModel : ClientModel
     {
+        #region Properties
         protected UserServiceProxy SessionProxy { get; set; }
+        #endregion
 
+        #region Methods
         public UserAddEditModel()
         {
             SessionProxy = new UserServiceProxy();
@@ -15,6 +18,7 @@ namespace UserManagementApplication.Client.Models
         public User Commit(UserSession session, User user)
         {
             return InvokeMethod(() => SessionProxy.Commit(session, user));
-        }
+        } 
+        #endregion
     }
 }

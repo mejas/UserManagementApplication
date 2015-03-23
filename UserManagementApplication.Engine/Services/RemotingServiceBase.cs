@@ -8,8 +8,11 @@ namespace UserManagementApplication.Engine.Services
 {
     public class RemotingServiceBase
     {
-        protected ILogProvider LogProvider { get; set; }
+        #region Properties
+        protected ILogProvider LogProvider { get; set; } 
+        #endregion
 
+        #region Constructors
         public RemotingServiceBase()
             : this(new DefaultLogProvider())
         { }
@@ -17,8 +20,10 @@ namespace UserManagementApplication.Engine.Services
         public RemotingServiceBase(ILogProvider logProvider)
         {
             LogProvider = logProvider;
-        }
+        } 
+        #endregion
 
+        #region Methods
         protected T InvokeMethod<T>(Func<T> method)
         {
             if (method != null)
@@ -55,15 +60,18 @@ namespace UserManagementApplication.Engine.Services
             }
         }
 
-        private void HandleException(Exception ex)
-        {
-            LogProvider.LogMessage(ex);
-        }
-
         protected virtual void HandleException(UserManagementApplicationException ex)
         {
             LogProvider.LogMessage(ex);
             throw new FaultException(ex.Message);
         }
+        #endregion
+
+        #region Functions
+        private void HandleException(Exception ex)
+        {
+            LogProvider.LogMessage(ex);
+        } 
+        #endregion
     }
 }

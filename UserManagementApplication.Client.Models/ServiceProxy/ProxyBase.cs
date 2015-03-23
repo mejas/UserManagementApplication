@@ -6,8 +6,12 @@ namespace UserManagementApplication.Client.Models.ServiceProxy
 {
     public abstract class ProxyBase<T>
     {
-        protected string ServiceAddress { get; private set; }
+        #region Declarations
         private ChannelFactory<T> _channelFactory = null;
+    	#endregion
+
+        #region Properties
+        protected string ServiceAddress { get; private set; }
 
         protected T RemotingService
         {
@@ -16,7 +20,9 @@ namespace UserManagementApplication.Client.Models.ServiceProxy
                 return _channelFactory.CreateChannel(new EndpointAddress(ServiceAddress));
             }
         }
+        #endregion
 
+        #region Constructors
         public ProxyBase(string serviceAddress)
         {
             ServiceAddress = serviceAddress;
@@ -30,7 +36,9 @@ namespace UserManagementApplication.Client.Models.ServiceProxy
                 MaxReceivedMessageSize = 65536
             });
         }
+        #endregion
 
+        #region Methods
         protected T InvokeMethod<T>(Func<T> method)
         {
             if (method != null)
@@ -48,7 +56,7 @@ namespace UserManagementApplication.Client.Models.ServiceProxy
                     throw new ErrorException("Connection to host could not be established.");
                 }
             }
-            
+
             return default(T);
         }
 
@@ -69,6 +77,7 @@ namespace UserManagementApplication.Client.Models.ServiceProxy
                     throw new ErrorException("Connection to host could not be established.");
                 }
             }
-        }
+        } 
+        #endregion
     }
 }

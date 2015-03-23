@@ -14,9 +14,12 @@ namespace UserManagementApplication.Client.Presenters
 {
     public class UserAddEditPresenter
     {
+        #region Properties
         protected IUserAddEditView View { get; set; }
-        protected UserAddEditModel Model { get; set; }
+        protected UserAddEditModel Model { get; set; } 
+        #endregion
 
+        #region Constructors
         public UserAddEditPresenter(IUserAddEditView view)
         {
             View = view;
@@ -24,8 +27,10 @@ namespace UserManagementApplication.Client.Presenters
 
             Model = new UserAddEditModel();
             Model.HandleModelException += Model_HandleModelException;
-        }
+        } 
+        #endregion
 
+        #region Methods
         public void Save()
         {
             var validationResults = validateFields();
@@ -40,7 +45,7 @@ namespace UserManagementApplication.Client.Presenters
 
                 itemToCommit.MessageState = getMessageState();
 
-                var result = Model.Commit(  new SessionDataTranslator().Translate(View.SessionToken), 
+                var result = Model.Commit(new SessionDataTranslator().Translate(View.SessionToken),
                                             itemToCommit);
 
                 if (result != null)
@@ -48,19 +53,21 @@ namespace UserManagementApplication.Client.Presenters
                     View.HandleCommitSuccess();
                 }
             }
-        }
+        } 
+        #endregion
 
+        #region Functions
         private UserData getUserFromView()
         {
             return new UserData()
             {
-                Username  = View.Username,
-                Password  = new HashGenerator().GenerateHash(View.Password),
+                Username = View.Username,
+                Password = new HashGenerator().GenerateHash(View.Password),
                 FirstName = View.FirstName,
-                LastName  = View.LastName,
+                LastName = View.LastName,
                 Birthdate = View.Birthdate,
-                UserId    = View.UserData != null ? View.UserData.UserId : 0,
-                RoleType  = View.ViewOperation == ViewOperation.Edit ? View.UserData.RoleType : RoleType.User
+                UserId = View.UserData != null ? View.UserData.UserId : 0,
+                RoleType = View.ViewOperation == ViewOperation.Edit ? View.UserData.RoleType : RoleType.User
             };
         }
 
@@ -75,7 +82,7 @@ namespace UserManagementApplication.Client.Presenters
                 return MessageState.Modified;
             }
 
-            return MessageState.Clean;   
+            return MessageState.Clean;
         }
 
         private void View_OnViewLoaded(object sender, IView e)
@@ -83,10 +90,10 @@ namespace UserManagementApplication.Client.Presenters
             if (View.ViewOperation == ViewOperation.Add)
             {
                 View.ViewTitle = "Add User";
-                View.Username  = String.Empty;
-                View.Password  = String.Empty;
+                View.Username = String.Empty;
+                View.Password = String.Empty;
                 View.FirstName = String.Empty;
-                View.LastName  = String.Empty;
+                View.LastName = String.Empty;
                 View.Birthdate = DateTime.Today;
             }
             else if (View.ViewOperation == ViewOperation.Edit)
@@ -100,10 +107,10 @@ namespace UserManagementApplication.Client.Presenters
         {
             if (View.UserData != null)
             {
-                View.Username  = View.UserData.Username;
-                View.Password  = View.UserData.Password;
+                View.Username = View.UserData.Username;
+                View.Password = View.UserData.Password;
                 View.FirstName = View.UserData.FirstName;
-                View.LastName  = View.UserData.LastName;
+                View.LastName = View.UserData.LastName;
                 View.Birthdate = View.UserData.Birthdate;
             }
         }
@@ -153,6 +160,7 @@ namespace UserManagementApplication.Client.Presenters
             }
 
             return validationResult;
-        }
+        } 
+        #endregion
     }
 }

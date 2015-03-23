@@ -224,9 +224,7 @@ namespace UserManagementApplication.Engine.BusinessEntities
 
         private bool isRoleClearanceValid(UserSession userSession, Common.Enumerations.RoleType roleType)
         {
-            UserSession session = new UserSession();
-
-            if (!session.IsClearedForRole(userSession, roleType))
+            if (!userSession.IsClearedForRole(userSession, roleType))
             {
                 throw new UnauthorizedOperationException("The user is not allowed to execute this operation.");
             }

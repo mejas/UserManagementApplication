@@ -15,7 +15,6 @@ namespace UserManagementApplication.Host
         {
             try
             {
-
                 Console.WriteLine("Initializing service hosts...\n");
 
                 using(var sessionServiceHost = createServiceHost(SESSION_SVC_ADDRESS, typeof(ISessionServices),typeof(SessionServices)))

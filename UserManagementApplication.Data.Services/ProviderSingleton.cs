@@ -5,24 +5,14 @@ namespace UserManagementApplication.Data.Services
 {
     public class ProviderSingleton
     {
+        #region Declarations
         private static ProviderSingleton _instance = null;
         private ISessionDataStorageProvider _sessionDataStorageProvider = null;
         private IUserDataStorageProvider _storageProvider = null;
-        private IDataSecurityProvider _dataSecurityProvider = null;
+        private IDataSecurityProvider _dataSecurityProvider = null; 
+        #endregion
 
-        public static ProviderSingleton Instance
-        {
-            get
-            {
-                if (_instance == null)
-                {
-                    _instance = new ProviderSingleton();
-                }
-
-                return _instance;
-            }
-        }
-
+        #region Properties
         public ISessionDataStorageProvider SessionDataStorageProvider
         {
             get
@@ -45,14 +35,29 @@ namespace UserManagementApplication.Data.Services
             {
                 return _dataSecurityProvider;
             }
-        }
+        } 
+        #endregion
 
+        #region Constructors
+        public static ProviderSingleton Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    _instance = new ProviderSingleton();
+                }
+
+                return _instance;
+            }
+        }
 
         private ProviderSingleton()
         {
             _sessionDataStorageProvider = new SessionDataCacheStorageProvider();
-            _storageProvider            = new UserDataXmlStorageProvider();
-            _dataSecurityProvider       = new DefaultDataSecurityProvider();
+            _storageProvider = new UserDataXmlStorageProvider();
+            _dataSecurityProvider = new DefaultDataSecurityProvider();
         }
+        #endregion
     }
 }

@@ -210,7 +210,5 @@ namespace UserManagementApplication.Data.Tests
                 subject.Should().BeNull();
             }
         }
-
-
     }
 }

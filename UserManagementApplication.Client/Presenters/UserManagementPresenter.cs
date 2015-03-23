@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using UserManagementApplication.Client.Models;
+﻿using UserManagementApplication.Client.Models;
 using UserManagementApplication.Client.Translators;
 using UserManagementApplication.Client.ViewData;
 using UserManagementApplication.Client.ViewDefinitions;
@@ -10,10 +9,13 @@ namespace UserManagementApplication.Client.Presenters
 {
     public class UserManagementPresenter
     {
+        #region Properties
         protected IUserManagementView View { get; set; }
         protected UserManagementModel UserManagementModel { get; set; }
-        protected SessionModel SessionModel { get; set; }
+        protected SessionModel SessionModel { get; set; } 
+        #endregion
 
+        #region Constructors
         public UserManagementPresenter(IUserManagementView view)
         {
             View = view;
@@ -21,17 +23,13 @@ namespace UserManagementApplication.Client.Presenters
 
             UserManagementModel = new UserManagementModel();
             UserManagementModel.HandleModelException += Model_HandleModelException;
-            
+
             SessionModel = new SessionModel();
             SessionModel.HandleModelException += Model_HandleModelException;
-        }
+        } 
+        #endregion
 
-        void View_OnViewLoaded(object sender, IView e)
-        {
-            FindAllUsers();
-            SecureControls();
-        }
-
+        #region Methods
         public void Logout()
         {
             SessionModel.Logout(new SessionDataTranslator().Translate(View.SessionToken));
@@ -92,7 +90,7 @@ namespace UserManagementApplication.Client.Presenters
 
                 user.BadLogins = 0;
                 user.MessageState = MessageState.Modified;
-                
+
                 UserManagementModel.UnlockUser(new SessionDataTranslator().Translate(View.SessionToken), user);
                 FindAllUsers();
             }
@@ -103,11 +101,20 @@ namespace UserManagementApplication.Client.Presenters
             var result = UserManagementModel.FindUsers(new SessionDataTranslator().Translate(View.SessionToken), View.FirstName, View.LastName);
 
             View.UpdateData(new UserDataTranslator().Translate(result));
+        } 
+        #endregion
+
+        #region Functions
+        private void View_OnViewLoaded(object sender, IView e)
+        {
+            FindAllUsers();
+            SecureControls();
         }
 
         private void Model_HandleModelException(object sender, UserManagementApplicationException e)
         {
             View.HandleException(e.Message);
-        }
+        } 
+        #endregion
     }
 }

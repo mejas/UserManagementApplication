@@ -6,13 +6,18 @@ namespace UserManagementApplication.Data.Services
 {
     public class AuthenticationDataServices : IAuthenticationDataService
     {
+        #region Declarations
         protected Session SessionEntity = null;
+        #endregion
 
+        #region Constructors
         public AuthenticationDataServices()
         {
             SessionEntity = new Session(ProviderSingleton.Instance.SessionDataStorageProvider);
-        }
+        } 
+        #endregion
 
+        #region Methods
         public void StoreSession(UserSessionInformation userSession)
         {
             SessionEntity.CreateSession(userSession.SessionToken, Translate(userSession.User));
@@ -51,8 +56,10 @@ namespace UserManagementApplication.Data.Services
             user = user.GetUserByUserName(userInformation.Username);
 
             return user.Password == dataSecurityProvider.GenerateHash(password, user.Salt);
-        }
+        } 
+        #endregion
 
+        #region Functions
         private Session Translate(UserSessionInformation userSessionInfo)
         {
             if (userSessionInfo != null)
@@ -95,15 +102,16 @@ namespace UserManagementApplication.Data.Services
                 {
                     Birthdate = userData.Birthdate,
                     FirstName = userData.FirstName,
-                    LastName  = userData.LastName,
-                    Password  = userData.Password,
-                    RoleType  = userData.RoleType,
-                    UserId    = userData.UserId,
-                    Username  = userData.Username
+                    LastName = userData.LastName,
+                    Password = userData.Password,
+                    RoleType = userData.RoleType,
+                    UserId = userData.UserId,
+                    Username = userData.Username
                 };
             }
 
             return null;
-        }
+        } 
+        #endregion
     }
 }

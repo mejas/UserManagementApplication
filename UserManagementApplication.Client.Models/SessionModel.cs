@@ -7,14 +7,19 @@ namespace UserManagementApplication.Client.Models
 {
     public class SessionModel : ClientModel
     {
+        #region Properties
         protected string SessionToken { get; set; }
-        protected SessionServiceProxy SessionProxy { get; set; }
+        protected SessionServiceProxy SessionProxy { get; set; } 
+        #endregion
 
+        #region Constructors
         public SessionModel()
         {
             SessionProxy = new SessionServiceProxy();
-        }
+        } 
+        #endregion
 
+        #region Methods
         public UserSession Login(string username, string password)
         {
             LogonRequest logonRequest = new LogonRequest()
@@ -34,6 +39,7 @@ namespace UserManagementApplication.Client.Models
         public void ForceLogout(UserSession userSession, User user)
         {
             InvokeMethod(() => SessionProxy.TerminateSession(userSession, user));
-        }
+        } 
+        #endregion
     }
 }

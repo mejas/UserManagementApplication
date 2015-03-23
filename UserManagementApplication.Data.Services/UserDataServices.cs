@@ -9,13 +9,18 @@ namespace UserManagementApplication.Data.Services
 {
     public class UserDataServices : IUserDataService
     {
+        #region Declarations
         protected User UserEntity = null;
+        #endregion
 
+        #region Constructors
         public UserDataServices()
         {
             UserEntity = new User(ProviderSingleton.Instance.UserDataStorageProvider, ProviderSingleton.Instance.DataSecurityProvider);
-        }
+        } 
+        #endregion
 
+        #region Methods
         public IList<UserInformation> GetUsers()
         {
             return UserEntity.GetAll().ToList().ConvertAll<UserInformation>(Translate);
@@ -28,7 +33,7 @@ namespace UserManagementApplication.Data.Services
 
         public UserInformation Commit(UserInformation user)
         {
-            switch(user.DataState)
+            switch (user.DataState)
             {
                 case DataState.New:
                     return Translate(UserEntity.Create(user.Username, user.Password, user.FirstName, user.LastName, user.Birthdate, user.RoleType));
@@ -52,9 +57,9 @@ namespace UserManagementApplication.Data.Services
         public UserInformation GetUser(string username)
         {
             return Translate(UserEntity.GetUserByUserName(username));
-        }
+        } 
 
-        private User Translate(UserInformation user)
+        protected User Translate(UserInformation user)
         {
             if (user != null)
             {
@@ -80,13 +85,13 @@ namespace UserManagementApplication.Data.Services
             {
                 return new UserInformation()
                 {
-                    UserId = userEntity.UserId,
-                    Username = userEntity.Username,
-                    Password = userEntity.Password,
+                    UserId    = userEntity.UserId,
+                    Username  = userEntity.Username,
+                    Password  = userEntity.Password,
                     FirstName = userEntity.FirstName,
-                    LastName = userEntity.LastName,
+                    LastName  = userEntity.LastName,
                     Birthdate = userEntity.Birthdate,
-                    RoleType = userEntity.RoleType,
+                    RoleType  = userEntity.RoleType,
                     BadLogins = userEntity.BadLogins,
                     DataState = DataState.Clean
                 };
@@ -94,5 +99,6 @@ namespace UserManagementApplication.Data.Services
 
             return null;
         }
+        #endregion
     }
 }

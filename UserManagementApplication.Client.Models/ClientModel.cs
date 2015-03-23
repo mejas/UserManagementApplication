@@ -5,8 +5,11 @@ namespace UserManagementApplication.Client.Models
 {
     public abstract class ClientModel
     {
+        #region Events
         public event EventHandler<UserManagementApplicationException> HandleModelException;
+        #endregion
 
+        #region Methods
         protected void OnModelException(UserManagementApplicationException e)
         {
             EventHandler<UserManagementApplicationException> handler = HandleModelException;
@@ -47,6 +50,7 @@ namespace UserManagementApplication.Client.Models
                     OnModelException(ex);
                 }
             }
-        }
+        } 
+        #endregion
     }
 }

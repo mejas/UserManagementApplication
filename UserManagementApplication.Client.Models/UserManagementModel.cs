@@ -7,13 +7,18 @@ namespace UserManagementApplication.Client.Models
 {
     public class UserManagementModel : ClientModel
     {
-        protected UserServiceProxy SessionProxy { get; set; }
+        #region Properties
+        protected UserServiceProxy SessionProxy { get; set; } 
+        #endregion
 
+        #region Constructors
         public UserManagementModel()
         {
             SessionProxy = new UserServiceProxy();
-        }
+        } 
+        #endregion
 
+        #region Methods
         public IList<User> GetUsers(UserSession sessionToken)
         {
             return InvokeMethod(() => SessionProxy.GetUsers(sessionToken));
@@ -32,8 +37,9 @@ namespace UserManagementApplication.Client.Models
         public IList<User> FindUsers(UserSession sessionToken, string firstName, string lastName)
         {
             return InvokeMethod(
-                () => SessionProxy.FindUsers(sessionToken, 
+                () => SessionProxy.FindUsers(sessionToken,
                                              new FindUserRequest() { FirstName = firstName, LastName = lastName }));
-        }
+        } 
+        #endregion
     }
 }
