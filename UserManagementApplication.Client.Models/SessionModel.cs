@@ -8,7 +8,6 @@ namespace UserManagementApplication.Client.Models
     public class SessionModel : ClientModel
     {
         #region Properties
-        protected string SessionToken { get; set; }
         protected SessionServiceProxy SessionProxy { get; set; } 
         #endregion
 
